@@ -23,7 +23,7 @@ async function base() {
   Object.assign(mo, { result: C.serialize(P, res.S), snap: fx, inputSig: sig(cfg), seed: 5, revs: [], draft: null });
   saveStore(); progVer = null; P = null;
   await API.publish('2026-11', pubPayload());
-  await API.setRound({ ym: '2026-12', deadline: '2026-11-20', open: true, holidays: [], openedAt: new Date().toISOString() });
+  await API.setRound({ ym: '2026-12', deadline: '2027-03-31', open: true, holidays: [], openedAt: new Date().toISOString() });
   const reqs = { 'Hakan Demir': { '2026-12-03': 'yillik', '2026-12-04': 'yillik' }, 'Tuba Kurt': { '2026-12-14': 'kongre', '2026-12-15': 'kongre', '2026-12-16': 'kongre' }, 'Onur Şahin': { '2026-12-21': 'yillik', '2026-12-22': 'yillik', '2026-12-23': 'yillik', '2026-12-24': 'yillik' },
     'Gizem Çınar': { '2026-12-09': 'diger' }, 'Sinan Erol': { '2026-12-28': 'yillik', '2026-12-29': 'yillik', '2026-12-30': 'yillik', '2026-12-31': 'yillik' }, 'Aslı Özdemir': { '2026-12-15': 'rapor', '2026-12-16': 'rapor' }, 'Ozan Çelik': { '2026-12-04': 'yillik' }, 'Can Öztürk': { '2026-12-21': 'kongre', '2026-12-22': 'kongre' } };
   for (const [d, t] of Object.entries(reqs)) await API.adminSetRequest('2026-12', d, Object.keys(t), false, t);

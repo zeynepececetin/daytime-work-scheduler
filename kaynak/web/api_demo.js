@@ -8,6 +8,8 @@ const API = (() => {
   const fold = s => s.toLocaleLowerCase('tr-TR').replace(/[çğıöşü]/g, c => ({ 'ç': 'c', 'ğ': 'g', 'ı': 'i', 'ö': 'o', 'ş': 's', 'ü': 'u' }[c])).replace(/[^a-z ]/g, '');
   const demoEmail = n => { const t = fold(n).split(' ').filter(Boolean); return `${t[0]}.${t[t.length - 1]}@demo`; };
   const ADMIN = 'yonetici@demo';
+  // hazır örnek veri (Kasım 2026: girilmiş ay bilgileri, oluşturulmuş ve yayınlanmış program, Aralık izin talepleri) — make_seed.py üretir
+  if (typeof DEMO_SEED !== 'undefined' && DEMO_SEED && get('seeded', null) !== DEMO_SEED.v) { for (const [k, v] of Object.entries(DEMO_SEED.data)) set(k, v); set('seeded', DEMO_SEED.v); }
   const norm = e => String(e || '').trim().toLowerCase();
   // davet listesi: { email, doctor, active }   hesaplar: { email, pw }
   function invites() {
@@ -32,21 +34,21 @@ const API = (() => {
     async signIn(email, pw) {
       email = norm(email);
       const a = accounts().find(x => x.email === email && x.pw === pw);
-      if (!a) throw new Error('E-posta ya da şifre hatalı.');
+      if (!a) throw new Error('Wrong e-mail or password.');
       const u = who(email);
-      if (!u) throw new Error('Bu hesabın erişimi yok. Admin ile görüşün.');
+      if (!u) throw new Error('This account has no access. Please contact the admin.');
       set('session', email); return u;
     },
     async signUp(email, pw) {
       email = norm(email);
-      if (email !== ADMIN && !invites().some(x => x.email === email && x.active)) throw new Error('Bu e-posta adresi davetli değil. Admin ile görüşün.');
-      if (accounts().some(x => x.email === email)) throw new Error('Bu e-posta ile zaten bir hesap var. "Giriş" yapın; şifrenizi unuttuysanız "Şifremi unuttum"u kullanın.');
+      if (email !== ADMIN && !invites().some(x => x.email === email && x.active)) throw new Error('This e-mail address has not been invited. Please contact the admin.');
+      if (accounts().some(x => x.email === email)) throw new Error('An account with this e-mail already exists. Please sign in, or use "Forgot password".');
       const a = accounts(); a.push({ email, pw }); set('accounts', a);
-      return 'Hesabınız oluşturuldu. (Gerçek sürümde önce e-postanıza gelen doğrulama bağlantısına tıklamanız gerekir.) Şimdi giriş yapabilirsiniz.';
+      return 'Your account has been created. (In the live version you would first confirm your e-mail address.) You can now sign in.';
     },
     async session() { const e = get('session', null); return e ? who(e) : null; },
     async signOut() { localStorage.removeItem(K('session')); },
-    async resetPassword() { return 'Demo sürümünde e-posta gönderilmez. Gerçek sürümde e-postanıza şifre yenileme bağlantısı gelir.'; },
+    async resetPassword() { return 'The demo does not send e-mails. In the live version you would receive a password reset link.'; },
     // admin çalışma verisi (taslaklar dahil) — yalnızca admin
     async loadAdminState() { return get('state', null); },
     async saveAdminState(st) { set('state', st); },
@@ -110,6 +112,6 @@ const API = (() => {
       for (const [d, v] of Object.entries(changes)) { if (v) r.decisions[d] = v; else delete r.decisions[d]; }
       set('req', all);
     },
-    async resetDemo() { ['invites', 'accounts', 'state', 'pub', 'session', 'users', 'round', 'req', 'adminDoctor'].forEach(k => localStorage.removeItem(K(k))); }
+    async resetDemo() { ['invites', 'accounts', 'state', 'pub', 'session', 'users', 'round', 'req', 'adminDoctor', 'seeded'].forEach(k => localStorage.removeItem(K(k))); }
   };
 })();

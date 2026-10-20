@@ -5,6 +5,7 @@
 Every month, one specialist used to assign about 27 anesthesiologists to 25 work areas (operating rooms, outpatient clinics and endoscopy units) for every working day, by hand. This project turns that manual task into a defined process with explicit rules, measurable fairness and an optimisation algorithm. A full month is generated in seconds, and no hard rule is broken.
 
 **▶ Try the live demo (web version, fictional data):** https://zeynepececetin.github.io/daytime-work-scheduler/web-demo/
+November 2026 is already entered, scheduled and published. Sign in as the department admin (`yonetici@demo`) or as a doctor (`kemal.arslan@demo`); the password for both is `demo123`.
 
 > **Privacy:** every person named in this repository, its sample data and its screenshots is fictional. The real department data is kept out of this repository to comply with Türkiye's personal data protection law (KVKK).
 

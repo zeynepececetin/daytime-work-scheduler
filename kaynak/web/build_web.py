@@ -29,6 +29,10 @@ r = r.replace('BARIŞ DUMAN', up(MAP['Barış Duman']))
 demo = {'rosterText': r, 'leavesText': l, 'included': [MAP[n] for n in demo['included']]}
 ADMIN_DOC = MAP['Defne Kaplan']
 
+# ---- hazır demo verisi (make_seed.py üretir; NOSEED=1 ile tohumsuz derlenir)
+SP = os.path.join(HERE, 'demo_seed.json')
+SEED = open(SP, encoding='utf-8').read().strip() if os.path.exists(SP) and not os.environ.get('NOSEED') else 'null'
+
 # ---- masaüstü şablonunu web'e çevir
 html = open(os.path.join(KAYNAK, 'template.html'), encoding='utf-8').read()
 def rep(a, b, n=1):
@@ -36,6 +40,7 @@ def rep(a, b, n=1):
     assert html.count(a) == n, (html.count(a), a[:80])
     html = html.replace(a, b)
 
+rep('<title>Gün İçi Çalışma Programı</title>', '<title>Daytime Work Schedule</title>')
 rep('</style>', rd('web.css') + '\n</style>')
 rep('<header>', '<div id="adminApp" hidden>\n<header>')
 rep('<div class="month noprint">Ay:', '<div class="month noprint"><span id="whoAdmin" class="who"></span> Ay:')
@@ -68,7 +73,7 @@ function saveStore() {
   saveTimer = setTimeout(() => API.saveAdminState(store).catch(e => alert('Kaydedilemedi: ' + e.message)), 500);
 }
 function renderFileBar() { const b = document.getElementById('fileBar'); if (b) b.style.display = 'none'; }
-''' + rd('api_demo.js') + '\n' + mf + '\n' + html[j:]
+''' + 'const DEMO_SEED = ' + SEED + ';\n' + rd('api_demo.js') + '\n' + mf + '\n' + html[j:]
 # yayın çubuğu, kullanıcıda puan sütunu gizleme, sürüm yardımcıları
 rep('  renderDraftBar(V);\n', '  renderDraftBar(V);\n  renderPubBar(V);\n')
 rep('const revs = () => M().revs || [];', 'const revs = () => (M() && M().revs) || [];')

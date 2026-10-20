@@ -382,14 +382,14 @@ let lgMode = 'in';
 function showLogin(msg, ok) {
   $('#adminApp').hidden = true; $('#userApp').hidden = true; $('#login').hidden = false;
   const up = lgMode === 'up';
-  $('#lgSub').textContent = up ? 'İlk giriş · hesap oluşturma (yalnızca davetli e-postalar)' : 'Anestezi ve Reanimasyon · giriş';
+  $('#lgSub').textContent = up ? 'First sign-in · create an account (invited e-mails only)' : 'Anesthesiology & Reanimation · sign in';
   $('#lgPw2').hidden = !up; $('#lgPw2').required = up;
-  $('#lgPw').placeholder = up ? 'Şifre belirleyin (en az 8 karakter)' : 'Şifre';
+  $('#lgPw').placeholder = up ? 'Choose a password (at least 8 characters)' : 'Password';
   $('#lgPw').autocomplete = up ? 'new-password' : 'current-password';
-  $('#lgBtn').textContent = up ? 'Hesap oluştur' : 'Giriş';
-  $('#lgToggle').textContent = up ? 'Hesabım var, giriş yapacağım' : 'İlk kez mi giriyorsunuz? Hesap oluşturun';
+  $('#lgBtn').textContent = up ? 'Create account' : 'Sign in';
+  $('#lgToggle').textContent = up ? 'I have an account, sign in' : 'First time here? Create an account';
   $('#lgMsg').innerHTML = msg ? `<div class="msg ${ok ? 'ok' : 'bad'}">${esc(msg)}</div>` : '';
-  if (API.mode === 'demo' && !/shots/.test(location.hash)) { const h = API.demoHint(); $('#lgDemo').innerHTML = `<div class="msg warn" style="margin-top:12px">Örnek verili deneme hesabı — yönetici: <b>${h.admin}</b> · kullanıcı: <b>${esc(h.ready)}</b> (şifre <b>demo123</b>)<br><a href="#" id="lgReset">Örnek verileri sıfırla</a></div>`; $('#lgReset').onclick = async e => { e.preventDefault(); if (confirm('Tüm veriler (hesaplar, programlar, talepler) silinip baştan başlansın mı?')) { await API.resetDemo(); location.reload(); } }; }
+  if (API.mode === 'demo' && !/shots/.test(location.hash)) { const h = API.demoHint(); $('#lgDemo').innerHTML = `<div class="msg warn" style="margin-top:12px;text-align:left"><b>Demo with sample data</b> (all names are fictional). November 2026 is already entered, scheduled and published.<br>• Department admin: <b>${h.admin}</b><br>• Doctor (user): <b>${esc(h.ready)}</b><br>Password for both: <b>demo123</b><br><span class="small">The program's interface is in Turkish, as it is used by a Turkish hospital department.</span><br><a href="#" id="lgReset">Reset sample data</a></div>`; $('#lgReset').onclick = async e => { e.preventDefault(); if (confirm('Delete all changes (accounts, schedules, requests) and restore the sample data?')) { await API.resetDemo(); location.reload(); } }; }
   setTimeout(() => $('#lgEmail').focus(), 50);
 }
 async function startAdmin() {
@@ -438,8 +438,8 @@ function initWeb() {
     e.preventDefault();
     if (lgMode === 'up') {
       const pw = $('#lgPw').value;
-      if (pw.length < 8) return showLogin('Şifre en az 8 karakter olmalı.');
-      if (pw !== $('#lgPw2').value) return showLogin('Şifreler aynı değil.');
+      if (pw.length < 8) return showLogin('The password must be at least 8 characters.');
+      if (pw !== $('#lgPw2').value) return showLogin('The passwords do not match.');
       try { const m = await API.signUp($('#lgEmail').value, pw); lgMode = 'in'; $('#lgPw').value = ''; $('#lgPw2').value = ''; showLogin(m, true); }
       catch (err) { showLogin(err.message); }
       return;
@@ -448,7 +448,7 @@ function initWeb() {
     catch (err) { showLogin(err.message); }
   };
   $('#lgToggle').onclick = e => { e.preventDefault(); lgMode = lgMode === 'up' ? 'in' : 'up'; showLogin(); };
-  $('#lgForgot').onclick = async e => { e.preventDefault(); const em = $('#lgEmail').value.trim(); if (!em) { showLogin('Önce e-posta adresinizi yazın.'); return; } alert(await API.resetPassword(em)); };
+  $('#lgForgot').onclick = async e => { e.preventDefault(); const em = $('#lgEmail').value.trim(); if (!em) { showLogin('Please enter your e-mail address first.'); return; } alert(await API.resetPassword(em)); };
   $('#btnLogoutU').onclick = logout;
   $('#btnBackAdmin').onclick = exitUserView;
   $('#uMonth').onchange = e => loadUserMonth(e.target.value);
