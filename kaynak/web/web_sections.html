@@ -1,0 +1,35 @@
+<!-- ============ TALEPLER (web) ============ -->
+<section class="tab" id="tab-talep">
+  <div class="card">
+    <h2>İzin talebi toplama</h2>
+    <p class="hint">Hekimlerin izin günlerini (yıllık izin, kongre izni, rapor, diğer) kendilerinin gireceği ayı ve son tarihi seçin, sonra toplamayı açın. Son tarih geçince toplama kendiliğinden kapanır.</p>
+    <div class="row" style="align-items:center;gap:14px">
+      <label>Ay: <select id="trMonth"></select> <select id="trYear"></select></label>
+      <label>Son tarih: <input type="date" id="trDeadline"></label>
+      <span class="seg"><button class="btn" id="trOpen">Açık</button><button class="btn" id="trClose">Kapalı</button></span>
+      <span id="trState"></span>
+    </div>
+    <div id="trNotify"></div>
+  </div>
+  <div class="card">
+    <h2>Talepler ve onay</h2>
+    <div id="trSummary"></div>
+    <div id="trHeat"></div>
+    <div class="scroll" style="max-height:none;margin-top:12px"><table id="tblReq"></table></div>
+  </div>
+  <div class="card">
+    <h2>Programa aktar</h2>
+    <p class="hint">Onaylanan günler seçili ayın <b>Ay bilgileri → 3 · İzinler</b> tablosuna türleriyle (yıllık izin, kongre izni, rapor, diğer) işlenir. Daha önce talep sisteminden aktarılanların yerine geçer; elle girilen izinlere dokunulmaz.</p>
+    <div class="btns"><button class="btn primary" id="trTransfer">Onaylananları programa aktar</button><span id="trTransferMsg" class="small" style="align-self:center"></span></div>
+  </div>
+</section>
+
+<!-- ============ KULLANICILAR (web) ============ -->
+<section class="tab" id="tab-kullanici">
+  <div class="card">
+    <h2>Kullanıcı hesapları</h2>
+    <p class="hint">Her uzmana e-posta adresiyle bir hesap tanımlayın. Kullanıcılar yalnızca <b>yayınlanmış</b> programları görür ve indirir. Kişisel veri olarak yalnızca ad-soyad ve e-posta tutulur.</p>
+    <div id="usersMsg"></div>
+    <div class="scroll" style="max-height:none"><table id="tblUsers"></table></div>
+  </div>
+</section>

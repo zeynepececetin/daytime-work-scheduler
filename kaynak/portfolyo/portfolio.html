@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Daytime Work Schedule — Project Portfolio</title>
+<style>
+@page{size:297mm 210mm;margin:0}
+*{box-sizing:border-box}
+html,body{margin:0;background:#fff;color:#1d2330;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pg{width:297mm;height:210mm;padding:13mm 15mm 11mm;page-break-after:always;position:relative;overflow:hidden;display:flex;flex-direction:column}
+.pg:last-child{page-break-after:auto}
+.kick{font-size:9.5pt;letter-spacing:.12em;text-transform:uppercase;color:#1f6feb;font-weight:700;margin-bottom:2mm}
+h1{font-size:30pt;margin:0 0 4mm;line-height:1.1}
+h2{font-size:19pt;margin:0 0 3mm;line-height:1.15}
+p,li{font-size:11pt;line-height:1.45;margin:0 0 2.2mm}
+ul{margin:0;padding-left:5mm}
+.lead{font-size:13pt;color:#334}
+.row{display:flex;gap:7mm;flex:1;min-height:0}
+.col{flex:1;min-width:0;display:flex;flex-direction:column}
+.shot{border:.4mm solid #d5dbe3;border-radius:2.5mm;box-shadow:0 1.5mm 4mm rgba(20,33,61,.12);overflow:hidden;background:#fff}
+.shot img{display:block;width:100%;height:100%;object-fit:cover;object-position:top left}
+.cap{font-size:9.5pt;color:#5f6b7a;margin-top:2mm;line-height:1.35}
+.phone{border:2.2mm solid #14213d;border-radius:7mm;overflow:hidden;background:#fff;box-shadow:0 2mm 5mm rgba(20,33,61,.18)}
+.phone img{display:block;width:100%;height:100%;object-fit:cover;object-position:top}
+.foot{position:absolute;left:15mm;right:15mm;bottom:5mm;font-size:8pt;color:#8a94a3;display:flex;justify-content:space-between}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:4mm;margin:4mm 0}
+.stat{background:#f1f5fb;border-radius:3mm;padding:4mm}
+.stat b{display:block;font-size:22pt;color:#14213d}.stat span{font-size:9.5pt;color:#4b5563}
+.cover{background:linear-gradient(135deg,#14213d 0%,#1f3a6b 100%);color:#fff}
+.cover .lead{color:#c9d3e6}.cover .kick{color:#9ec0f5}
+.tl{display:grid;grid-template-columns:30mm 1fr;gap:1.5mm 5mm;font-size:10.5pt}
+.tl b{color:#1f6feb}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:3mm;margin:3mm 0}
+.steps div{background:#f1f5fb;border-radius:2.5mm;padding:3mm;font-size:10pt;line-height:1.35}
+.steps b{color:#1f6feb}
+.note{font-size:9pt;color:#5f6b7a}
+</style></head><body>
+
+<!-- 1 · kapak -->
+<div class="pg cover">
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;max-width:205mm">
+    <div class="kick">Project portfolio · Zeynep</div>
+    <h1>Daytime Work Schedule</h1>
+    <p class="lead" style="font-size:16pt;margin-bottom:8mm">A program that builds fair, rule-based monthly operating-room assignments for the anesthesiology department of a public teaching hospital in Kayseri, Türkiye.</p>
+    <div class="stats" style="grid-template-columns:repeat(4,1fr);max-width:205mm">
+      <div class="stat" style="background:rgba(255,255,255,.1)"><b style="color:#fff">27</b><span style="color:#c9d3e6">anesthesiologists scheduled each month</span></div>
+      <div class="stat" style="background:rgba(255,255,255,.1)"><b style="color:#fff">25</b><span style="color:#c9d3e6">operating rooms, clinics and endoscopy units</span></div>
+      <div class="stat" style="background:rgba(255,255,255,.1)"><b style="color:#fff">~525</b><span style="color:#c9d3e6">assignments per month</span></div>
+      <div class="stat" style="background:rgba(255,255,255,.1)"><b style="color:#fff">0</b><span style="color:#c9d3e6">rule violations in test runs</span></div>
+    </div>
+  </div>
+  <div class="foot" style="color:#8ea0c0"><span>All names in this portfolio are fictional (personal data protection).</span><span>October 2026</span></div>
+</div>
+
+<!-- 2 · problem -->
+<div class="pg">
+  <div class="kick">The need</div>
+  <h2>A monthly puzzle solved by hand</h2>
+  <div style="display:flex;gap:9mm">
+    <div style="flex:1">
+      <p class="lead">Every month one specialist assigned about 27 anesthesiologists to 25 work areas for every working day — by hand.</p>
+      <ul>
+        <li>Each area carries a different <b>workload score</b> (200 to 5,000 points), and doctors expect their monthly totals to be <b>equal</b>.</li>
+        <li>When someone falls ill or a room closes mid-month, everything has to be reworked — and reported to the hospital administration.</li>
+      </ul>
+    </div>
+    <div style="flex:1">
+      <ul>
+        <li>The schedule must respect many interlocking rules: the day off after a night shift (different for Friday and weekend shifts), leave, 1–2 clinic and endoscopy days per person in different units, rooms a doctor is exempt from, at most two days in the same room, which rooms may be combined when doctors are short…</li>
+      </ul>
+      <p style="margin-top:2mm"><b>Goal:</b> a program that never breaks a rule, makes the monthly totals as equal as possible, and fits the department's real workflow.</p>
+    </div>
+  </div>
+  <div class="shot" style="margin-top:3mm"><img src="img/resmiimg.jpg" style="height:auto"></div>
+  <div class="cap">The hospital's official monthly list (Excel, in the administration's own template; first columns shown) — now produced automatically.</div>
+  <div class="foot"><span>Daytime Work Schedule · project portfolio</span><span>2</span></div>
+</div>
+
+<!-- 3 · iş akışı -->
+<div class="pg">
+  <div class="kick">How it works</div>
+  <h2>Built around the department's real monthly workflow</h2>
+  <div class="steps">
+    <div><b>1 · Calendar & night-shift roster</b><br>holidays, room availability, the four duty columns</div>
+    <div><b>2 · Intensive-care staff</b><br>who is outside the daytime schedule this month</div>
+    <div><b>3 · Leave</b><br>annual, congress, sick leave — entered by doctors themselves</div>
+    <div><b>4 · Personal requests</b><br>preferred clinic days, rooms to avoid on given days</div>
+    <div><b>→ Generate & review</b><br>the algorithm builds the month in seconds</div>
+    <div><b>5–6 · Training clinic & official list</b><br>merged into the administration's Excel template</div>
+  </div>
+  <div class="row">
+    <div class="col"><div class="shot" style="flex:1"><img src="img/ay.jpg"></div>
+      <div class="cap">Step-by-step input screen: a status bar shows which steps are complete (✓) and which still need attention.</div></div>
+  </div>
+  <div class="foot"><span>Daytime Work Schedule · project portfolio</span><span>3</span></div>
+</div>
+
+<!-- 4 · talepler -->
+<div class="pg">
+  <div class="kick">Leave requests</div>
+  <h2>Doctors enter their own leave from their phones</h2>
+  <div class="row">
+    <div class="col" style="flex:0 0 58mm"><div class="phone" style="height:118mm"><img src="img/p-cal.jpg"></div>
+      <div class="cap">Choose the leave type, tap the days, send. Nothing reaches the scheduler until “Send” is pressed — the page warns before leaving.</div></div>
+    <div class="col" style="flex:0 0 58mm"><div class="phone" style="height:118mm"><img src="img/p-home.jpg"></div>
+      <div class="cap">Each doctor's own page: request status and their personal monthly schedule.</div></div>
+    <div class="col"><div class="shot" style="flex:1"><img src="img/talepler.jpg"></div>
+      <div class="cap">The scheduler sees who has replied, a heat map of requested days, and approves or rejects each day with one click; approved days flow into the month's leave table.</div></div>
+  </div>
+  <div class="foot"><span>Daytime Work Schedule · project portfolio</span><span>4</span></div>
+</div>
+
+<!-- 5 · program -->
+<div class="pg">
+  <div class="kick">The schedule</div>
+  <h2>A full month in seconds — and every hard rule kept</h2>
+  <div class="row">
+    <div class="col" style="flex:2.1"><div class="shot" style="flex:1"><img src="img/gunluk.jpg"></div>
+      <div class="cap">Room × day view of the generated month. Colours mark clinics and endoscopy; an asterisk marks a doctor covering two rooms that day. Status pills summarise rules and requests.</div></div>
+    <div class="col" style="flex:1">
+      <p><b>Under the hood:</b> an optimisation algorithm (simulated annealing) explores millions of possible assignments.</p>
+      <ul>
+        <li><b>15 hard rules</b> are never broken — e.g. no work the day after a night shift; a room with a location constraint can only be paired with specific rooms.</li>
+        <li><b>Preferences</b> are met where possible, in a fixed priority order.</li>
+        <li><b>Fairness</b>: monthly totals are pulled as close as possible to each doctor's fair target (reduced pro rata for leave).</li>
+        <li><b>Month to month</b>: doctors rotate through rooms they did not work last month, and clinic/endoscopy days alternate between 1 and 2.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Daytime Work Schedule · project portfolio</span><span>5</span></div>
+</div>
+
+<!-- 6 · adalet -->
+<div class="pg">
+  <div class="kick">Fairness</div>
+  <h2>Equal workload, measured</h2>
+  <div class="row">
+    <div class="col" style="flex:1.8"><div class="shot" style="flex:1"><img src="img/ozet.jpg"></div>
+      <div class="cap">Point summary: each doctor's target (based on days actually worked) versus the points they received.</div></div>
+    <div class="col" style="flex:1">
+      <div class="stats" style="grid-template-columns:1fr;gap:3mm;margin-top:0">
+        <div class="stat"><b>≈ 0.2%</b><span>largest gap between a doctor's total and their fair target in test runs on a real month (57 points out of ~27,000)</span></div>
+        <div class="stat"><b>0</b><span>hard-rule violations</span></div>
+        <div class="stat"><b>seconds</b><span>to compute a full month</span></div>
+      </div>
+      <p class="note">Doctors on leave have their target reduced in proportion to the days they work, so leave never “costs” anyone points.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Daytime Work Schedule · project portfolio</span><span>6</span></div>
+</div>
+
+<!-- 7 · ay içi değişiklik -->
+<div class="pg">
+  <div class="kick">Real life happens</div>
+  <h2>Mid-month changes without starting over</h2>
+  <div class="row">
+    <div class="col" style="flex:1.45"><div class="shot" style="flex:1"><img src="img/degisiklik.jpg"></div>
+      <div class="cap">A doctor reports sick: affected cells turn dark red, past days stay locked, and the program proposes fixes — from “fewest changes” to “most balanced” — showing how many cells change and how fair each option is.</div></div>
+    <div class="col" style="flex:1"><div class="shot" style="flex:1"><img src="img/rapor.jpg" style="object-fit:contain;object-position:top"></div>
+      <div class="cap">Each finalised revision produces an official change report for the administration: date, room, previous doctor, new doctor, reason.</div></div>
+  </div>
+  <div class="foot"><span>Daytime Work Schedule · project portfolio</span><span>7</span></div>
+</div>
+
+<!-- 8 · revize + çıktılar -->
+<div class="pg">
+  <div class="kick">Control stays with people</div>
+  <h2>Original, revised and draft versions</h2>
+  <div class="row">
+    <div class="col" style="flex:1.6"><div class="shot" style="flex:1"><img src="img/revize.jpg"></div>
+      <div class="cap">The algorithm's original schedule is never overwritten. Manual edits happen in a draft with undo/redo; the program never blocks the scheduler, but reports any rule broken and every change in points. Finalised drafts become numbered revisions with a full history.</div></div>
+    <div class="col" style="flex:1">
+      <p><b>Outputs</b></p>
+      <ul>
+        <li>Official list in the administration's Excel template</li>
+        <li>Daily schedule and per-doctor schedule (PDF / image)</li>
+        <li>Change report for every revision (PDF)</li>
+        <li>Personal schedule for each doctor (PDF / Excel)</li>
+      </ul>
+      <p style="margin-top:3mm"><b>Privacy</b></p>
+      <ul><li>Doctors see only published schedules; access is by invitation only.</li><li>The desktop version keeps its data in an encrypted file.</li></ul>
+    </div>
+  </div>
+  <div class="foot"><span>Daytime Work Schedule · project portfolio</span><span>8</span></div>
+</div>
+
+<!-- 9 · süreç, rol, durum -->
+<div class="pg">
+  <div class="kick">Process · role · status</div>
+  <h2>From a real need to a tool in use</h2>
+  <div class="row">
+    <div class="col">
+      <p><b>Timeline (2026)</b></p>
+      <div class="tl">
+        <b>Oct 13</b><span>Department rules collected and written down; first algorithm</span>
+        <b>Oct 14</b><span>First working program</span>
+        <b>Oct 17–18</b><span>Personal requests, official administration format, step-by-step input</span>
+        <b>Oct 20</b><span>Colleagues tested it; their feedback implemented (room-pairing rule, closed rooms, manual edits, mid-month revisions)</span>
+        <b>Nov</b><span>Desktop version in use for the department's first real month</span>
+        <b>Next</b><span>Launch of the web version shown in this portfolio</span>
+      </div>
+    </div>
+    <div class="col">
+      <p><b>Zeynep's role</b></p>
+      <ul>
+        <li>Identified the need and proposed the idea</li>
+        <li>Helped turn the department's unwritten practice into precise rules and requirements</li>
+        <li>Tested the program and gathered feedback from its users</li>
+        <li>Took part in design and development sessions</li>
+      </ul>
+      <p style="margin-top:4mm"><b>How it was built</b></p>
+      <p>The program was built with AI-assisted development (Anthropic's Claude), through many design-and-test sessions driven by the department's real needs.</p>
+    </div>
+  </div>
+  <div class="foot"><span>All names in this portfolio are fictional (personal data protection).</span><span>9</span></div>
+</div>
+</body></html>

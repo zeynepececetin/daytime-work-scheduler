@@ -1,0 +1,52 @@
+/* ===== web sürümüne özgü stiller (masaüstü stillerine eklenir) ===== */
+#login{position:fixed;inset:0;background:#14213d;display:flex;align-items:center;justify-content:center;z-index:100;padding:16px}
+#login[hidden],#adminApp[hidden],#userApp[hidden],#reqPage[hidden]{display:none!important}
+.lockcard input[type=email]{font-size:15px;padding:9px 10px;border:1px solid var(--line);border-radius:8px}
+#reqPage{position:fixed;inset:0;background:var(--bg);overflow:auto;z-index:60;padding:18px 12px 40px}
+.reqcard{max-width:520px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 18px;box-shadow:0 4px 18px rgba(20,33,61,.08)}
+.reqcard h2{margin:0 0 10px;font-size:19px}
+.reqwarn{background:#fff4d6;border:1px solid #f0d58a;color:#5c3d00;border-radius:10px;padding:10px 12px;font-size:13.5px;margin-bottom:10px}
+.wcal{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin:8px 0 4px}
+.wcal .h{text-align:center;font-size:12px;color:var(--muted);font-weight:700;padding-bottom:2px}
+.wcal .d{aspect-ratio:1/1;border:1.5px solid #dfe5ee;border-radius:12px;background:#fff;font:600 17px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);position:relative;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;-webkit-tap-highlight-color:transparent}
+.wcal button.d:active{transform:scale(.94)}
+.wcal .d.off{background:#f3f4f6;color:#b6bcc6;border-style:dashed;cursor:default}
+.wcal .d.off small{position:absolute;bottom:5px;font-size:8.5px;font-weight:600}
+.wcal .d.ro{cursor:default}
+.wcal .d .n{position:relative;z-index:1}
+.wcal .d.t .n{position:absolute;top:4px;left:6px;font-size:12px;font-weight:800}
+.wcal .d .tl{position:absolute;bottom:5px;left:0;right:0;text-align:center;font-size:10px;font-weight:800;letter-spacing:.2px}
+.wcal .d.t-yillik{background:#dcf5e6;border-color:#7fcf9c;color:#11643a}.wcal .d.t-kongre{background:#e3efff;border-color:#9ec0f5;color:#0b3d91}
+.wcal .d.t-rapor{background:#ffe9d6;border-color:#f3b27a;color:#8a3d00}.wcal .d.t-diger{background:#eceff3;border-color:#a8b0bb;color:#374151}
+.wcal .d .badge{position:absolute;top:4px;right:5px;font-size:10px;font-weight:700;color:#fff;background:#e0322a;border-radius:9px;padding:1px 5px}
+.wcal .d.heat1{background:#fff3e6}.wcal .d.heat2{background:#ffe1c2}.wcal .d.heat3{background:#ffc78f}
+.wcal.mini{max-width:330px;gap:4px}.wcal.mini .d{font-size:13px;border-radius:8px}.wcal.mini .d .badge{font-size:9px;top:2px;right:2px;padding:0 4px}
+.tsel{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:4px 0 10px}
+.tsel button{border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:8px 4px;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink)}
+.tsel button.on.t-yillik{background:#dcf5e6;border-color:#1a7f37;color:#11643a}.tsel button.on.t-kongre{background:#e3efff;border-color:#1f6feb;color:#0b3d91}
+.tsel button.on.t-rapor{background:#ffe9d6;border-color:#c96a1b;color:#8a3d00}.tsel button.on.t-diger{background:#eceff3;border-color:#6b7280;color:#374151}
+.notify{margin-top:12px;border:1px solid #b7dfc1;background:#f4fbf6;border-radius:10px;padding:12px 14px}
+.notify .ntop{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.notify .ntxt{margin:8px 0}.notify .nh{display:flex;gap:10px;align-items:center;font-weight:600;margin-bottom:4px}
+.notify textarea{min-height:128px;font:13.5px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#fff}
+.reqcount{text-align:center;font-size:14px;margin:10px 0 12px;color:var(--muted)}.reqcount b{color:#9b1c13;font-size:16px}
+.reqbtns{display:grid;gap:8px}.reqbtns .btn{width:100%}
+.reqbanner{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between;background:#e8f0fe;border:1px solid #b8cdf5;border-radius:12px;padding:14px 16px;margin-bottom:16px}
+.reqbanner.done{background:var(--ok-bg);border-color:#b7dfc1}.reqbanner.closed{background:var(--soft);border-color:var(--line)}
+button.chip{cursor:pointer}
+.chip.ap{background:#e3f6e8;border-color:#a7dbb4;color:#1a7f37}.chip.rj{background:#fde8e6;border-color:#f2b8b2;color:#a3160b;text-decoration:line-through}
+.chip .ty{font-size:10px;font-weight:800;margin-left:3px;opacity:.75}
+.seg{display:inline-flex}.seg .btn{border-radius:0}.seg .btn:first-child{border-radius:7px 0 0 7px}.seg .btn:last-child{border-radius:0 7px 7px 0;margin-left:-1px}
+.seg .btn.onA{background:var(--ok);color:#fff;border-color:var(--ok)}.seg .btn.onK{background:#6b7280;color:#fff;border-color:#6b7280}
+.who{font-size:13px;opacity:.85;margin-right:8px}
+header .btn{background:transparent;color:#fff;border-color:rgba(255,255,255,.35)}
+#pubBar{margin:6px 0 4px}
+#pubBar .pb{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:#fafbfc}
+#pubBar .pb.draft{background:var(--warn-bg);border-color:#f0d58a}#pubBar .pb.live{background:var(--ok-bg);border-color:#b7dfc1}#pubBar .pb.diff{background:#fff0e0;border-color:#f3c48c}
+.pers-cards{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+.pers-cards div{background:var(--soft);border-radius:8px;padding:8px 12px;min-width:110px}.pers-cards b{display:block;font-size:20px}
+table.pers td,table.pers th{padding:5px 8px}table.pers td.small{white-space:normal}
+@media (max-width:500px){table.pers td,table.pers th{padding:5px 5px;font-size:12px}}
+@media (max-width:700px){main{padding:12px}header{padding:10px 12px}.card{padding:12px}}
+@media (max-width:420px){.wcal{gap:5px}.wcal .d{font-size:15px;border-radius:10px}}
+@media print{#login,#userApp header,#reqPage{display:none!important}}

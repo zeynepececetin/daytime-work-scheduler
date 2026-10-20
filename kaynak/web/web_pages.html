@@ -1,0 +1,50 @@
+<!-- ============ KULLANICI SAYFASI (web) ============ -->
+<div id="userApp" hidden>
+<header>
+  <div><h1>Gün İçi Çalışma Programı</h1><div class="sub">Anestezi ve Reanimasyon</div></div>
+  <div class="month noprint"><button class="btn" id="btnBackAdmin" hidden>← Yönetim paneli</button><span id="whoUser" class="who"></span><button class="btn" id="btnLogoutU">Çıkış</button></div>
+</header>
+<main>
+  <div id="uReq"></div>
+  <div class="card">
+    <div class="row" style="align-items:center;gap:10px">
+      <label>Ay: <select id="uMonth"></select></label>
+      <span id="uBadge"></span>
+    </div>
+    <div class="sub-tabs noprint" id="uViews" style="margin-top:12px"></div>
+    <div class="btns noprint" id="uBtns"></div>
+    <div id="uView"></div>
+  </div>
+</main>
+</div>
+
+<!-- ============ TALEP SAYFASI (web) ============ -->
+<div id="reqPage" hidden><div class="reqcard">
+  <h2 id="reqTitle"></h2>
+  <div class="reqwarn">⚠︎ Talebiniz, en alttaki <b>“Talebi kesinleştir ve gönder”</b> butonuna basmadan yöneticiye <b>ulaşmaz</b>.</div>
+  <p class="hint" id="reqHint"></p>
+  <div class="small" style="font-weight:700;margin-top:4px">İşaretleyeceğiniz izin türü</div>
+  <div class="tsel" id="reqType"></div>
+  <div class="wcal" id="reqCal"></div>
+  <div class="reqcount" id="reqCount"></div>
+  <div class="reqbtns">
+    <button class="btn primary big" id="reqSend">Talebi kesinleştir ve gönder</button>
+    <button class="btn big" id="reqNone">Bu ay izin talebim yok</button>
+    <button class="btn" id="reqBack">← Geri dön</button>
+  </div>
+</div></div>
+
+<!-- ============ GİRİŞ (web) ============ -->
+<div id="login" hidden><div class="lockcard">
+  <h2>Gün İçi Çalışma Programı</h2>
+  <p class="hint" id="lgSub">Anestezi ve Reanimasyon · giriş</p>
+  <form id="loginForm">
+    <input type="email" id="lgEmail" placeholder="E-posta" autocomplete="username" required>
+    <input type="password" id="lgPw" placeholder="Şifre" autocomplete="current-password" required>
+    <input type="password" id="lgPw2" placeholder="Şifre (tekrar)" autocomplete="new-password" hidden>
+    <div id="lgMsg"></div>
+    <div class="lockbtns"><button class="btn primary big" type="submit" id="lgBtn">Giriş</button></div>
+  </form>
+  <p class="small" style="margin-top:14px"><a href="#" id="lgForgot">Şifremi unuttum</a> · <a href="#" id="lgToggle">İlk kez mi giriyorsunuz? Hesap oluşturun</a></p>
+  <div id="lgDemo"></div>
+</div></div>

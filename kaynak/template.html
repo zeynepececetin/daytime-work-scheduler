@@ -1,0 +1,2167 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gün İçi Çalışma Programı</title>
+<style>
+:root{
+  --bg:#f6f7f9; --panel:#fff; --ink:#1d2330; --muted:#5f6b7a; --line:#dde2e8; --soft:#eef1f5;
+  --accent:#1f6feb; --accent-ink:#fff; --ok:#1a7f37; --ok-bg:#e6f4ea; --bad:#c62828; --bad-bg:#fdecea;
+  --warn:#9a6700; --warn-bg:#fff4d6; --pol:#cfe2ff; --pol-ink:#0b3d91; --endo:#e3d5ff; --endo-ink:#4b2a8f; --ne:#dcdfe5; --ne-ink:#4b5563; --izin:#c8efd9; --izin-ink:#11643a; --empty:#ffd2cc; --empty-ink:#a3160b; --cover:#ffe0b3; --cover-ink:#7a4100; --ybf:#e3d5ff;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+header{background:#14213d;color:#fff;padding:12px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+header h1{font-size:17px;margin:0;font-weight:600}
+header .sub{opacity:.75;font-size:13px}
+header .month{margin-left:auto;display:flex;gap:6px;align-items:center}
+header select{font-size:14px;padding:4px 6px;border-radius:6px;border:0}
+nav{display:flex;gap:2px;background:#14213d;padding:0 16px;flex-wrap:wrap}
+nav button{background:transparent;color:#c9d3e6;border:0;padding:10px 16px;font-size:14px;cursor:pointer;border-radius:8px 8px 0 0}
+nav button.on{background:var(--bg);color:var(--ink);font-weight:600}
+main{padding:18px 20px 40px;max-width:100%}
+.tab{display:none}.tab.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:16px}
+.card h2{font-size:15px;margin:0 0 10px}
+.card h2 .n{display:inline-block;background:var(--accent);color:#fff;border-radius:50%;width:22px;height:22px;text-align:center;line-height:22px;font-size:12px;margin-right:6px}
+.hint{color:var(--muted);font-size:13px;margin:0 0 10px}
+.row{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
+.col{flex:1 1 380px;min-width:300px}
+textarea{width:100%;min-height:150px;font:12.5px/1.4 ui-monospace,Menlo,Consolas,monospace;border:1px solid var(--line);border-radius:8px;padding:8px}
+input[type=text],input[type=number]{border:1px solid var(--line);border-radius:6px;padding:4px 6px;font-size:13px}
+.btn{background:var(--soft);border:1px solid var(--line);border-radius:7px;padding:6px 12px;font-size:13px;cursor:pointer;color:var(--ink)}
+.btn:hover{border-color:#b9c2cd}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+.btn.big{padding:9px 18px;font-size:14px}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.stepbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:14px;position:sticky;top:0;z-index:6;box-shadow:0 2px 6px rgba(20,33,61,.06)}
+.stepbar .sc{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:18px;padding:4px 11px;font-size:13px;cursor:pointer;background:#fff;color:var(--ink);white-space:nowrap}
+.stepbar .sc b{font-weight:700}.stepbar .arr{color:var(--muted);font-size:15px;padding:0 1px}
+.sc.ok,.st.ok{background:var(--ok-bg);border-color:#a6d8b5;color:var(--ok)}.sc.bad,.st.bad{background:var(--bad-bg);border-color:#f2b8b2;color:var(--bad)}
+.sc.warn,.st.warn{background:var(--warn-bg);border-color:#ecd28a;color:var(--warn)}.sc.none,.st.none{background:#f1f3f6;color:var(--muted)}
+.stepbar .gen{margin-left:auto}
+.st{display:inline-block;font-size:12px;font-weight:600;border:1px solid var(--line);border-radius:12px;padding:1px 9px;margin-left:8px;vertical-align:2px;background:#fff;color:var(--muted)}
+.card.step h3.sub{font-size:13.5px;margin:16px 0 6px;color:#14213d;border-top:1px solid var(--line);padding-top:12px}
+.card.step h2 + h3.sub{border-top:0;padding-top:0;margin-top:4px}
+.card.gen{background:#f7faff;border-color:#c9dbf7}
+.card.step{scroll-margin-top:72px}
+.stepfoot{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px;padding-top:10px;border-top:1px dashed var(--line)}
+.stepfoot .small{margin-right:auto}
+.verbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:10px 0 2px;padding:6px;background:var(--soft);border-radius:10px}
+.verbar button.vb{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 14px;font-size:13.5px;cursor:pointer}
+.verbar button.vb.on{background:#14213d;color:#fff;border-color:#14213d;font-weight:600}.verbar button.vb.dr.on{background:#9a6700;border-color:#9a6700}
+.verbar .sp{margin-left:auto}
+.draft{border:2px solid #ecd28a;background:#fffbea;border-radius:10px;padding:10px 14px;margin:8px 0}
+.draft .hd{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.draft .hd b{font-size:14px}
+.draft ul{margin:6px 0 0;padding-left:18px;font-size:13px}.draft .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:4px 18px;margin-top:6px}
+.c-chg{box-shadow:inset 0 0 0 2px #1f6feb}.c-broken{box-shadow:inset 0 0 0 3px #8b0000!important;background:#fde2e2!important;color:#8b0000!important;font-weight:700}.c-lock{opacity:.55}
+.props{display:grid;gap:6px;margin-top:8px}.prop{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 10px;font-size:13px}
+.chgl{font-size:13px;margin:4px 0 0;padding-left:18px}
+#printArea.rep{padding:0}#printArea.rep h1{font-size:14pt;margin:0 0 1mm}#printArea.rep .sub{font-size:9pt;color:#333;margin-bottom:4mm}
+#printArea.rep table{width:100%;border-collapse:collapse;font-size:9pt}#printArea.rep th,#printArea.rep td{border:.5pt solid #777;padding:1.2mm 1.5mm;text-align:left;position:static;background:none;white-space:normal}#printArea.rep th{background:#eee}
+.opt .acts{display:flex;gap:4px;flex-wrap:wrap}.opt .acts .btn{padding:2px 8px;font-size:12px}.opt.cur{background:#eef3fb}
+.tag.w{background:var(--warn-bg);color:var(--warn)}.tag.b{background:var(--bad-bg);color:var(--bad)}
+.outs{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin:6px 0 10px}
+.outg{border:1px solid var(--line);border-radius:9px;padding:9px 12px;display:flex;flex-direction:column;gap:1px}
+.outg.main{border-color:#9ec0f5;background:#f3f8ff}.outg .btns{margin:6px 0 0}
+.chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:4px 12px}
+.chips label{display:flex;gap:6px;align-items:center;padding:3px 4px;border-radius:5px;cursor:pointer}
+.chips label:hover{background:var(--soft)}
+.incwrap{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:14px;margin-top:6px}
+.incbox{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff}
+.incbox.icu{background:#f4effd;border-color:#d8cbf3}
+.incbox.icu .chips label:hover{background:#e9e0fb}
+.ibh{font-weight:700;margin-bottom:8px;display:flex;gap:8px;align-items:center}
+.chips.one{grid-template-columns:1fr}
+.tag.icut{background:#e3d5ff;color:#4b2a8f}
+.icu-row td{background:#f4effd;color:#4b2a8f}
+@media (max-width:900px){.incwrap{grid-template-columns:1fr}}
+.tag{font-size:11px;padding:1px 6px;border-radius:9px;background:var(--soft);color:var(--muted);white-space:nowrap}
+.tag.nn{background:#e7f5ec;color:var(--ok)}
+.msg{padding:8px 12px;border-radius:8px;margin:8px 0;font-size:13px}
+.msg.ok{background:var(--ok-bg);color:var(--ok)}.msg.bad{background:var(--bad-bg);color:var(--bad)}.msg.warn{background:var(--warn-bg);color:var(--warn)}
+table{border-collapse:collapse;font-size:12.5px}
+th,td{border:1px solid var(--line);padding:3px 6px;text-align:left;white-space:nowrap}
+th.wrap{white-space:normal;line-height:1.25}
+th{background:var(--soft);font-weight:600;position:sticky;top:0;z-index:1}
+td.num,th.num{text-align:right}
+.scroll{overflow:auto;max-height:70vh;border:1px solid var(--line);border-radius:8px}
+.scroll table{border:0}
+#view .scroll{max-height:none}
+.grid td{padding:4px 6px}
+.scroll th:first-child,.scroll td:first-child{position:sticky;left:0;background:var(--panel);z-index:2}
+.scroll th:first-child{background:var(--soft);z-index:3}
+.grid td{text-align:center;cursor:default;min-width:64px}
+.grid td.click{cursor:pointer}.grid td.click:hover{outline:2px solid var(--accent);outline-offset:-2px}
+.c-pol{background:var(--pol);color:var(--pol-ink)}.c-endo{background:var(--endo);color:var(--endo-ink)}.c-ne{background:var(--ne);color:var(--ne-ink)}.c-izin{background:var(--izin);color:var(--izin-ink);font-weight:600}
+.c-empty{background:var(--empty);color:var(--empty-ink)}.c-yb{background:#e3d5ff;color:#4b2a8f}.c-cover{background:var(--cover);color:var(--cover-ink)}.c-idle{background:#f3f3f3;color:#999}
+.c-bad{outline:2px solid var(--bad);outline-offset:-2px}
+.sub-tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px}
+.sub-tabs button{border:1px solid var(--line);background:var(--panel);padding:6px 12px;border-radius:7px;cursor:pointer;font-size:13px}
+.sub-tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.status{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:6px 0 12px}
+.pill{padding:5px 12px;border-radius:20px;font-weight:600;font-size:13px}
+.pill.ok{background:var(--ok-bg);color:var(--ok)}.pill.bad{background:var(--bad-bg);color:var(--bad)}.pill.info{background:var(--soft);color:var(--muted)}
+.bar{display:inline-block;height:10px;vertical-align:middle;border-radius:2px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--ink);margin:8px 0}
+.legend span{display:inline-flex;align-items:center;gap:4px}
+.legend i{display:inline-block;width:18px;height:14px;border-radius:3px;border:1px solid rgba(0,0,0,.18)}
+dialog{border:1px solid var(--line);border-radius:12px;padding:0;max-width:520px;width:92vw}
+dialog .hd{padding:12px 16px;border-bottom:1px solid var(--line);font-weight:600}
+dialog .bd{padding:12px 16px;max-height:60vh;overflow:auto}
+dialog .ft{padding:10px 16px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px}
+.opt{display:flex;justify-content:space-between;gap:10px;padding:6px 8px;border-radius:6px;cursor:pointer}
+.opt:hover{background:var(--soft)}.opt .r{color:var(--muted);font-size:12px}
+#overlay{position:fixed;inset:0;background:rgba(20,33,61,.45);display:none;align-items:center;justify-content:center;z-index:50}
+#overlay div{background:#fff;padding:20px 28px;border-radius:12px;font-weight:600}
+.small{font-size:12px;color:var(--muted)}
+ul.warns{margin:0;padding-left:18px}ul.warns li{margin:2px 0}
+textarea.drop.over{outline:3px dashed var(--accent);outline-offset:-3px;background:#f3f8ff}
+.prev{margin-top:10px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:#fafbfc}
+.prev .pr{display:flex;gap:8px;align-items:center;margin:4px 0;flex-wrap:wrap}
+.prev .pr span{min-width:150px;font-size:13px}
+.prev input{flex:1;min-width:220px}
+label.btn{display:inline-block}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;max-width:400px;margin:6px 0}
+.cal .h{text-align:center;font-size:12px;color:var(--muted);font-weight:700}
+.cal .d{aspect-ratio:1/1;border:1.5px solid #dfe5ee;border-radius:10px;background:#fff;font:600 15px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);position:relative;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.cal button.d:hover{border-color:#9db4d6;background:#f6f9ff}
+.cal .d.off{background:#f3f4f6;color:#b6bcc6;border-style:dashed;cursor:default}
+.cal .d.off small{position:absolute;bottom:3px;font-size:8.5px;font-weight:600}
+.cal .d.x{background:#fff0ef;border-color:#f2a19b;color:#9b1c13}
+.cal .d.x.ne{background:#eef1f5;border-color:#9aa4b2;color:#374151}
+.cal .d .n{position:relative;z-index:1}
+.cal .d.x .n{position:absolute;top:3px;left:5px;font-size:11px;font-weight:800}
+.cal .d .xm{position:absolute;inset:26% 12% 10% 26%;pointer-events:none}
+.cal .d .xm line{stroke:#e0322a;stroke-width:14;stroke-linecap:round}
+.cal .d.ne .xm line{stroke:#4b5563}
+.cal .d .xm.ck polyline{fill:none;stroke-width:13;stroke-linecap:round;stroke-linejoin:round}
+.cal .d.x.pol{background:#e3efff;border-color:#9ec0f5;color:#0b3d91}.cal .d.pol .xm.ck polyline{stroke:#1f6feb}
+.cal .d.x.endo{background:#efe6ff;border-color:#c5aef2;color:#4b2a8f}.cal .d.endo .xm.ck polyline{stroke:#6d3fd1}
+.chip.room{background:#fff;border-color:#c9d1dc;color:#374151}
+.roomgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:4px 10px;margin:8px 0}
+.roomgrid label{display:flex;gap:6px;align-items:center;padding:3px 4px;border-radius:5px;cursor:pointer}
+.roomgrid label:hover{background:var(--soft)}
+.roomgrid button.rb{display:flex;justify-content:space-between;gap:6px;align-items:center;border:1px solid var(--line);background:#fff;border-radius:7px;padding:5px 9px;font-size:13px;cursor:pointer;text-align:left}
+.roomgrid button.rb:hover{border-color:#9db4d6}.roomgrid button.rb.cl{background:#fff4d6;border-color:#ecd28a}.roomgrid button.rb .small{white-space:nowrap}
+.c-closed{background:repeating-linear-gradient(45deg,#f3f4f6,#f3f4f6 5px,#e5e7eb 5px,#e5e7eb 10px);color:#6b7280;font-style:italic}.c-wait{background:#fff4d6;color:#9a6700;font-weight:600}
+.chip.pol{background:#e3efff;border-color:#9ec0f5;color:#0b3d91}.chip.endo{background:#efe6ff;border-color:#c5aef2;color:#4b2a8f}
+.chip{display:inline-block;border:1px solid var(--line);border-radius:12px;padding:1px 8px;margin:1px 2px;font-size:12px;background:#f3f4f6;color:#374151}
+.chip.low{background:#fff0ef;border-color:#f2b8b2;color:#9b1c13}
+.c-req{box-shadow:inset 0 -3px 0 #e0322a}
+table.rt{width:100%;border-collapse:collapse}
+.rt th,.rt td{padding:2px 4px}
+.rt input,.rt select{width:100%;border:1px solid transparent;background:transparent;padding:5px 6px;border-radius:5px;font-size:13px;font-family:inherit;color:var(--ink)}
+.rt input:hover{border-color:var(--line);background:#fff}
+.rt input:focus{outline:none;border-color:var(--accent);background:#fff;box-shadow:0 0 0 2px rgba(31,111,235,.15)}
+.rt input.bad{background:var(--bad-bg);border-color:#f2b8b2;color:var(--bad)}
+.rt tr.we td{background:#f6f7f9}
+.rt tr.pv td{background:#eceff4;color:#4b5563}
+.rt tr.sep td{background:#eef3fb;font-weight:700;color:#14213d}
+.rt td.dt{white-space:nowrap;font-variant-numeric:tabular-nums}
+.rt col.c-dt{width:96px}.rt col.c-gn{width:92px}
+.drop.over{outline:3px dashed var(--accent);outline-offset:-3px}
+.code{font-family:ui-monospace,Menlo,Consolas,monospace;background:var(--soft);padding:1px 5px;border-radius:4px}
+#lock{position:fixed;inset:0;background:#14213d;display:flex;align-items:center;justify-content:center;z-index:100;padding:16px}
+.lockcard{background:#fff;border-radius:14px;padding:26px 30px;width:min(480px,100%);box-shadow:0 10px 40px rgba(0,0,0,.35)}
+.lockcard h2{margin:0 0 8px;font-size:19px}.lockcard form{display:grid;gap:10px}
+.lockcard input[type=password]{font-size:15px;padding:9px 10px;border:1px solid var(--line);border-radius:8px}
+.lockbtns{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+#fileBar{padding:10px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13.5px;border-bottom:1px solid var(--line)}
+#fileBar.ok{background:var(--ok-bg);color:var(--ok)}#fileBar.warn{background:var(--warn-bg);color:#5c3d00}#fileBar.bad{background:var(--bad-bg);color:var(--bad)}
+#fileBar b{font-weight:700}#fileBar .btn{padding:5px 12px}
+/* ---------- PDF / yazdırma: yalnızca günlük program, tek A4 yatay sayfa ---------- */
+#printArea{display:none;box-sizing:border-box;padding:8mm;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:#000;background:#fff}
+#printArea .ph{display:flex;justify-content:space-between;align-items:baseline;margin:0 0 1.5mm}
+#printArea .ph b{font-size:11pt}#printArea .ph span{font-size:7pt;color:#333}
+#printArea .pt{width:100%;border-collapse:collapse;table-layout:fixed;font-size:6.4pt;line-height:1.12}
+#printArea .pt th,#printArea .pt td{border:.5pt solid #777;padding:.5mm .3mm;text-align:center;white-space:normal;overflow-wrap:break-word;position:static;background:none}
+#printArea .pt thead th{background:#e6e6e6;font-weight:700}
+#printArea .pt th.rn{text-align:left;padding-left:1mm;font-weight:700;background:#f2f2f2}
+#printArea .pt td.p{background:var(--pol)}#printArea .pt td.e{background:var(--endo)}
+#printArea .pt td.cv{background:var(--cover)}#printArea .pt td.n{background:var(--ne)}#printArea .pt td.i{background:var(--izin)}#printArea .pt td.y{background:var(--ybf)}
+#printArea .pt td.em{background:var(--empty);font-weight:700;font-style:italic}
+#printArea .pl{display:flex;gap:5mm;flex-wrap:wrap;font-size:6.8pt;margin-top:1.5mm;align-items:center}
+#printArea .pl i{display:inline-block;width:4mm;height:2.6mm;border:.5pt solid #777;vertical-align:middle;margin-right:1mm}
+@media print{
+  #lock{display:none!important}
+  @page{size:A4 landscape;margin:0}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{background:#fff}
+  body > *:not(#printArea){display:none!important}
+  #printArea{display:block!important;position:static!important}
+}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>Gün İçi Çalışma Programı</h1><div class="sub">Anestezi ve Reanimasyon · uzman hekim oda dağılımı</div></div>
+  <div class="month noprint">Ay:
+    <select id="selMonth"></select><select id="selYear"></select>
+  </div>
+</header>
+<nav>
+  <button data-tab="ay" class="on">1 · Ay bilgileri</button>
+  <button data-tab="program">2 · Program</button>
+  <button data-tab="sabit">Sabit veriler</button>
+  <button data-tab="yardim">Kurallar ve yardım</button>
+</nav>
+<div id="fileBar" class="noprint"></div>
+<main>
+
+<!-- ============ AY BİLGİLERİ ============ -->
+<section class="tab on" id="tab-ay">
+  <div class="stepbar" id="stepBar"></div>
+
+  <div class="card step" id="step1">
+    <h2><span class="n">1</span>Takvim ve nöbet listesi <span class="st" data-st="1"></span></h2>
+    <h3 class="sub">Resmi tatiller</h3>
+    <p class="hint">Bu aydaki resmi tatil günleri (odalar kapalı, hesaba girmez). Her satıra bir tarih yazın: <span class="code">29.10.2026</span>. Arife gibi yarım günler <b>yazılmaz</b> — tam gün sayılır. Sabit milli bayramlar otomatik gelir; dini bayramları her yıl kontrol edin.</p>
+    <div class="row"><div class="col"><textarea id="txtHolidays" style="min-height:70px"></textarea></div>
+    <div class="col"><div id="infoDays" class="msg ok"></div></div></div>
+    <h3 class="sub">Odaların açık günleri</h3>
+    <p class="hint">Varsayılan: bütün odalar ayın tüm mesai günlerinde açık. Tadilat vb. nedeniyle kapalı olan ya da ay ortasında açılan bir odaya tıklayıp <b>açık olduğu günleri</b> işaretleyin; kapalı günde o odaya kimse yazılmaz ve o odaya ek olarak da bakılmaz. Yeni oda eklemek ya da oda adını değiştirmek için: Sabit veriler → Odalar.</p>
+    <div class="roomgrid" id="openRooms"></div>
+    <h3 class="sub" id="cardRoster">Nöbet listesi</h3>
+    <div class="btns">
+      <label class="btn primary big">Nöbet listesini yükle (Excel / Word)<input type="file" id="fileRoster" accept=".xlsx,.docx,.csv,.txt" hidden></label>
+      <button class="btn" id="btnPasteRoster">Metin yapıştır</button>
+      <button class="btn" id="btnClrRoster">Temizle</button>
+      <span id="rosterFile" class="small" style="align-self:center"></span>
+    </div>
+    <p class="hint">Dosya yüklenince tablo kendiliğinden dolar; her hücreyi ayrıca düzeltebilirsiniz. İdarenin çalışma listesi (Excel) yüklenirse dört nöbet sütunu oradan okunur. Hücreye yazmaya başlayınca hekim listesinden öneriler çıkar (Tab: sonraki hücre · Enter: alt satır). <b>YBÜ 1-2</b> nöbetçisi gündüz <b>dış anesteziye</b>, <b>YBÜ 3</b> nöbetçisi gündüz <b>yanığa</b> yazılır (puansız). <b>İlave / yarım vardiya</b> sütunu aynı gün başka kişiler içindir (virgülle) — resmi listede yer almaz. Listede adı geçen herkes nöbet ertesi alır. Üstteki gri satırlar: nöbet ertesi bu aya düşen <b>önceki ayın son günleri</b>.</p>
+    <div id="rosterSum"></div>
+    <div class="scroll drop" id="rosterWrap" style="max-height:560px"><table class="rt" id="tblRoster"></table></div>
+    <div class="stepfoot" data-step="1"></div>
+  </div>
+
+  <div class="card step" id="step2">
+    <h2><span class="n">2</span>Yoğun bakımda çalışacak hekimler <span class="st" data-st="2"></span></h2>
+    <p class="hint">Bir isme tıklayınca hekim diğer kutuya geçer. Gündüz <b>yoğun bakımda</b> çalışacak olanları sağdaki kutuya alın. Seçim bir sonraki aya otomatik taşınır.</p>
+    <div class="btns">
+      <button class="btn" id="btnAll">Hepsini programa al</button>
+      <button class="btn" id="btnFromRoster">Nöbet listesinde adı olmayan nöbetçileri yoğun bakıma al</button>
+      <span id="incCount" class="tag" style="align-self:center;display:none"></span>
+    </div>
+    <div class="incwrap">
+      <div class="incbox"><div class="ibh">Gün içi programa dahil <span class="tag nn" id="incN"></span></div><div class="chips" id="chipsIn"></div></div>
+      <div class="incbox icu"><div class="ibh">Yoğun bakım <span class="tag icut" id="icuN"></span></div><div class="chips one" id="chipsIcu"></div></div>
+    </div>
+    <div id="incCheck"></div>
+    <div class="stepfoot" data-step="2"></div>
+  </div>
+
+  <div class="card step" id="cardLeaves">
+    <h2><span class="n">3</span>İzinler <span class="small">(yıllık izin · kongre izni · rapor)</span> <span class="st" data-st="3"></span></h2>
+    <div class="btns">
+      <label class="btn primary big">İzin listesini yükle (Excel / Word)<input type="file" id="fileLeaves" accept=".xlsx,.docx,.csv,.txt" hidden></label>
+      <button class="btn" id="btnPasteLeaves">Metin yapıştır</button>
+      <button class="btn" id="btnAddLeave">+ İzin ekle</button>
+      <button class="btn" id="btnClrLeaves">Temizle</button>
+      <span id="leavesFile" class="small" style="align-self:center"></span>
+    </div>
+    <p class="hint">Her satır bir izin: hekim, tür (yıllık izin / kongre izni / rapor), başlangıç ve bitiş tarihi (tek günlük izinde bitiş tarihi yazılmayabilir). Üç tür de puan hedefini izinli gün oranında düşürür; resmi listede kendi sütunlarına yazılır. "Metin yapıştır" ile WhatsApp mesajı gibi serbest metin de eklenebilir — ör. <span class="code">Selin: 5-8 Kasım ve 25-27 Kasım</span>.</p>
+    <div id="leaveSum"></div>
+    <div class="scroll drop" id="leavesWrap" style="max-height:none"><table class="rt" id="tblLeaves"></table></div>
+    <div class="stepfoot" data-step="3"></div>
+  </div>
+
+<datalist id="docList"></datalist>
+
+  <div class="card step" id="cardSpecial">
+    <h2><span class="n">4</span>Talepler <span class="st" data-st="4"></span></h2>
+    <h3 class="sub">Özel talepler</h3>
+    <p class="hint"><b>Düşük puanlı oda:</b> kişinin istediği günlerde düşük puanlı odalardan birine (Sabit veriler → Odalar'da "Düşük puanlı" işaretli olanlar) yazılması — mümkün olduğunca karşılanır; o gün başka bir odaya (telafi) bakmaz. <b>Poliklinik / endoskopi için uygun günler:</b> kişinin bu görevleri almak istediği günler — program 1–2 günü (kurallara göre) bu günlerden vermeye çalışır; kesin kurallar her zaman önceliklidir. <b>Esnek nöbet izni:</b> açılan kişide nöbet listesinden otomatik nöbet ertesi hesaplanmaz; izin günleri takvimden seçilir (hedef puan değişmez). Günleri <b>Takvim</b> düğmesiyle işaretleyin.</p>
+    <div id="prevInfo"></div>
+    <div class="scroll" style="max-height:none"><table id="tblSpecial"></table></div>
+    <h3 class="sub" id="cardAvoid">Uygun olmayan odalar</h3>
+    <p class="hint">Bir hekimin <b>seçili günlerde seçili odalara</b> yazılmaması isteği. Her satır: hekim · günler · odalar; bir hekim için birden fazla satır girilebilir. Bu bir <b>tercihtir</b>: kesin kurallar ve diğer talepler önce gelir; karşılanamazsa uyarı verilir. Odaya telafi olarak bakmak da bu kapsamdadır.</p>
+    <div class="btns"><button class="btn" id="btnAddAvoid">+ Satır ekle</button></div>
+    <div class="scroll" style="max-height:none"><table class="rt" id="tblAvoid"></table></div>
+    <div class="stepfoot" data-step="4"></div>
+  </div>
+
+  <div class="card step gen" id="stepGen">
+    <h2><span class="n">→</span>Kontrol ve programın oluşturulması</h2>
+    <p class="hint">Her mesai günü için kaç hekimin müsait olduğu ve kaç odaya başka bir odadaki hekimin ek olarak bakacağı.</p>
+    <div class="scroll" style="max-height:none"><table id="tblCap"></table></div>
+    <div class="btns" style="margin-top:12px"><button class="btn primary big" id="btnGoGen">Programı oluştur →</button><span id="genNote" class="small" style="align-self:center"></span></div>
+  </div>
+
+  <div class="card step" id="step5">
+    <h2><span class="n">5</span>Eğitim kliniği çalışma listesi <span class="st" data-st="5"></span></h2>
+    <div class="btns">
+      <label class="btn primary big">Eğitim kliniği listesini yükle (Excel / Word)<input type="file" id="fileEdu" accept=".xlsx,.docx,.csv,.txt" hidden></label>
+      <button class="btn" id="btnPasteEdu">Metin yapıştır</button>
+      <button class="btn" id="btnFillEdu">Toplu doldur…</button>
+      <button class="btn" id="btnClrEdu">Temizle</button>
+      <span id="eduFile" class="small" style="align-self:center"></span>
+    </div>
+    <p class="hint">Eğitim kliniğinin odaları: <b>1-5-7 ODA · 16-17-23 · POLK-2 · POLK 3 · ANESTEZİ YBÜ 1-2 · ANESTEZİ YBÜ-3</b>. Dosya yüklenince program bu başlıkları arar ve altındaki isimleri günlerine yazar; başlık bulamazsa ilk sütunu tarih, sonraki altı sütunu bu sırayla okur. Tabloyu elle de doldurabilir ya da düzeltebilirsiniz. Ay boyunca aynı kişinin çalıştığı bir oda için <b>Toplu doldur</b>'u kullanın. İsimler resmi listeye yazıldığı gibi geçer.</p>
+    <div id="eduSum"></div>
+    <div class="scroll drop" id="eduWrap" style="max-height:560px"><table class="rt" id="tblEdu"></table></div>
+    <datalist id="eduList"></datalist>
+    <div class="stepfoot" data-step="5"></div>
+  </div>
+
+  <div class="card step" id="step6">
+    <h2><span class="n">6</span>Resmi liste (idare formatı) <span class="st" data-st="6"></span></h2>
+    <p class="hint">Program oluşturulup kontrol edildikten sonra idarenin şablonundaki resmi liste Excel olarak indirilir. Ek çıktılar (günlük program, kişi bazlı liste) Program sekmesindedir.</p>
+    <div class="btns"><button class="btn primary big" id="btnStepOff">Resmi listeyi indir (Excel)</button><button class="btn big" id="btnStepProg">Programa git</button></div>
+  </div>
+</section>
+
+<!-- ============ PROGRAM ============ -->
+<section class="tab" id="tab-program">
+  <div class="card">
+    <div class="btns noprint">
+      <button class="btn primary big" id="btnGen">Programı oluştur / yeniden oluştur</button>
+    </div>
+    <div class="outs noprint">
+      <div class="outg main"><b>Resmi liste (idare formatı)</b><span class="small">Kişilerle resmi olarak paylaşılan liste</span><div class="btns"><button class="btn primary" id="btnOffXlsx">Excel</button></div></div>
+      <div class="outg"><b>Günlük program</b><span class="small">Ek çıktı · oda × gün</span><div class="btns"><button class="btn" id="btnPrint">PDF</button><button class="btn" id="btnJpg">JPEG</button></div></div>
+      <div class="outg"><b>Kişi bazlı liste</b><span class="small">Ek çıktı · hekim × gün</span><div class="btns"><button class="btn" id="btnKPrint">PDF</button><button class="btn" id="btnKJpg">JPEG</button></div></div>
+      <div class="outg"><b>Tüm tablolar</b><span class="small">Ek çıktı · puanlar dahil</span><div class="btns"><button class="btn" id="btnXlsx">Excel</button></div></div>
+    </div>
+    <div class="verbar noprint" id="verBar"></div>
+    <div class="status" id="status"></div>
+    <div id="staleMsg"></div>
+    <div id="draftBar" class="noprint"></div>
+    <div class="sub-tabs noprint" id="views">
+      <button data-v="ozet" class="on">Puan özeti</button>
+      <button data-v="gunluk">Günlük program</button>
+      <button data-v="kisigun">Kişi bazlı · gün gün</button>
+      <button data-v="kisioda">Kişi bazlı · oda oda</button>
+      <button data-v="uyari">Uyarılar</button>
+    </div>
+    <div id="view"></div>
+  </div>
+</section>
+
+<!-- ============ SABİT VERİLER ============ -->
+<section class="tab" id="tab-sabit">
+  <div class="card">
+    <h2>Hekimler</h2>
+    <p class="hint">Tüm anestezi uzmanları. <b>Muaf olduğu odalar</b>: hekimin görev almayacağı odalar, virgülle ayırın (oda adları aşağıdaki listeyle aynı yazılmalı). <b>Pol. muaf / Endo. muaf</b>: "ayda en az 1 gün" kuralından kişiye özel muafiyet.</p>
+    <div class="scroll" style="max-height:none"><table id="tblDocs"></table></div>
+    <div class="btns"><button class="btn" id="btnAddDoc">+ Hekim ekle</button></div>
+  </div>
+  <div class="card">
+    <h2>Odalar ve puanlar</h2>
+    <p class="hint">Tür: Ameliyathane / Poliklinik / Endoskopi. <b>Paylaşılabilir oda</b>: hekim yetmeyen günlerde ilk olarak başka bir odadaki hekimin ek olarak bakacağı odalar. <b>Resmi listedeki başlık</b>: idare şablonundaki sütun adı (oda adı değişse de resmi liste doğru sütuna yazar; şablonda olmayan yeni oda KONS-2'den sonra yeni sütun olur). <b>Yalnız şu odalarla paylaşılabilir</b>: konum nedeniyle bu oda başka bir odayla aynı kişiye ancak seçilen odalardan biriyle verilebilir — iki yönlü <b>kesin kural</b>, program asla çiğnemez. Bir oda bir ay içinde kapalıysa ya da ay ortasında açılıyorsa: Ay bilgileri → 1 → <b>Odaların açık günleri</b>.</p>
+    <div class="scroll" style="max-height:none"><table id="tblAreas"></table></div>
+    <div class="btns"><button class="btn" id="btnAddArea">+ Oda ekle</button></div>
+    <div id="fixedMsg"></div>
+  </div>
+  <div class="card">
+    <h2>Resmi liste (idare formatı)</h2>
+    <p class="hint">Resmi listenin başlığında ve imza bölümünde yazacak bilgiler. Başlığın sonuna ay ve yıl kendiliğinden eklenir.</p>
+    <div class="prev" id="offForm"></div>
+  </div>
+  <div class="card">
+    <h2>Şifre ve yedekleme</h2>
+    <p class="hint">Tüm veriler USB'deki veri dosyasında <b>şifreli</b> olarak tutulur; bilgisayara kopya bırakılmaz. Program 30 dakika kullanılmazsa kendiliğinden kilitlenir.</p>
+    <div class="btns">
+      <button class="btn" id="btnPw">Şifreyi değiştir</button>
+      <button class="btn" id="btnBackup">Yedek kopya indir (şifreli)</button>
+      <button class="btn" id="btnReset">Sabit verileri varsayılana döndür</button>
+    </div>
+    <p class="small">Yedeği geri yüklemek için: üstteki <b>Kilitle</b> → "USB'deki veri dosyasını aç" ile yedek dosyasını seçin (yedek de aynı şifreyle açılır; bundan sonra kayıtlar o dosyaya yapılır).</p>
+  </div>
+</section>
+
+<!-- ============ YARDIM ============ -->
+<section class="tab" id="tab-yardim">
+  <div class="card">
+    <h2>Nasıl kullanılır</h2>
+    <ol>
+      <li>Üstten <b>ayı</b> seçin. Bir önceki ayın programı bu dosyadaysa aylar arası dönüşüm (poliklinik/endoskopi sayısı, oda değişimi) kendiliğinden uygulanır.</li>
+      <li><b>Ay bilgileri</b> sekmesindeki adımları sırayla tamamlayın: 1 takvim ve nöbet listesi · 2 yoğun bakımda çalışacaklar · 3 izinler · 4 talepler. Üstteki çubuk her adımın durumunu gösterir (✓ tamam, ! eksik, ○ bekliyor). Kırmızı (tanınmayan) isim kalmadığından emin olun.</li>
+      <li><b>Program</b> sekmesinde "Programı oluştur"a basın. Birkaç saniye içinde liste hazırlanır.</li>
+      <li><b>Puan özeti</b> ile hekimlerin ay sonu puanlarını kontrol edin. <b>Günlük program</b> tablosunda bir hücreye tıklayarak elle değişiklik yapabilirsiniz (iki hekimin yeri değişir); puanlar ve kural kontrolü anında güncellenir.</li>
+      <li><b>Resmi liste (idare formatı) → Excel</b>: kişilerle resmi olarak paylaşılan liste. Ek çıktılar: günlük program ve kişi bazlı liste (PDF / JPEG, tek A4 yatay sayfa), tüm tablolar (Excel, puanlar dahil).</li>
+    </ol>
+    <p class="hint">Her "yeniden oluştur" farklı ama kurallara uygun bir liste üretir; beğenmezseniz tekrar basabilirsiniz.</p>
+  </div>
+  <div class="card">
+    <h2>USB ile kullanım ve şifre</h2>
+    <ol>
+      <li>USB'de iki dosya durur: <span class="code">CalismaProgrami.html</span> (program) ve <span class="code">calisma-verileri.json</span> (şifreli veriler).</li>
+      <li><b>İlk kez:</b> programı Chrome ile açın, "Yeni veri dosyası oluşturun"a tıklayın, şifre belirleyin ve dosyayı USB'ye kaydedin.</li>
+      <li><b>Her açılışta:</b> "USB'deki veri dosyasını aç" (aynı bilgisayarda "Son dosyayı aç") ile dosyayı seçin ve şifreyi girin.</li>
+      <li>Üstteki yeşil çubuk görünürken her değişiklik USB'ye anında, şifreli olarak kaydedilir. Kırmızıya dönerse USB çıkmış olabilir.</li>
+      <li>İş bitince <b>Kilitle</b>'ye basın ya da tarayıcıyı kapatın. 30 dakika işlem yapılmazsa program kendiliğinden kilitlenir.</li>
+    </ol>
+    <p class="hint">Şifre unutulursa veriler kurtarılamaz. İnternet gerekmez.</p>
+  </div>
+  <div class="card">
+    <h2>Örnek veriyle dene</h2>
+    <p class="hint">Programı denemek için Kasım 2026 nöbet listesi ve izinleri yüklenir (ay Kasım 2026'ya geçer, o ayın girdileri değişir).</p>
+    <div class="btns"><button class="btn" id="btnDemo">Örnek veriyi yükle (Kasım 2026)</button></div>
+  </div>
+  <div class="card">
+    <h2>Uygulanan kurallar</h2>
+    <p class="hint">Kesin kurallar (asla ihlal edilmez)</p>
+    <ul>
+      <li><b>K1</b> Nöbet ertesi mesai yok: Pzt–Per nöbeti → ertesi gün; <b>Cuma → sonraki Çarşamba</b>; <b>Cumartesi/Pazar → Pazartesi</b>. Tatile denk gelen nöbet ertesi yanar. Listede kısmi vardiyayla yer alan da nöbet ertesi alır.</li>
+      <li><b>K2</b> Nöbet günü gündüz çalışılır. <b>K3</b> Yıllık izinliye görev yok. <b>K4</b> Hekim muaf olduğu odaya atanmaz, o odaya telafi olarak da bakmaz.</li>
+      <li><b>K5</b> Nöbet tutmayanlar her mesai günü çalışır. <b>K6</b> Günde tek alan (telafi hariç).</li>
+      <li><b>K7</b> Poliklinik: ayda en az 1, en fazla 2 gün; 2 gün ise mutlaka iki farklı ünitede (izinli de en az 1). Kişiye özel muafiyet: Sabit veriler → Pol. muaf.</li>
+      <li><b>K8</b> Endoskopi: K7'nin aynısı.</li>
+      <li><b>K9</b> Aynı ameliyathane odasında ayda en fazla 2 görev (telafi dahil).</li>
+      <li><b>K10</b> Hekim yetmezse önce "paylaşılabilir" odalara, daha fazlası gerekirse en düşük puanlı ameliyathane odalarına başka bir ameliyathane odasındaki hekim ek olarak bakar (günde en fazla bir ek oda) ve iki odanın puanını da alır. Listelerde bu hekimin adı iki odada da <b>*</b> ile yazılır.</li>
+      <li><b>K11</b> Resmi tatiller hesaba girmez, arife tam gün sayılır. <b>K12</b> Hekim fazlası olursa uyarı.</li>
+      <li><b>K13</b> Poliklinik ve endoskopi her gün kendi hekimiyle çalışır (paylaşılmaz). <b>K14</b> Poliklinik/endoskopideki hekim ek oda almaz.</li>
+      <li><b>Dönüşüm (geçen ayın programı varsa):</b> geçen ay poliklinikte (endoskopide) 1 gün çalışan bu ay öncelikle 2 gün, 2 gün çalışan 1 gün çalışır; ayrıca herkes olabildiğince geçen ay çalışmadığı odalara yazılır. İkisi de tercihtir — kesin kurallar ve talepler önce gelir.</li>
+    </ul>
+    <p class="hint">Hedefler</p>
+    <ul>
+      <li><b>H1</b> Ay sonu toplam puanlar birbirine olabildiğince yakın (ana hedef). <b>H2</b> İzinlinin (yıllık izin, kongre izni, rapor) hedefi izin günü oranında düşer. <b>H3</b> Puanlar her ay sıfırdan hesaplanır.</li>
+      <li><b>T1</b> Aynı odaya ikinci kez atamadan mümkünse kaçınılır; puan dengesi önceliklidir.</li>
+    </ul>
+  </div>
+</section>
+</main>
+
+<dialog id="dlg"><div class="hd" id="dlgHd"></div><div class="bd" id="dlgBd"></div><div class="ft"><button class="btn" id="dlgClose">Kapat</button></div></dialog>
+<div id="lock"><div id="lockBox" class="lockcard"></div></div>
+<div id="overlay"><div>Program hesaplanıyor…</div></div>
+<div id="printArea"></div>
+
+<script id="core">
+/*__CORE__*/
+</script>
+
+<script id="app">
+/* ================= VARSAYILAN SABİT VERİLER ================= */
+const DEFAULT_FIXED = /*__FIXED__*/;
+const DEMO = /*__DEMO__*/;
+
+/* ================= DEPOLAMA ================= */
+const STORE_KEY = 'gunici-calisma-programi.v1';
+let store;
+function freshStore() { return { fixed: structuredClone(DEFAULT_FIXED), months: {}, current: null }; }
+// Veriler yalnızca USB'deki şifreli veri dosyasında tutulur; tarayıcıya düz kopya yazılmaz.
+function saveStore() {
+  if (fileHandle) { pendingSave = true; clearTimeout(saveTimer); saveTimer = setTimeout(writeFile, 400); renderFileBar(); }
+}
+
+/* ================= USB VERİ DOSYASI: şifreli, otomatik kayıt (Chrome/Edge) ================= */
+const FS_OK = typeof window.showOpenFilePicker === 'function' && !!(window.crypto && crypto.subtle);
+const FS_TYPES = [{ description: 'Çalışma programı verisi', accept: { 'application/json': ['.json'] } }];
+let fileHandle = null, lastHandle = null, saveTimer = null, saving = false, pendingSave = false, lastSaved = null, saveErr = null;
+const IDB = {
+  open() { return new Promise((res, rej) => { const r = indexedDB.open('gicp-fs', 1); r.onupgradeneeded = () => r.result.createObjectStore('h'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); },
+  async get() { try { const db = await this.open(); return await new Promise(res => { const q = db.transaction('h').objectStore('h').get('last'); q.onsuccess = () => res(q.result || null); q.onerror = () => res(null); }); } catch (e) { return null; } },
+  async set(h) { try { const db = await this.open(); db.transaction('h', 'readwrite').objectStore('h').put(h, 'last'); } catch (e) { } }
+};
+
+// --- şifreleme: PBKDF2-SHA256 (250.000 tur) + AES-256-GCM
+const ENC_FORMAT = 'gicp-enc-1', ENC_ITER = 250000;
+let cryptoKey = null, cryptoSalt = null;
+function toB64(u8) { let s = ''; for (let i = 0; i < u8.length; i += 0x8000) s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000)); return btoa(s); }
+const fromB64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function deriveKey(pw, salt, iter) {
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({ name: 'PBKDF2', salt, iterations: iter, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+}
+async function encryptStore() {
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ct = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, cryptoKey, new TextEncoder().encode(JSON.stringify(store))));
+  return JSON.stringify({ format: ENC_FORMAT, iter: ENC_ITER, salt: toB64(cryptoSalt), iv: toB64(iv), data: toB64(ct) });
+}
+async function decryptObj(obj, pw) { // şifre yanlışsa hata fırlatır
+  const salt = fromB64(obj.salt), key = await deriveKey(pw, salt, obj.iter || ENC_ITER);
+  const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: fromB64(obj.iv) }, key, fromB64(obj.data));
+  return { data: JSON.parse(new TextDecoder().decode(pt)), key, salt };
+}
+async function setPassword(pw) { cryptoSalt = crypto.getRandomValues(new Uint8Array(16)); cryptoKey = await deriveKey(pw, cryptoSalt, ENC_ITER); }
+
+async function writeFile() {
+  if (!fileHandle || !cryptoKey) return;
+  if (saving) { clearTimeout(saveTimer); saveTimer = setTimeout(writeFile, 300); return; }
+  saving = true; pendingSave = false; renderFileBar();
+  try { const txt = await encryptStore(); const w = await fileHandle.createWritable(); await w.write(txt); await w.close(); lastSaved = new Date(); saveErr = null; }
+  catch (e) { saveErr = e.message || String(e); pendingSave = true; }
+  saving = false; renderFileBar();
+}
+
+// --- kilit ekranı
+let lockStage = 'start', pend = null;
+function renderLock(msg) {
+  const box = $('#lockBox');
+  const err = msg ? `<div class="msg bad">${esc(msg)}</div>` : '';
+  if (!FS_OK) {
+    box.innerHTML = `<h2>Gün İçi Çalışma Programı</h2><div class="msg warn">Bu program <b>Google Chrome</b> ya da <b>Microsoft Edge</b> ile açılmalıdır. Dosyaya sağ tıklayıp "Birlikte aç → Chrome" seçin.</div>`;
+    return;
+  }
+  if (lockStage === 'start') {
+    box.innerHTML = `<h2>Gün İçi Çalışma Programı</h2><p class="hint">Devam etmek için USB'deki veri dosyasını açın.</p>${err}
+      <div class="lockbtns">
+        ${lastHandle ? `<button class="btn primary big" id="lkLast">Son dosyayı aç: ${esc(lastHandle.name)}</button>` : ''}
+        <button class="btn ${lastHandle ? '' : 'primary'} big" id="lkOpen">USB'deki veri dosyasını aç</button>
+      </div>
+      <p class="small" style="margin-top:18px">İlk kez mi kullanıyorsunuz? <a href="#" id="lkNew">Yeni veri dosyası oluşturun</a>.</p>`;
+  } else if (lockStage === 'pw') {
+    box.innerHTML = `<h2>Şifre</h2><p class="hint"><b>${esc(pend.h.name)}</b> dosyasını açmak için şifreyi girin.</p>${err}
+      <form id="lkForm"><input type="password" id="lkPw" autocomplete="current-password" placeholder="Şifre" autofocus>
+      <div class="lockbtns"><button class="btn primary big" type="submit">Aç</button><button class="btn big" type="button" id="lkBack">Geri</button></div></form>`;
+  } else { // 'new' ya da 'migrate'
+    const mig = lockStage === 'migrate';
+    box.innerHTML = `<h2>${mig ? 'Veri dosyasını şifrele' : 'Yeni veri dosyası'}</h2>
+      <p class="hint">${mig ? `<b>${esc(pend.h.name)}</b> şifresiz. Bir şifre belirleyin; dosya bu şifreyle kilitlenecek.` : 'Bir şifre belirleyin, ardından dosyayı USB\'ye kaydedin.'}</p>${err}
+      <form id="lkForm"><input type="password" id="lkPw" autocomplete="new-password" placeholder="Şifre (en az 6 karakter)" autofocus>
+      <input type="password" id="lkPw2" autocomplete="new-password" placeholder="Şifre (tekrar)">
+      <div class="msg warn">Şifre unutulursa veriler <b>kurtarılamaz</b>. Şifreyi güvenli bir yere not edin.</div>
+      <div class="lockbtns"><button class="btn primary big" type="submit">${mig ? 'Şifrele ve aç' : 'Oluştur ve USB\'ye kaydet'}</button><button class="btn big" type="button" id="lkBack">Geri</button></div></form>`;
+  }
+  const on = (id, ev, f) => { const b = document.getElementById(id); if (b) b.addEventListener(ev, f); };
+  on('lkLast', 'click', lockLast); on('lkOpen', 'click', lockOpen);
+  on('lkNew', 'click', e => { e.preventDefault(); lockStage = 'new'; pend = null; renderLock(); });
+  on('lkBack', 'click', () => { lockStage = 'start'; pend = null; renderLock(); });
+  on('lkForm', 'submit', e => { e.preventDefault(); lockSubmit(); });
+  const pw = document.getElementById('lkPw'); if (pw) pw.focus();
+}
+async function readHandle(h) {
+  const t = await (await h.getFile()).text();
+  if (!t.trim()) { pend = { h, data: freshStore() }; lockStage = 'migrate'; return renderLock(); }
+  let obj; try { obj = JSON.parse(t); } catch (e) { obj = null; }
+  if (obj && obj.format === ENC_FORMAT) { pend = { h, obj }; lockStage = 'pw'; return renderLock(); }
+  if (obj && obj.fixed && obj.months) { pend = { h, data: obj }; lockStage = 'migrate'; return renderLock(); }
+  lockStage = 'start'; renderLock(`"${h.name}" bu programın veri dosyası değil.`);
+}
+async function lockOpen() {
+  try { const [h] = await window.showOpenFilePicker({ types: FS_TYPES, multiple: false }); await readHandle(h); }
+  catch (e) { if (e.name !== 'AbortError') renderLock('Dosya açılamadı: ' + e.message); }
+}
+async function lockLast() {
+  try { if (await lastHandle.requestPermission({ mode: 'readwrite' }) !== 'granted') return; await readHandle(lastHandle); }
+  catch (e) { renderLock('Son kullanılan dosyaya ulaşılamadı — USB takılı mı? Dosyayı "USB\'deki veri dosyasını aç" ile seçin.'); }
+}
+async function lockSubmit() {
+  const pw = $('#lkPw').value;
+  if (lockStage === 'pw') {
+    try { const r = await decryptObj(pend.obj, pw); store = r.data; cryptoKey = r.key; cryptoSalt = r.salt; await connect(pend.h); }
+    catch (e) { renderLock('Şifre yanlış.'); }
+    return;
+  }
+  const pw2 = $('#lkPw2').value;
+  if (pw.length < 6) return renderLock('Şifre en az 6 karakter olmalı.');
+  if (pw !== pw2) return renderLock('Şifreler aynı değil.');
+  if (lockStage === 'migrate') { store = pend.data; await setPassword(pw); return connect(pend.h); }
+  let h;
+  try { h = await window.showSaveFilePicker({ suggestedName: 'calisma-verileri.json', types: FS_TYPES }); }
+  catch (e) { if (e.name !== 'AbortError') renderLock('Dosya oluşturulamadı: ' + e.message); return; }
+  store = freshStore(); await setPassword(pw); await connect(h);
+}
+async function connect(h) {
+  fileHandle = h; lastHandle = h; IDB.set(h); pend = null;
+  if (!store.current) { const n = new Date(); const t = new Date(n.getFullYear(), n.getMonth() + 1, 1); store.current = `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}`; }
+  migrateFixed();
+  ensureMonth(store.current);
+  await writeFile();
+  $('#lock').style.display = 'none';
+  buildMonthSelects(); P = null; S = null;
+  setTab('ay');
+  lastAct = Date.now();
+}
+function lockNow() {
+  if (pendingSave || saving) { setTimeout(lockNow, 300); return; }
+  location.reload(); // bellekteki veriler ve şifre anahtarı silinir
+}
+// 30 dakika işlem yapılmazsa otomatik kilitlenir
+let lastAct = Date.now();
+['mousemove', 'keydown', 'click', 'scroll'].forEach(ev => window.addEventListener(ev, () => { lastAct = Date.now(); }, { passive: true }));
+setInterval(() => { if (fileHandle && Date.now() - lastAct > 30 * 60 * 1000) lockNow(); }, 60 * 1000);
+
+async function changePassword() {
+  const dlg = $('#dlg');
+  $('#dlgHd').textContent = 'Şifreyi değiştir';
+  $('#dlgBd').innerHTML = `<form id="cpForm" style="display:grid;gap:8px"><input type="password" id="cpOld" placeholder="Mevcut şifre" autocomplete="current-password">
+    <input type="password" id="cpNew" placeholder="Yeni şifre (en az 6 karakter)" autocomplete="new-password"><input type="password" id="cpNew2" placeholder="Yeni şifre (tekrar)" autocomplete="new-password">
+    <div id="cpMsg"></div><button class="btn primary" type="submit">Değiştir</button></form>`;
+  $('#cpForm').onsubmit = async e => {
+    e.preventDefault();
+    const msg = t => { $('#cpMsg').innerHTML = `<div class="msg bad">${esc(t)}</div>`; };
+    try { await decryptObj(JSON.parse(await (await fileHandle.getFile()).text()), $('#cpOld').value); } catch (err) { return msg('Mevcut şifre yanlış.'); }
+    const n1 = $('#cpNew').value, n2 = $('#cpNew2').value;
+    if (n1.length < 6) return msg('Yeni şifre en az 6 karakter olmalı.');
+    if (n1 !== n2) return msg('Yeni şifreler aynı değil.');
+    await setPassword(n1); await writeFile();
+    $('#dlgBd').innerHTML = `<div class="msg ok">Şifre değiştirildi. Bundan sonra veri dosyası yeni şifreyle açılır.</div>`;
+  };
+  dlg.showModal();
+}
+async function backupCopy() {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([await encryptStore()], { type: 'application/json' }));
+  a.download = `calisma-verileri-yedek-${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+
+function renderFileBar() {
+  const bar = $('#fileBar'); if (!bar) return;
+  if (!fileHandle) { bar.className = ''; bar.innerHTML = ''; bar.style.display = 'none'; return; }
+  bar.style.display = '';
+  if (saveErr) {
+    bar.className = 'bad';
+    bar.innerHTML = `<b>Kaydedilemedi!</b> USB takılı mı? (${esc(fileHandle.name)}) <button class="btn" id="fbRetry">Tekrar dene</button>`;
+  } else {
+    bar.className = 'ok';
+    bar.innerHTML = `✓ Veriler şifreli olarak USB'ye kaydediliyor: <b>${esc(fileHandle.name)}</b> <span>${saving || pendingSave ? '· kaydediliyor…' : lastSaved ? '· son kayıt ' + lastSaved.toLocaleTimeString('tr-TR') : ''}</span> <button class="btn" id="fbLock" style="margin-left:auto">Kilitle</button>`;
+  }
+  const on = (id, f) => { const b = document.getElementById(id); if (b) b.onclick = f; };
+  on('fbRetry', writeFile); on('fbLock', lockNow);
+}
+
+function migrateFixed() {
+  const LOW = ['Kons-1', 'Kons-2', 'Oda-13', 'Oda-14', 'Anjio'];
+  if (store.fixed && !store.fixed.areas.some(a => 'low' in a)) store.fixed.areas.forEach(a => { a.low = a.type === 'OR' && LOW.includes(a.name); });
+  // 2026-10-20: resmi liste başlığı ve oda eşleştirme kısıtı (Septik)
+  if (store.fixed && !store.fixed.areas.some(a => 'offName' in a)) {
+    const D = Object.fromEntries(DEFAULT_FIXED.areas.map(a => [a.name, a]));
+    store.fixed.areas.forEach(a => { a.offName = (D[a.name] || {}).offName || ''; a.pairOnly = a.pairOnly || ((D[a.name] || {}).pairOnly || []).slice(); });
+  }
+}
+
+/* ================= YARDIMCILAR ================= */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const nf = n => Math.round(n).toLocaleString('tr-TR');
+const C = CORE;
+const curKey = () => store.current;
+const curYM = () => { const [y, m] = store.current.split('-').map(Number); return { y, m }; };
+const M = () => store.months[store.current];
+const areaShort = n => n.replace('Endoskopi', 'Endo').replace('Poliklinik', 'Pol');
+
+function shortNames(names) {
+  const lab = names.map(n => { const t = n.split(' '); return t.length > 1 ? t.slice(0, -1).join(' ') + ' ' + t[t.length - 1][0] + '.' : n; });
+  return Object.fromEntries(names.map((n, i) => [n, lab.filter(x => x === lab[i]).length > 1 ? n : lab[i]]));
+}
+
+function nationalHolidays(y, m) {
+  const fixed = ['01-01', '04-23', '05-01', '05-19', '07-15', '08-30', '10-29'];
+  const relig = { 2026: ['03-20', '05-27', '05-28', '05-29'], 2027: [] }; // 22 Mart 2026 ve 30 Mayıs 2026 hafta sonu
+  return [...fixed, ...(relig[y] || [])].map(md => `${y}-${md}`).filter(k => +k.slice(5, 7) === m);
+}
+
+function ensureMonth(k) {
+  if (store.months[k]) return;
+  const prevKeys = Object.keys(store.months).sort().filter(x => x < k);
+  const prev = prevKeys.length ? store.months[prevKeys[prevKeys.length - 1]] : null;
+  const [y, m] = k.split('-').map(Number);
+  store.months[k] = {
+    included: prev ? prev.included.slice() : store.fixed.doctors.map(d => d.name),
+    holidaysText: nationalHolidays(y, m).map(C.fmt).join('\n'),
+    rosterText: '', leavesText: '', result: null, inputSig: null
+  };
+}
+
+/* ================= GİRDİLERDEN MODEL ================= */
+// Sabit verilerin bu ay için kullanılacak hali: program oluşturulmuşsa o anki dondurulmuş kopya
+function currentFixed() {
+  const f = store.fixed;
+  return {
+    doctors: f.doctors.map(d => ({ name: d.name, nobet: !!d.nobet, flex: !!d.flex })),
+    areas: f.areas.map(a => ({ ...a })),
+    forbidden: Object.fromEntries(f.doctors.filter(d => d.forbidden && d.forbidden.length).map(d => [d.name, d.forbidden.slice()])),
+    exemptPOL: f.doctors.filter(d => d.exPOL).map(d => d.name), exemptENDO: f.doctors.filter(d => d.exENDO).map(d => d.name)
+  };
+}
+// metin → nöbet tablosu satırları { gün: [isim, ...] } (tanınmayan isim aynen kalır, kırmızı gösterilir)
+function textToRosterRows(text, names, y) {
+  const rows = {}, dayW = new Set(C.GUNLER.map(C.norm));
+  for (const r of C.parseTSV(text || '')) {
+    let date = null, st = 0;
+    for (let c = 0; c < r.length; c++) { date = C.parseDate(r[c], y); if (date) { st = c + 1; break; } }
+    if (!date) continue;
+    const list = (rows[date] || []).filter(Boolean);
+    for (let c = st; c < r.length; c++) for (const part of r[c].split(/\n|\+|\/|,|;/)) {
+      const p = part.trim(); if (!p || dayW.has(C.norm(p))) continue;
+      const v = C.matchName(p, names) || p.replace(/\(.*?\)/g, ' ').replace(/\s+/g, ' ').trim();
+      if (v && !list.includes(v)) list.push(v);
+    }
+    rows[date] = [list[0] || '', list[1] || '', '', '', ...list.slice(2)];
+  }
+  return rows;
+}
+function leavesFromText(text, names, y) {
+  const L = C.parseLeaves(text || '', names, y);
+  return L.leaves.map(l => ({ name: l.name, type: 'yillik', from: l.from, to: l.to === l.from ? '' : l.to })).concat(L.unknown.map(u => ({ name: u.replace(/^"|"$/g, ''), from: '', to: '' })));
+}
+// nöbet satırı: [merkez, doğum, YBÜ 1-2, YBÜ 3, ...ilave]
+const RX = 4;
+const rosterOR = list => [list[0], list[1], ...list.slice(RX)].filter(Boolean);   // ameliyathane nöbetçileri (+ilave)
+const rosterYB = list => [list[2], list[3]].filter(Boolean);                        // yoğun bakım nöbetçileri
+// eski kayıt [n1, n2, ...ek] → yeni düzen
+function migrateRoster(mo) {
+  if (!mo || mo.rosterV === 2) return;
+  for (const [k, l] of Object.entries(mo.roster || {})) mo.roster[k] = [l[0] || '', l[1] || '', '', '', ...l.slice(2)];
+  if (mo.roster) mo.rosterV = 2;
+}
+// idarenin çalışma listesi: başlık satırında NÖBET sütunları varsa yalnızca onlar okunur
+function adminRosterRows(rows, names, y) {
+  const F = v => String(v || '').toLocaleUpperCase('tr-TR').replace(/[ÇĞİÖŞÜ]/g, c => ({ 'Ç': 'C', 'Ğ': 'G', 'İ': 'I', 'Ö': 'O', 'Ş': 'S', 'Ü': 'U' }[c])).replace(/[^A-Z0-9]+/g, ' ').trim();
+  const hi = rows.findIndex(r => r.some(c => /NOBET/.test(F(c)) && /MERKEZ/.test(F(c))));
+  if (hi < 0) return null;
+  const hd = rows[hi].map(F), find = re => hd.findIndex(c => /NOBET/.test(c) && re.test(c) && !/IZNI/.test(c));
+  const cols = [find(/MERKEZ/), find(/DOGUM/), find(/YBU 1 2|YBU 12/), find(/YBU 3/)];
+  const out = {};
+  for (const r of rows.slice(hi + 1)) {
+    if (r.some(c => /NOBET/.test(F(c)) && /MERKEZ/.test(F(c)))) break;   // sonraki sayfanın başlığı
+    const k = C.parseDate(r[0], y); if (!k || out[k]) continue;
+    // bir hücrede birden çok isim olabilir: "AD SOYAD(8-16) AD SOYAD(16-8)" → ilki sütuna, diğerleri ilave sütununa
+    const extra = [];
+    out[k] = cols.map(c => {
+      const parts = (c >= 0 ? String(r[c] || '') : '').replace(/\([^)]*\)/g, '\n').split(/\n|,|;|\+|\//).map(x => x.replace(/\s+/g, ' ').trim()).filter(Boolean).map(x => C.matchName(x, names) || x);
+      extra.push(...parts.slice(1)); return parts[0] || '';
+    });
+    out[k].push(...extra.filter(x => !out[k].includes(x)));
+    while (out[k].length && !out[k][out[k].length - 1]) out[k].pop();
+  }
+  return out;
+}
+function rosterRange() { // önceki ayın ilgili günleri + ayın tüm günleri
+  const { y, m } = curYM(), out = C.prevDates(y, m).map(k => ({ k, prev: true }));
+  for (let d = 1; d <= 31; d++) { const k = C.key(y, m, d); if (C.toDate(k).getUTCMonth() !== m - 1) break; out.push({ k, prev: false }); }
+  return out;
+}
+// eski (metin) kayıtları bir kez tabloya çevir
+function ensureTables(mo) {
+  const { y, m } = curYM(), names = store.fixed.doctors.map(d => d.name);
+  Object.values(store.months).forEach(migrateRoster);
+  if (!mo.roster) {
+    mo.roster = textToRosterRows(mo.rosterText, names, y);
+    for (const [k, t] of Object.entries(mo.prevNobet || {})) if (t && t.trim() && !(mo.roster[k] || []).some(Boolean)) {
+      const l = t.split(/[,;+\n]/).map(x => x.trim()).filter(Boolean).map(x => C.matchName(x, names) || x);
+      mo.roster[k] = [l[0] || '', l[1] || '', '', '', ...l.slice(2)];
+    }
+    mo.rosterV = 2;
+  }
+  if (!mo.leaves) mo.leaves = leavesFromText(mo.leavesText, names, y);
+  // önceki ayın son günleri boşsa, önceki ayın kayıtlı listesinden doldur
+  const pk = `${m === 1 ? y - 1 : y}-${String(m === 1 ? 12 : m - 1).padStart(2, '0')}`, pm = store.months[pk];
+  if (pm) {
+    const src = pm.roster || textToRosterRows(pm.rosterText, names, +pk.slice(0, 4));
+    for (const k of C.prevDates(y, m)) if (!(mo.roster[k] || []).some(Boolean) && (src[k] || []).some(Boolean)) mo.roster[k] = src[k].slice();
+  }
+}
+
+function buildCfg(useSnap = true) {
+  const { y, m } = curYM(), mo = M();
+  const fx = useSnap && mo.result && mo.snap ? mo.snap : currentFixed();
+  const names = fx.doctors.map(d => d.name);
+  const holidays = mo.holidaysText.split(/[\n,;]+/).map(s => C.parseDate(s, y)).filter(Boolean);
+  ensureTables(mo);
+  const R = { roster: [], yb: [], unknown: [] };
+  for (const [k, list] of Object.entries(mo.roster || {})) {
+    const nm = [], yb = [];
+    list.forEach((v, si) => { if (!v) return; const x = C.matchName(v, names); if (x) { if (!nm.includes(x)) nm.push(x); if ((si === 2 || si === 3) && !yb.includes(x)) yb.push(x); } else R.unknown.push(`${C.fmt(k)}: "${v}"`); });
+    if (nm.length) R.roster.push({ date: k, names: nm });
+    if (yb.length) R.yb.push({ date: k, names: yb });
+  }
+  const L = { leaves: [], unknown: [] };
+  for (const l of mo.leaves || []) {
+    if (!l.name && !l.from) continue;
+    const x = C.matchName(l.name, names);
+    if (!x) { if (l.name) L.unknown.push(`"${l.name}"`); continue; }
+    if (!l.from) continue;
+    const to = l.to && l.to >= l.from ? l.to : l.from;
+    L.leaves.push({ name: x, from: l.from, to, type: l.type || 'yillik' });
+  }
+  const pv = prevMonth();
+  return {
+    cfg: {
+      year: y, month: m, doctors: fx.doctors, areas: fx.areas, forbidden: fx.forbidden, exemptPOL: fx.exemptPOL, exemptENDO: fx.exemptENDO,
+      included: mo.included.filter(n => names.includes(n)), holidays, leaves: L.leaves, roster: R.roster, ybDuty: R.yb, prevStats: pv ? pv.stats : null, closed: mo.closed || {}, joins: mo.joins || {}, exits: mo.exits || {}, idle: Object.entries(mo.idle || {}).flatMap(([date, l]) => l.map(name => ({ date, name }))),
+      lowReq: mo.lowReq || {}, polPref: mo.polPref || {}, endoPref: mo.endoPref || {}, flexNE: mo.flexNE || {}, avoid: (mo.avoid || []).filter(r => r.name && (r.days || []).length && (r.rooms || []).length), flexDoctors: fx.doctors.filter(d => d.flex).map(d => d.name)
+    }, R, L, fx
+  };
+}
+const sig = cfg => JSON.stringify([cfg.included, cfg.holidays, cfg.leaves, cfg.roster, cfg.ybDuty, cfg.areas, cfg.forbidden, cfg.exemptPOL, cfg.exemptENDO, cfg.doctors, cfg.lowReq, cfg.polPref, cfg.endoPref, cfg.flexNE, cfg.flexDoctors, cfg.avoid, cfg.prevStats, cfg.closed, cfg.idle, cfg.joins, cfg.exits]);
+// bir önceki takvim ayının kayıtlı programı → aylar arası dönüşüm verisi (yoksa null: o ay dönüşüm uygulanmaz)
+function prevMonth() {
+  const { y, m } = curYM(), pk = `${m === 1 ? y - 1 : y}-${String(m === 1 ? 12 : m - 1).padStart(2, '0')}`, pm = store.months[pk];
+  if (!pm || !pm.result) return null;
+  const stats = C.prevStats(pm.result, (pm.snap || currentFixed()).areas);
+  return stats ? { key: pk, label: `${C.AYLAR[(m === 1 ? 12 : m - 1) - 1]} ${m === 1 ? y - 1 : y}`, stats } : null;
+}
+
+let P = null, S = null, SN = {};
+const sn = n => SN[n] || n;
+
+/* ================= AY SEKMESİ ================= */
+function renderAy() {
+  const mo = M(), f = store.fixed;
+  $('#txtHolidays').value = mo.holidaysText;
+  ensureTables(mo);
+  $('#docList').innerHTML = f.doctors.map(d => `<option value="${esc(d.name)}">`).join('');
+  renderRosterTable(); renderLeavesTable(); renderAvoid(); renderEdu(); renderOpenRooms();
+  renderInc();
+  refreshAyInfo();
+}
+
+/* ---------- odaların açık günleri ---------- */
+function renderOpenRooms() {
+  const mo = M(), wd = workDays(), cl = mo.closed || {};
+  $('#openRooms').innerHTML = store.fixed.areas.map((a, i) => { const n = (cl[a.name] || []).filter(k => wd.includes(k)).length;
+    return `<button type="button" class="rb ${n ? 'cl' : ''}" data-open="${i}"><span>${esc(a.name)}</span><span class="small">${n ? (n >= wd.length ? 'bu ay kapalı' : `${n} gün kapalı`) : 'tüm ay açık'}</span></button>`; }).join('');
+}
+function openDaysDialog(i) {
+  const mo = M(), a = store.fixed.areas[i], wd = workDays(), cl = new Set((mo.closed || {})[a.name] || []), sel = new Set(wd.filter(k => !cl.has(k))), { y, m } = curYM();
+  const { cfg } = buildCfg(false);
+  $('#dlgHd').textContent = `${a.name} · ${C.AYLAR[m - 1]} ${y} · açık günler`;
+  $('#dlgBd').innerHTML = `<p class="small">Odanın <b>açık</b> olduğu günler işaretli. Kapalı günlere tıklayıp işareti kaldırın.</p><div class="cal" id="spCal"></div>
+    <div class="btns" style="justify-content:flex-end"><button class="btn" id="odAll">Tüm ay açık</button><button class="btn" id="odNone">Tüm ay kapalı</button><button class="btn primary" id="odSave">Kaydet</button></div>`;
+  const opts = { ym: store.current, sel, hol: cfg.holidays, check: true, cls: 'pol' };
+  renderCal($('#spCal'), opts);
+  $('#odAll').onclick = () => { wd.forEach(k => sel.add(k)); renderCal($('#spCal'), opts); };
+  $('#odNone').onclick = () => { sel.clear(); renderCal($('#spCal'), opts); };
+  $('#odSave').onclick = () => { mo.closed = mo.closed || {}; const c = wd.filter(k => !sel.has(k)); if (c.length) mo.closed[a.name] = c; else delete mo.closed[a.name]; saveStore(); $('#dlg').close(); renderOpenRooms(); refreshAyInfo(); };
+  $('#dlg').showModal();
+}
+/* ---------- hekim fazlası günler: odasız kalacak hekim seçimi ---------- */
+function idleNeed(d) { const k = P.days[d], sel = ((M().idle || {})[k] || []).filter(n => P.docs.some(x => x.name === n)).length; return { need: P.avail[d].length + sel - P.nOpen[d], sel }; }
+function idleDialog(k) {
+  const mo = M(), d = P.days.indexOf(k), cur = new Set((mo.idle || {})[k] || []), { need } = idleNeed(d);
+  const cand = P.docs.map((x, i) => [x, i]).filter(([x, i]) => !P.off[i][d] || P.off[i][d] === 'OD');
+  $('#dlgHd').textContent = `${C.fmt(k)} ${C.GUNLER[C.dow(k)]} · odasız kalacak hekim`;
+  $('#dlgBd').innerHTML = `<p class="small">Bu gün açık oda sayısı (${P.nOpen[d]}) müsait hekim sayısından az: <b>${need} hekim</b> odasız kalacak. Seçin (hedef puanları değişmez; eksik puan ayın diğer günlerinde dengelenir).</p>
+    <div class="roomgrid">${cand.map(([x]) => `<label><input type="checkbox" value="${esc(x.name)}" ${cur.has(x.name) ? 'checked' : ''}> ${esc(x.name)}${x.nobet ? '' : ' <span class="tag nn">nöbet tutmaz</span>'}</label>`).join('')}</div>
+    <div class="btns" style="justify-content:flex-end"><span class="small" id="idCnt" style="margin-right:auto"></span><button class="btn primary" id="idSave">Kaydet</button></div>`;
+  const cnt = () => { const n = $('#dlgBd').querySelectorAll('input:checked').length; $('#idCnt').textContent = `${n} / ${need} seçildi`; };
+  $('#dlgBd').addEventListener('change', cnt); cnt();
+  $('#idSave').onclick = () => { mo.idle = mo.idle || {}; const l = [...$('#dlgBd').querySelectorAll('input:checked')].map(c => c.value); if (l.length) mo.idle[k] = l; else delete mo.idle[k]; saveStore(); $('#dlg').close(); refreshAyInfo(); };
+  $('#dlg').showModal();
+}
+const idleOpen = () => P ? P.days.map((k, d) => ({ k, ...idleNeed(d) })).filter(x => x.need > x.sel) : [];
+
+/* ---------- eğitim kliniği listesi (adım 5) ---------- */
+const EDU = [['1-5-7 ODA', /^1 5 7/], ['16-17-23', /^16 17 23/], ['POLK-2', /^POL(K|IKLINIK) 2/], ['POLK 3', /^POL(K|IKLINIK) 3/], ['ANESTEZİ YBÜ 1-2', /YBU 1 2/], ['ANESTEZİ YBÜ-3', /YBU 3/]];
+const hdrFold = v => String(v || '').toLocaleUpperCase('tr-TR').replace(/[ÇĞİÖŞÜ]/g, c => ({ 'Ç': 'C', 'Ğ': 'G', 'İ': 'I', 'Ö': 'O', 'Ş': 'S', 'Ü': 'U' }[c])).replace(/[^A-Z0-9]+/g, ' ').trim();
+function workDays() { const { y, m } = curYM(), mo = M(), hol = new Set(mo.holidaysText.split(/[\n,;]+/).map(x => C.parseDate(x, y)).filter(Boolean)), out = [];
+  for (let d = 1; d <= 31; d++) { const k = C.key(y, m, d); if (C.toDate(k).getUTCMonth() !== m - 1) break; const w = C.dow(k); if (w && w !== 6 && !hol.has(k)) out.push(k); } return out; }
+function eduFill() { const mo = M(), wd = workDays(), days = wd.filter(k => (mo.edu || {})[k] && mo.edu[k].some(Boolean)).length, full = wd.length > 0 && wd.every(k => (mo.edu || {})[k] && EDU.every((_, j) => (mo.edu[k][j] || '').trim())); return { days, total: wd.length, full }; }
+function renderEdu() {
+  const mo = M(); mo.edu = mo.edu || {};
+  const used = new Set(); Object.values(store.months).forEach(x => Object.values(x.edu || {}).forEach(l => l.forEach(v => v && used.add(v))));
+  $('#eduList').innerHTML = [...used].sort((a, b) => a.localeCompare(b, 'tr')).map(v => `<option value="${esc(v)}">`).join('');
+  let h = `<colgroup><col class="c-dt"><col class="c-gn">${EDU.map(() => '<col>').join('')}</colgroup><tr><th>Tarih</th><th>Gün</th>${EDU.map(([t]) => `<th>${t}</th>`).join('')}</tr>`;
+  for (const k of workDays()) { const l = mo.edu[k] || []; h += `<tr><td class="dt">${C.fmt(k)}</td><td>${C.GUNLER[C.dow(k)]}</td>${EDU.map((_, j) => `<td><input data-ek="${k}" data-ej="${j}" list="eduList" value="${esc(l[j] || '')}" autocomplete="off"></td>`).join('')}</tr>`; }
+  $('#tblEdu').innerHTML = h;
+  const f = eduFill(), out = Object.keys(mo.edu).filter(k => mo.edu[k].some(Boolean) && !workDays().includes(k));
+  $('#eduSum').innerHTML = `<div class="msg ${f.full ? 'ok' : f.days ? 'warn' : 'ok'}">${f.days}/${f.total} mesai günü girildi${f.full ? ' · tüm hücreler dolu ✓' : f.days ? ' · boş hücreler resmi listede boş kalır' : ''}</div>` + (out.length ? `<div class="msg warn">Mesai günü olmayan tarihlerde kayıt var (resmi listeye yine yazılır): ${out.map(C.fmt).join(', ')}</div>` : '');
+}
+function onEduInput(e) {
+  const t = e.target; if (!t.dataset.ek) return;
+  const mo = M(), k = t.dataset.ek, l = (mo.edu[k] || []).slice(); while (l.length < EDU.length) l.push('');
+  l[+t.dataset.ej] = t.value.replace(/\s+/g, ' ').trim(); t.value = l[+t.dataset.ej];
+  if (l.some(Boolean)) mo.edu[k] = l; else delete mo.edu[k];
+  saveStore(); renderEdu(); renderSteps();
+}
+// dosya / metin: başlık satırında altı sütun aranır; yoksa tarih + 6 sütun
+function eduRowsFromText(t) {
+  const rows = C.parseTSV(t), { y } = curYM(), out = {};
+  let cols = null, hi = rows.findIndex(r => { const hd = r.map(hdrFold); const c = EDU.map(([, re]) => hd.findIndex(x => re.test(x) && !/NOBET/.test(x))); if (c.filter(x => x >= 0).length >= 3) { cols = c; return true; } return false; });
+  const body = hi >= 0 ? rows.slice(hi + 1) : rows;
+  for (const r of body) {
+    if (hi >= 0 && r.some(c => /NOBET/.test(hdrFold(c))) && r.some(c => /1 5 7/.test(hdrFold(c)))) break;   // sonraki sayfanın başlığı
+    let di = r.findIndex(c => C.parseDate(c, y)); if (di < 0) continue;
+    const k = C.parseDate(r[di], y); if (out[k]) continue;
+    const l = (cols || EDU.map((_, j) => di + 1 + j)).map(c => c >= 0 ? String(r[c] || '').replace(/\s+/g, ' ').trim() : '');
+    if (l.some(Boolean)) out[k] = l;
+  }
+  return { rows: out, header: hi >= 0 };
+}
+function applyEduText(t, fname) {
+  const mo = M(), { rows, header } = eduRowsFromText(t), inM = Object.keys(rows).filter(k => k.slice(0, 7) === store.current);
+  if (!inM.length) { alert('Dosyada bu aya ait tarihli satır bulunamadı.'); return; }
+  if (Object.keys(mo.edu || {}).length && !confirm(`Okunan ${inM.length} günlük liste tabloya yazılsın mı? (Bu günlerdeki mevcut kayıtların yerini alır.)`)) return;
+  mo.edu = mo.edu || {}; inM.forEach(k => { mo.edu[k] = rows[k]; });
+  saveStore(); renderEdu(); renderSteps();
+  $('#eduFile').innerHTML = `${fname ? `<b>${esc(fname)}</b> okundu · ` : ''}${inM.length} gün yazıldı${header ? '' : ' (başlık bulunamadı — tarih + 6 sütun sırası kullanıldı, lütfen kontrol edin)'}.`;
+}
+function eduFillDialog() {
+  const mo = M(), { y, m } = curYM(), sel = new Set(workDays());
+  const { cfg } = buildCfg(false);
+  $('#dlgHd').textContent = `Eğitim kliniği · ${C.AYLAR[m - 1]} ${y} · toplu doldur`;
+  $('#dlgBd').innerHTML = `<div class="prev" style="margin-top:0"><div class="pr"><span>Oda</span><select id="efCol">${EDU.map(([t], j) => `<option value="${j}">${t}</option>`).join('')}</select></div>
+    <div class="pr"><span>İsim</span><input type="text" id="efName" list="eduList" placeholder="ör. prof.dr.E.SİLAY"></div></div>
+    <p class="small">Uygulanacak günler (başlangıçta tüm mesai günleri seçili; tıklayarak çıkarın):</p><div class="cal" id="spCal"></div>
+    <label class="small"><input type="checkbox" id="efOnlyEmpty" checked> Yalnızca boş hücrelere yaz</label>
+    <div class="btns" style="justify-content:flex-end"><button class="btn primary" id="efOk">Uygula</button></div>`;
+  const opts = { ym: store.current, sel, hol: cfg.holidays, check: true, cls: 'pol' };
+  renderCal($('#spCal'), opts);
+  $('#efOk').onclick = () => {
+    const j = +$('#efCol').value, v = $('#efName').value.replace(/\s+/g, ' ').trim(), only = $('#efOnlyEmpty').checked;
+    if (!v) { alert('İsim yazın.'); return; }
+    mo.edu = mo.edu || {};
+    for (const k of sel) { const l = (mo.edu[k] || []).slice(); while (l.length < EDU.length) l.push(''); if (only && l[j]) continue; l[j] = v; mo.edu[k] = l; }
+    saveStore(); $('#dlg').close(); renderEdu(); renderSteps();
+  };
+  $('#dlg').showModal(); setTimeout(() => $('#efName').focus(), 50);
+}
+
+/* ---------- aylık akış: adımlar ve durumları ---------- */
+const STEPS = [['1', 'Nöbet listesi', 'step1'], ['2', 'Yoğun bakım', 'step2'], ['3', 'İzinler', 'cardLeaves'], ['4', 'Talepler', 'cardSpecial'], ['gen', 'Programı oluştur', 'stepGen'], ['5', 'Eğitim kliniği', 'step5'], ['6', 'Resmi liste', 'step6']];
+function stepState(n) {
+  const mo = M(), mark = (mo.steps || {})[n], names = store.fixed.doctors.map(d => d.name);
+  const unk = list => list.filter(v => v && !C.matchName(v, names)).length;
+  if (n === '1') {
+    const days = rosterRange().filter(r => !r.prev), filled = days.filter(r => rosterOR(mo.roster[r.k] || []).length).length;
+    const bad = rosterRange().reduce((a, r) => a + unk(mo.roster[r.k] || []), 0);
+    return bad ? ['bad', `${bad} tanınmayan isim`] : filled < days.length ? ['warn', `${filled}/${days.length} gün dolu`] : ['ok', 'tamam'];
+  }
+  if (n === '2') {
+    const inn = mo.included.filter(x => names.includes(x)).length, icu = names.length - inn;
+    return mark ? ['ok', `${inn} programda · ${icu} yoğun bakımda`] : ['warn', 'onay bekliyor'];
+  }
+  if (n === '3') {
+    const bad = unk((mo.leaves || []).map(l => l.name)), cnt = (mo.leaves || []).filter(l => l.name && l.from).length;
+    return bad ? ['bad', `${bad} tanınmayan isim`] : mark === 'none' ? ['ok', 'bu ay izin yok'] : mark ? ['ok', `${cnt} kayıt`] : ['warn', 'bekliyor'];
+  }
+  if (n === '4') {
+    const cnt = ['lowReq', 'polPref', 'endoPref', 'flexNE'].reduce((a, f) => a + Object.values(mo[f] || {}).filter(l => l && l.length).length, 0) + (mo.avoid || []).filter(r => r.name).length;
+    return mark === 'none' ? ['ok', 'bu ay talep yok'] : mark ? ['ok', `${cnt} talep`] : ['warn', 'bekliyor'];
+  }
+  if (n === 'gen') {
+    if (!mo.result) return ['none', 'henüz oluşturulmadı'];
+    let st = false; try { st = mo.inputSig !== sig(buildCfg(false).cfg); } catch (e) { }
+    return st ? ['warn', 'girdiler değişti'] : ['ok', 'oluşturuldu'];
+  }
+  if (n === '5') { const f = eduFill(); return f.full ? ['ok', 'tamam'] : mark ? ['ok', f.days ? `${f.days}/${f.total} gün dolu · tamam` : 'tamam'] : f.days ? ['warn', `${f.days}/${f.total} gün dolu`] : ['none', 'bekleniyor']; }
+  if (n === '6') { const g = stepState('gen'); return g[0] === 'ok' ? (stepState('5')[0] === 'ok' ? ['ok', 'indirilebilir'] : ['warn', 'eğitim kliniği bekleniyor']) : ['none', 'program bekleniyor']; }
+}
+const ST_ICON = { ok: '✓', warn: '!', bad: '!', none: '○' };
+function renderSteps() {
+  if (!$('#stepBar')) return;
+  const mo = M();
+  $('#stepBar').innerHTML = STEPS.map(([n, t, id], i) => {
+    const [c, msg] = stepState(n);
+    return (n === 'gen' || n === '5' ? '<span class="arr">→</span>' : '') + `<button type="button" class="sc ${c}" data-go="${id}" title="${esc(msg)}"><b>${ST_ICON[c]}</b>${n === 'gen' ? '' : n + ' · '}${t}</button>`;
+  }).join('');
+  document.querySelectorAll('#tab-ay .st[data-st]').forEach(el => { const [c, msg] = stepState(el.dataset.st); el.className = 'st ' + c; el.textContent = `${ST_ICON[c]} ${msg}`; });
+  const F = {
+    '1': () => `<span class="small">Bütün günler dolu ve tanınmayan isim yoksa bu adım kendiliğinden tamamlanır.</span>`,
+    '2': m => `<span class="small">Yoğun bakım listesi bir önceki aydan gelir; her ay kontrol edip onaylayın.</span>` + (m ? `<button class="btn" data-mark="2" data-v="">Onayı geri al</button>` : `<button class="btn primary" data-mark="2" data-v="ok">✓ Bu ayın listesi doğru</button>`),
+    '3': m => `<span class="small">${m === 'none' ? 'Bu ay izin yok olarak işaretlendi.' : 'Tüm izinler girildiyse adımı tamamlayın.'}</span>` + (m ? `<button class="btn" data-mark="3" data-v="">Geri al</button>` : `<button class="btn primary" data-mark="3" data-v="ok">✓ Bu adım tamam</button><button class="btn" data-mark="3" data-v="none">Bu ay izin yok</button>`),
+    '4': m => `<span class="small">${m === 'none' ? 'Bu ay talep yok olarak işaretlendi.' : 'Tüm talepler girildiyse adımı tamamlayın.'}</span>` + (m ? `<button class="btn" data-mark="4" data-v="">Geri al</button>` : `<button class="btn primary" data-mark="4" data-v="ok">✓ Bu adım tamam</button><button class="btn" data-mark="4" data-v="none">Bu ay talep yok</button>`),
+    '5': m => `<span class="small">${eduFill().full ? 'Tüm günler dolu — adım kendiliğinden tamamlandı.' : 'Eksik günler resmi listede boş kalır. Bu ay eksikler Excel\'de elle doldurulacaksa adımı tamamlayın.'}</span>` + (eduFill().full ? '' : m ? `<button class="btn" data-mark="5" data-v="">Geri al</button>` : `<button class="btn primary" data-mark="5" data-v="ok">✓ Bu adım tamam</button>`)
+  };
+  document.querySelectorAll('#tab-ay .stepfoot[data-step]').forEach(el => { el.innerHTML = F[el.dataset.step]((mo.steps || {})[el.dataset.step]); });
+  const open = ['1', '2', '3', '4'].filter(n => !['ok', 'none'].includes(stepState(n)[0]));
+  const io = P ? idleOpen() : [];
+  $('#genNote').textContent = (io.length ? `Odasız kalacak hekim seçimi bekleyen gün: ${io.map(x => x.k.slice(8)).join(', ')}. ` : '') + (open.length ? `Tamamlanmamış adım: ${open.join(', ')} — program yine de oluşturulabilir.` : 'Adım 1–4 tamam.');
+}
+function goGenerate() {
+  const open = ['1', '2', '3', '4'].filter(n => !['ok', 'none'].includes(stepState(n)[0]));
+  if (open.length && !confirm(`Tamamlanmamış adım var: ${open.map(n => n + ' · ' + STEPS.find(x => x[0] === n)[1]).join(', ')}.\nProgram yine de oluşturulsun mu?`)) return;
+  const io = idleOpen();
+  if (io.length && !confirm(`Şu günlerde odasız kalacak hekim seçilmedi: ${io.map(x => C.fmt(x.k)).join(', ')}.\nProgram geçici olarak seçsin mi? (Bu hücreler sarı "seçim bekleniyor" olarak işaretlenir; sonra değiştirebilirsiniz.)`)) return;
+  setTab('program'); generate();
+}
+
+function renderInc() {
+  const mo = M(), f = store.fixed;
+  const item = (d, i, on) => `<label title="${on ? 'yoğun bakıma almak için tıklayın' : 'programa almak için tıklayın'}"><input type="checkbox" data-i="${i}" ${on ? 'checked' : ''}> ${esc(d.name)} <span class="tag ${d.nobet ? '' : 'nn'}">${d.nobet ? 'nöbet tutar' : 'nöbet tutmaz'}</span></label>`;
+  const inn = f.doctors.map((d, i) => [d, i]).filter(([d]) => mo.included.includes(d.name));
+  const icu = f.doctors.map((d, i) => [d, i]).filter(([d]) => !mo.included.includes(d.name));
+  $('#chipsIn').innerHTML = inn.map(([d, i]) => item(d, i, true)).join('') || '<span class="small">—</span>';
+  $('#chipsIcu').innerHTML = icu.map(([d, i]) => item(d, i, false)).join('') || '<span class="small">Bu ay yoğun bakımda kimse işaretlenmedi.</span>';
+  $('#incN').textContent = inn.length; $('#icuN').textContent = icu.length;
+  const ok = inn.length + icu.length === f.doctors.length;
+  $('#incCheck').innerHTML = `<div class="msg ${ok ? 'ok' : 'bad'}" style="margin-bottom:0">${inn.length} programda + ${icu.length} yoğun bakımda = ${inn.length + icu.length} hekim ${ok ? '✓' : '— toplam tutmuyor!'}</div>`;
+  renderSteps();
+}
+
+function refreshAyInfo() {
+  const { cfg, R, L } = buildCfg();
+  P = C.prepare(cfg);
+  const mo = M();
+  $('#incCount').textContent = `${cfg.included.length} hekim seçili`;
+  const { y, m } = curYM();
+  $('#infoDays').innerHTML = `${C.AYLAR[m - 1]} ${y}: <b>${P.D} mesai günü</b>` + (cfg.holidays.length ? ` · ${cfg.holidays.length} tatil: ${cfg.holidays.map(C.fmt).join(', ')}` : ' · tatil yok');
+  // nöbet listesi özeti
+  const rng = rosterRange(), names = store.fixed.doctors.map(d => d.name);
+  const filled = rng.filter(r => !r.prev && (mo.roster[r.k] || []).some(Boolean)).length, total = rng.filter(r => !r.prev).length;
+  const pvMiss = rng.filter(r => r.prev && !(mo.roster[r.k] || []).some(Boolean));
+  let h = `<div class="msg ${R.unknown.length ? 'bad' : filled < total ? 'warn' : 'ok'}">${filled}/${total} gün dolu · ${R.unknown.length ? `<b>${R.unknown.length} tanınmayan isim</b> (kırmızı hücreler)` : 'tanınmayan isim yok ✓'}</div>`;
+  if (pvMiss.length) h += `<div class="msg warn">Önceki ayın ${pvMiss.map(r => C.fmt(r.k)).join(', ')} nöbetçileri girilmedi — bu kişiler ${pvMiss.map(r => C.fmt(C.ertesiOf(r.k))).join(', ')} tarihinde çalışıyor sayılır.</div>`;
+  const orNames = [...new Set(Object.entries(mo.roster).filter(([k]) => k >= store.current + '-01').flatMap(([, l]) => rosterOR(l)).map(v => C.matchName(v, names)).filter(Boolean))];
+  const notInc = orNames.filter(n => !cfg.included.includes(n));
+  if (notInc.length) h += `<div class="msg warn">Ameliyathane nöbetinde olup programa dahil olmayanlar (yoğun bakım vb.): ${notInc.map(esc).join(', ')}</div>`;
+  const ybInc = [...new Set(R.yb.filter(r => r.date >= store.current + '-01').flatMap(r => r.names))].filter(n => cfg.included.includes(n));
+  if (ybInc.length) h += `<div class="msg warn">Yoğun bakım nöbeti tutan ve gün içi programa dahil olanlar: ${ybInc.map(esc).join(', ')} — bu kişiler nöbet günlerinde gündüz yanık / dış anesteziye yazılır, o gün odaya verilmez.</div>`;
+  $('#rosterSum').innerHTML = h;
+  // izin özeti
+  $('#leaveSum').innerHTML = L.unknown.length ? `<div class="msg bad"><b>${L.unknown.length} tanınmayan isim</b> (kırmızı hücreler)</div>`
+    : (mo.leaves || []).length ? `<div class="msg ok">${L.leaves.length} izin kaydı · tanınmayan isim yok ✓</div>` : `<div class="msg ok">İzin girilmedi (bu ay izin yoksa sorun değil).</div>`;
+  updateLeaveCounts();
+  renderSpecial();
+  const pv = prevMonth();
+  $('#prevInfo').innerHTML = pv ? `<div class="msg ok"><b>Aylar arası dönüşüm açık</b> — ${pv.label} programına göre: geçen ay poliklinikte (endoskopide) 1 gün çalışan bu ay öncelikle 2 gün, 2 gün çalışan 1 gün çalışır; herkes olabildiğince geçen ay çalışmadığı odalara yazılır.</div>`
+    : `<div class="msg warn">Bir önceki ayın programı bu dosyada yok — aylar arası dönüşüm (poliklinik/endoskopi sayısı, oda değişimi) bu ay uygulanmaz.</div>`;
+  // kapasite
+  const nm = i => SN[P.docs[i].name] || P.docs[i].name;
+  SN = shortNames(store.fixed.doctors.map(d => d.name));
+  $('#tblCap').innerHTML = `<tr><th>Tarih</th><th>Gün</th><th class="num">Müsait</th><th class="num">Açık oda</th><th class="num">Ek bakılan oda</th><th>Odasız kalacak</th><th>Nöbet ertesi</th><th>İzinli</th></tr>` +
+    P.days.map((k, d) => {
+      const ne = P.docs.map((_, i) => i).filter(i => P.off[i][d] === 'NE').map(nm).concat(P.docs.map((_, i) => i).filter(i => P.off[i][d] === 'YB').map(i => nm(i) + ' (YB nöbeti)'));
+      const iz = P.docs.map((_, i) => i).filter(i => P.off[i][d] === 'İ').map(nm);
+      const e = Math.max(0, P.nOpen[d] - P.avail[d].length), id = idleNeed(d), idl = (M().idle || {})[k] || [];
+      const idc = id.need > 0 || idl.length ? `<span class="${id.need > id.sel ? 'tag' : ''}" style="${id.need > id.sel ? 'background:var(--warn-bg);color:var(--warn)' : ''}">${idl.map(nm2 => esc(SN[nm2] || nm2)).join(', ') || `${id.need} kişi seçilmeli`}</span> <button class="btn" data-idle="${k}" style="padding:1px 8px;font-size:12px">Seç</button>` : '';
+      return `<tr><td>${C.fmt(k)}</td><td>${C.GUNLER[C.dow(k)]}</td><td class="num">${P.avail[d].length}</td><td class="num">${P.nOpen[d]}${P.nOpen[d] < P.A ? ' <span class="small">/' + P.A + '</span>' : ''}</td><td class="num" style="${e > P.listEmpty.length ? 'color:var(--bad);font-weight:600' : ''}">${e}</td><td>${idc}</td><td>${ne.join(', ')}</td><td>${iz.join(', ')}</td></tr>`; }).join('');
+  renderSteps();
+}
+
+function renderRosterTable() {
+  const mo = M(), names = store.fixed.doctors.map(d => d.name), rng = rosterRange();
+  const cell = (k, si, v) => `<input data-k="${k}" data-s="${si}" list="docList" value="${esc(v || '')}" class="${v && !C.matchName(v, names) ? 'bad' : ''}" autocomplete="off">`;
+  let h = '<colgroup><col class="c-dt"><col class="c-gn"><col><col><col><col><col></colgroup><tr><th>Tarih</th><th>Gün</th><th>Merkez ameliyathane</th><th>Doğum ameliyathane</th><th>YBÜ 1-2 <span class="small">(→ dış anestezi)</span></th><th>YBÜ 3 <span class="small">(→ yanık)</span></th><th>İlave / yarım vardiya</th></tr>';
+  let sep = false;
+  for (const { k, prev } of rng) {
+    if (!prev && !sep) { sep = true; const { y, m } = curYM(); h += `<tr class="sep"><td colspan="7">${C.AYLAR[m - 1]} ${y}</td></tr>`; }
+    if (prev && k === rng[0].k) h += `<tr class="sep"><td colspan="7">Önceki ay — nöbet ertesi bu aya düşen günler</td></tr>`;
+    const list = mo.roster[k] || [], w = C.dow(k);
+    h += `<tr class="${prev ? 'pv' : (w === 0 || w === 6) ? 'we' : ''}"><td class="dt">${C.fmt(k)}</td><td>${C.GUNLER[w]}</td>${[0, 1, 2, 3].map(si => `<td>${cell(k, si, list[si])}</td>`).join('')}<td>${cell(k, RX, list.slice(RX).join(', '))}</td></tr>`;
+  }
+  $('#tblRoster').innerHTML = h;
+}
+function onRosterInput(e) {
+  const t = e.target; if (!t.dataset || !t.dataset.k) return;
+  const mo = M(), names = store.fixed.doctors.map(d => d.name), k = t.dataset.k, si = +t.dataset.s;
+  const list = (mo.roster[k] || []).slice(), norm = v => { v = v.trim(); return v ? (C.matchName(v, names) || v) : ''; };
+  while (list.length < RX) list.push('');
+  if (si < RX) { list[si] = norm(t.value); t.value = list[si]; }
+  else { const ex = t.value.split(',').map(norm).filter(Boolean); list.splice(RX, list.length, ...ex); t.value = ex.join(', '); }
+  t.classList.toggle('bad', !!t.value && t.value.split(',').some(v => v.trim() && !C.matchName(v.trim(), names)));
+  const clean = list.map(x => x || ''); while (clean.length && !clean[clean.length - 1]) clean.pop();
+  if (clean.some(Boolean)) mo.roster[k] = clean; else delete mo.roster[k];
+  saveStore(); refreshAyInfo();
+}
+const LV_TYPES = [['yillik', 'Yıllık izin'], ['kongre', 'Kongre izni'], ['rapor', 'Rapor'], ['diger', 'Diğer (çalışmıyor)']];
+function renderLeavesTable() {
+  const mo = M(), names = store.fixed.doctors.map(d => d.name);
+  $('#tblLeaves').innerHTML = '<colgroup><col style="width:28%"><col style="width:15%"><col style="width:17%"><col style="width:17%"><col style="width:13%"><col></colgroup><tr><th>Hekim</th><th>Tür</th><th>Başlangıç</th><th>Bitiş</th><th class="num">Bu ayki mesai günü</th><th></th></tr>' +
+    (mo.leaves || []).map((l, i) => `<tr><td><input data-i="${i}" data-f="name" list="docList" value="${esc(l.name || '')}" class="${l.name && !C.matchName(l.name, names) ? 'bad' : ''}" autocomplete="off" placeholder="hekim adı"></td>
+      <td><select data-i="${i}" data-f="type">${LV_TYPES.map(([v, t]) => `<option value="${v}" ${(l.type || 'yillik') === v ? 'selected' : ''}>${t}</option>`).join('')}</select></td>
+      <td><input type="date" data-i="${i}" data-f="from" value="${l.from || ''}"></td><td><input type="date" data-i="${i}" data-f="to" value="${l.to || ''}"></td>
+      <td class="num" data-cnt="${i}"></td><td><button class="btn" data-del="${i}">Sil</button></td></tr>`).join('') +
+    (!(mo.leaves || []).length ? '<tr><td colspan="6" class="small">Henüz izin yok — "+ İzin ekle" ya da dosya yükleyin.</td></tr>' : '');
+  updateLeaveCounts();
+}
+function updateLeaveCounts() {
+  if (!P) return;
+  const inc = M().included, names = store.fixed.doctors.map(d => d.name);
+  (M().leaves || []).forEach((l, i) => {
+    const c = document.querySelector(`#tblLeaves [data-cnt="${i}"]`); if (!c) return;
+    const nm = l.name && C.matchName(l.name, names), n = l.from ? P.days.filter(k => k >= l.from && k <= (l.to && l.to >= l.from ? l.to : l.from)).length : '';
+    c.innerHTML = nm && !inc.includes(nm) ? `${n} <span class="tag">programda değil</span>` : String(n);
+  });
+}
+function onLeaveInput(e) {
+  const t = e.target, i = +t.dataset.i, f = t.dataset.f; if (!f) return;
+  const mo = M(), names = store.fixed.doctors.map(d => d.name), l = mo.leaves[i];
+  if (f === 'name') { const v = t.value.trim(); l.name = v ? (C.matchName(v, names) || v) : ''; t.value = l.name; t.classList.toggle('bad', !!l.name && !C.matchName(l.name, names)); }
+  else l[f] = t.value;
+  saveStore(); refreshAyInfo();
+}
+function pasteDialog(title, hint, onOk) {
+  $('#dlgHd').textContent = title;
+  $('#dlgBd').innerHTML = `<p class="small">${hint}</p><textarea id="pasteTxt" style="min-height:220px"></textarea><div class="btns" style="justify-content:flex-end"><button class="btn primary" id="pasteOk">Tabloya ekle</button></div>`;
+  $('#pasteOk').onclick = () => { onOk($('#pasteTxt').value); $('#dlg').close(); };
+  $('#dlg').showModal(); setTimeout(() => $('#pasteTxt').focus(), 50);
+}
+function applyRosterText(t, fname) {
+  const mo = M(), { y } = curYM(), names = store.fixed.doctors.map(d => d.name);
+  const rows = adminRosterRows(C.parseTSV(t), names, y) || textToRosterRows(t, names, y), inRange = new Set(rosterRange().map(r => r.k));
+  const keys = Object.keys(rows).filter(k => inRange.has(k));
+  if (!keys.length) { alert('Metinde bu aya ait tarihli satır bulunamadı.'); return; }
+  if (Object.values(mo.roster).some(l => l.some(Boolean)) && !confirm(`Okunan ${keys.length} günlük liste tabloya yazılsın mı? (Bu günlerdeki mevcut kayıtların yerini alır.)`)) return;
+  keys.forEach(k => { mo.roster[k] = rows[k]; });
+  saveStore(); renderRosterTable(); refreshAyInfo();
+  $('#rosterFile').innerHTML = `${fname ? `<b>${esc(fname)}</b> okundu · ` : ''}${keys.length} gün yazıldı${Object.keys(rows).length > keys.length ? ` (${Object.keys(rows).length - keys.length} gün bu aya ait değil, alınmadı)` : ''}.`;
+}
+function applyLeavesText(t, fname, replace) {
+  const mo = M(), { y } = curYM(), add = leavesFromText(t, store.fixed.doctors.map(d => d.name), y);
+  if (!add.length) { alert('Metinde izin bilgisi bulunamadı.'); return; }
+  if (replace && mo.leaves.length && !confirm(`Okunan ${add.length} izin kaydı mevcut listenin yerine geçsin mi?`)) return;
+  mo.leaves = replace ? add : mo.leaves.concat(add);
+  saveStore(); renderLeavesTable(); refreshAyInfo();
+  $('#leavesFile').innerHTML = `${fname ? `<b>${esc(fname)}</b> okundu · ` : ''}${add.length} kayıt eklendi.`;
+}
+
+/* ---------- özel talepler (düşük puanlı oda, esnek nöbet izni) ---------- */
+const XSVG = '<svg class="xm" viewBox="0 0 100 100" aria-hidden="true"><line x1="12" y1="12" x2="88" y2="88"/><line x1="88" y1="12" x2="12" y2="88"/></svg>';
+const CSVG = '<svg class="xm ck" viewBox="0 0 100 100" aria-hidden="true"><polyline points="16,54 40,78 86,24"/></svg>';
+const dShort = k => `${k.slice(8)}.${k.slice(5, 7)} ${C.GUN_KISA[C.dow(k)]}`;
+function renderCal(el, opts) { // opts: { ym, sel:Set, hol:[], offs:{gün:etiket}, cls }
+  const [y, m] = opts.ym.split('-').map(Number), days = [];
+  for (let d = 1; d <= 31; d++) { const k = C.key(y, m, d); if (C.toDate(k).getUTCMonth() !== m - 1) break; days.push(k); }
+  let h = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'].map(x => `<div class="h">${x}</div>`).join('') + '<div></div>'.repeat((C.dow(days[0]) + 6) % 7);
+  for (const k of days) {
+    const n = +k.slice(8), w = C.dow(k), lab = opts.hol.includes(k) ? 'tatil' : (opts.offs || {})[k];
+    if (w === 0 || w === 6 || lab) { h += `<div class="d off">${n}${lab ? `<small>${lab}</small>` : ''}</div>`; continue; }
+    const x = opts.sel.has(k);
+    h += `<button type="button" class="d ${x ? 'x ' + (opts.cls || '') : ''}" data-k="${k}"><span class="n">${n}</span>${x ? (opts.check ? CSVG : XSVG) : ''}</button>`;
+  }
+  el.innerHTML = h;
+  el.onclick = e => { const b = e.target.closest('button.d'); if (!b) return; const k = b.dataset.k; opts.sel.has(k) ? opts.sel.delete(k) : opts.sel.add(k); renderCal(el, opts); };
+}
+function renderSpecial() {
+  const mo = M(), { cfg } = buildCfg(false), P0 = C.prepare(cfg);
+  const fx = Object.fromEntries(store.fixed.doctors.map(d => [d.name, d]));
+  const rows = P0.docs.map((doc, i) => {
+    const lows = (mo.lowReq || {})[doc.name] || [], nes = (mo.flexNE || {})[doc.name] || [], flex = !!(fx[doc.name] || {}).flex;
+    const cellCal = (kind, list, cls) => `<td style="white-space:normal;max-width:260px">${list.map(k => `<span class="chip ${cls}">${dShort(k)}</span>`).join('') || '<span class="small">—</span>'} <button class="btn" data-cal="${kind}" data-n="${esc(doc.name)}" style="padding:2px 8px;font-size:12px">Takvim</button></td>`;
+    return `<tr><td>${esc(doc.name)}</td>
+      ${cellCal('low', lows, 'low')}${cellCal('pol', (mo.polPref || {})[doc.name] || [], 'pol')}${cellCal('endo', (mo.endoPref || {})[doc.name] || [], 'endo')}
+      <td style="text-align:center"><input type="checkbox" data-flex="${esc(doc.name)}" ${flex ? 'checked' : ''}></td>
+      <td style="white-space:normal;max-width:300px">${flex ? (nes.map(k => `<span class="chip">${dShort(k)}</span>`).join('') || '<span class="small">gün seçilmedi</span>') + ` <span class="small">(bu ay ${P0.shifts[i]} nöbet)</span>` : '<span class="small">kapalı</span>'}</td>
+      <td>${flex ? `<button class="btn" data-cal="ne" data-n="${esc(doc.name)}">Takvim</button>` : ''}</td></tr>`;
+  }).join('');
+  $('#tblSpecial').innerHTML = `<tr><th>Hekim</th><th>Düşük puanlı oda günleri</th><th>Poliklinik için uygun günler</th><th>Endoskopi için uygun günler</th><th>Esnek nöbet izni</th><th>Nöbet izni günleri</th><th></th></tr>${rows}`;
+}
+function openSpecialCal(kind, name) {
+  const mo = M(), { cfg } = buildCfg(false), P0 = C.prepare(cfg), i = P0.docs.findIndex(d => d.name === name);
+  const field = { low: 'lowReq', pol: 'polPref', endo: 'endoPref', ne: 'flexNE' }[kind];
+  const sel = new Set(((mo[field] || {})[name]) || []), offs = {};
+  if (i >= 0) P0.days.forEach((k, d) => { const o = P0.off[i][d]; if (o === 'İ') offs[k] = 'izin'; else if (o === 'NE' && kind !== 'ne') offs[k] = 'NE'; });
+  if (kind !== 'ne') (mo.flexNE || {})[name]?.forEach(k => { offs[k] = 'NE'; });
+  const { y, m } = curYM();
+  const T = { low: ['düşük puanlı oda günleri', 'Kişinin düşük puanlı odada çalışmak istediği günlere tıklayın.'],
+    pol: ['poliklinik için uygun günler', 'Kişinin poliklinikte çalışabileceği günlere tıklayın. Program bu günlerden 1 ya da 2 tanesini (kurallara göre) poliklinik olarak vermeye çalışır.'],
+    endo: ['endoskopi için uygun günler', 'Kişinin endoskopide çalışabileceği günlere tıklayın. Program bu günlerden 1 ya da 2 tanesini (kurallara göre) endoskopi olarak vermeye çalışır.'],
+    ne: ['nöbet izni günleri', `Nöbet izni kullanılacak günlere tıklayın. Bu ay nöbet sayısı: <b>${i >= 0 ? P0.shifts[i] : 0}</b>.`] }[kind];
+  $('#dlgHd').textContent = `${name} · ${C.AYLAR[m - 1]} ${y} · ${T[0]}`;
+  $('#dlgBd').innerHTML = `<p class="small">${T[1]} Tekrar tıklayınca işaret kalkar.</p>
+    <div class="cal" id="spCal"></div><div class="btns" style="justify-content:flex-end"><button class="btn" id="spClr">Temizle</button><button class="btn primary" id="spSave">Kaydet</button></div>`;
+  const opts = { ym: store.current, sel, hol: cfg.holidays, offs, cls: kind === 'low' ? '' : kind, check: kind === 'pol' || kind === 'endo' };
+  renderCal($('#spCal'), opts);
+  $('#spClr').onclick = () => { sel.clear(); renderCal($('#spCal'), opts); };
+  $('#spSave').onclick = () => {
+    mo[field] = mo[field] || {};
+    if (sel.size) mo[field][name] = [...sel].sort(); else delete mo[field][name];
+    saveStore(); $('#dlg').close(); refreshAyInfo();
+  };
+  $('#dlg').showModal();
+}
+
+/* ---------- gün bazlı uygun olmayan odalar ---------- */
+function renderAvoid() {
+  const mo = M(), names = store.fixed.doctors.map(d => d.name);
+  mo.avoid = mo.avoid || [];
+  $('#tblAvoid').innerHTML = '<colgroup><col style="width:24%"><col style="width:30%"><col style="width:38%"><col></colgroup><tr><th>Hekim</th><th>Günler</th><th>Uygun olmayan odalar</th><th></th></tr>' +
+    mo.avoid.map((r, i) => `<tr><td><input data-av="${i}" list="docList" value="${esc(r.name || '')}" class="${r.name && !C.matchName(r.name, names) ? 'bad' : ''}" autocomplete="off" placeholder="hekim adı"></td>
+      <td style="white-space:normal">${(r.days || []).map(k => `<span class="chip">${dShort(k)}</span>`).join('') || '<span class="small">gün seçilmedi</span>'} <button class="btn" data-avcal="${i}" style="padding:2px 8px;font-size:12px">Takvim</button></td>
+      <td style="white-space:normal">${(r.rooms || []).map(n => `<span class="chip room">${esc(n)}</span>`).join('') || '<span class="small">oda seçilmedi</span>'} <button class="btn" data-avroom="${i}" style="padding:2px 8px;font-size:12px">Odaları seç</button></td>
+      <td><button class="btn" data-avdel="${i}">Sil</button></td></tr>`).join('') +
+    (!mo.avoid.length ? '<tr><td colspan="4" class="small">Henüz kayıt yok — "+ Satır ekle" ile başlayın.</td></tr>' : '');
+}
+function avoidCal(i) {
+  const mo = M(), r = mo.avoid[i], names = store.fixed.doctors.map(d => d.name), nm = C.matchName(r.name || '', names);
+  const { cfg } = buildCfg(false), P0 = C.prepare(cfg), di = nm ? P0.docs.findIndex(d => d.name === nm) : -1, offs = {};
+  if (di >= 0) P0.days.forEach((k, d) => { const o = P0.off[di][d]; if (o) offs[k] = o === 'İ' ? 'izin' : 'NE'; });
+  const sel = new Set(r.days || []), { y, m } = curYM();
+  $('#dlgHd').textContent = `${nm || r.name || 'Hekim'} · ${C.AYLAR[m - 1]} ${y} · uygun olmayan oda günleri`;
+  $('#dlgBd').innerHTML = `<p class="small">Bu satırdaki odaların uygun olmadığı günlere tıklayın.</p><div class="cal" id="spCal"></div><div class="btns" style="justify-content:flex-end"><button class="btn" id="spClr">Temizle</button><button class="btn primary" id="spSave">Kaydet</button></div>`;
+  const opts = { ym: store.current, sel, hol: cfg.holidays, offs };
+  renderCal($('#spCal'), opts);
+  $('#spClr').onclick = () => { sel.clear(); renderCal($('#spCal'), opts); };
+  $('#spSave').onclick = () => { r.days = [...sel].sort(); saveStore(); $('#dlg').close(); renderAvoid(); refreshAyInfo(); };
+  $('#dlg').showModal();
+}
+function avoidRooms(i) {
+  const mo = M(), r = mo.avoid[i], sel = new Set(r.rooms || []), areas = store.fixed.areas;
+  const grp = [['Ameliyathane', areas.filter(a => a.type === 'OR')], ['Poliklinik', areas.filter(a => a.type === 'POL')], ['Endoskopi', areas.filter(a => a.type === 'ENDO')]];
+  $('#dlgHd').textContent = `${r.name || 'Hekim'} · uygun olmayan odalar`;
+  $('#dlgBd').innerHTML = grp.map(([t, list]) => `<div class="small" style="margin-top:6px"><b>${t}</b></div><div class="roomgrid">${list.map(a => `<label><input type="checkbox" value="${esc(a.name)}" ${sel.has(a.name) ? 'checked' : ''}> ${esc(a.name)} <span class="small">${nf(a.points)}</span></label>`).join('')}</div>`).join('') +
+    `<div class="btns" style="justify-content:flex-end"><button class="btn" id="rmClr">Temizle</button><button class="btn primary" id="rmSave">Kaydet</button></div>`;
+  $('#rmClr').onclick = () => $('#dlgBd').querySelectorAll('input[type=checkbox]').forEach(c => { c.checked = false; });
+  $('#rmSave').onclick = () => { r.rooms = [...$('#dlgBd').querySelectorAll('input[type=checkbox]:checked')].map(c => c.value); saveStore(); $('#dlg').close(); renderAvoid(); refreshAyInfo(); };
+  $('#dlg').showModal();
+}
+
+/* ================= PROGRAM ================= */
+/* ---------- sürümler: Orijinal (algoritma) · Revize (Rev. n) · Taslak ---------- */
+let progVer = null, stale = false, baseS = null;
+const revs = () => M().revs || [];
+function verState(v) { const mo = M(); return v === 'draft' && mo.draft ? mo.draft.state : v === 'rev' && revs().length ? revs()[revs().length - 1].state : mo.result; }
+function loadResult() {
+  const { cfg } = buildCfg(), mo = M();
+  P = C.prepare(cfg);
+  SN = shortNames([...new Set([...store.fixed.doctors.map(d => d.name), ...P.docs.map(d => d.name)])]);
+  if (!progVer || (progVer === 'draft' && !mo.draft) || (progVer === 'rev' && !revs().length)) progVer = mo.draft ? 'draft' : revs().length ? 'rev' : 'orig';
+  const r = verState(progVer);
+  S = r ? C.restoreState(P, r) : null;
+  baseS = progVer === 'draft' && mo.draft ? C.restoreState(P, mo.draft.baseState) : null;
+  stale = !!(mo.result && mo.inputSig !== sig(cfg));
+}
+function generate() {
+  const { cfg, fx } = buildCfg(false), mo = M();
+  if ((revs().length || mo.draft) && !confirm('Orijinal program yeniden oluşturulursa bu ayın revize programları ve taslak silinir. Devam edilsin mi?')) return;
+  P = C.prepare(cfg);
+  if (!P.N || !P.D) { alert('Önce ay bilgilerini (hekimler, nöbet listesi) girin.'); return; }
+  $('#overlay').style.display = 'flex';
+  setTimeout(() => {
+    let best = null;
+    for (let k = 0; k < 3; k++) {
+      const res = C.solve(P, { iters: 1500000 });
+      const v = C.validate(P, res.S).length;
+      const score = v * 1e12 + res.cost;
+      if (!best || score < best.score) best = { ...res, score };
+    }
+    S = best.S;
+    Object.assign(mo, { result: C.serialize(P, S), snap: fx, inputSig: sig(cfg), seed: best.seed, revs: [], draft: null });
+    progVer = 'orig'; stale = false; saveStore();
+    $('#overlay').style.display = 'none';
+    renderProgram();
+  }, 60);
+}
+function setVer(v) { progVer = v; P = null; loadResult(); renderProgram(); }
+function startDraft() {
+  const mo = M(), base = revs().length ? 'rev' : 'orig', st = verState(base);
+  mo.draft = { base: base === 'rev' ? revs().length : 0, baseState: st, state: st, undo: [], redo: [], from: todayKey() };
+  saveStore(); setVer('draft');
+}
+// taslak ile temel arasındaki hücre farkları (rapor ve vurgulama için)
+const cellWho = (X, d, a) => { const i = X.slot[d][a]; if (i >= 0) return P.docs[i].name; const p = X.coverBy[d][a]; return p >= 0 && X.slot[d][p] >= 0 ? P.docs[X.slot[d][p]].name + ' (' + P.areas[p].name + ' ile)' : ''; };
+function diffCells(A0, B0) {
+  const out = [];
+  for (let d = 0; d < P.D; d++) for (let a = 0; a < P.A; a++) { const o = cellWho(A0, d, a), n = cellWho(B0, d, a); if (o !== n) out.push({ day: P.days[d], area: P.areas[a].name, old: o || '—', new: n || '—' }); }
+  return out;
+}
+function renderVerBar() {
+  const mo = M(), R = revs(), last = R[R.length - 1];
+  if (!mo.result) { $('#verBar').innerHTML = ''; return; }
+  $('#verBar').innerHTML = `<button class="vb ${progVer === 'orig' ? 'on' : ''}" data-ver="orig">Orijinal program</button>` +
+    (R.length ? `<button class="vb ${progVer === 'rev' ? 'on' : ''}" data-ver="rev">Revize program · Rev. ${last.n} <span class="small" style="color:inherit;opacity:.75">${new Date(last.at).toLocaleDateString('tr-TR')}</span></button>` : '') +
+    (mo.draft ? `<button class="vb dr ${progVer === 'draft' ? 'on' : ''}" data-ver="draft">✎ Taslak</button>` : '') +
+    `<span class="sp"></span><button class="btn" id="btnChange">± Ay içi değişiklik</button>` + (mo.draft ? '' : `<button class="btn primary" id="btnDraft">✎ Elle düzenlemeye başla</button>`) +
+    (R.length ? `<details style="flex-basis:100%"><summary class="small" style="cursor:pointer">Revizyon geçmişi (${R.length})</summary><table style="margin-top:6px"><tr><th>Rev.</th><th>Tarih</th><th class="num">Değişen hücre</th><th>Neden / değişiklikler</th><th></th></tr>${R.map(r => `<tr><td>Rev. ${r.n}</td><td>${new Date(r.at).toLocaleString('tr-TR')}</td><td class="num">${r.changes.length}</td><td style="white-space:normal">${esc([r.note, ...(mo.changes || []).filter(c => c.rev === r.n).map(c => c.text)].filter(Boolean).join(' · ') || '—')}</td><td><button class="btn" data-rep="${r.n}" style="padding:2px 8px;font-size:12px">Değişiklik raporu (PDF)</button></td></tr>`).join('')}</table></details>` : '');
+}
+function renderDraftBar(V) {
+  const mo = M();
+  if (progVer !== 'draft' || !mo.draft || !baseS) { $('#draftBar').innerHTML = progVer !== 'draft' && S ? `<p class="hint" style="margin:6px 0 0">${progVer === 'orig' ? 'Orijinal program algoritmanın ürettiği haldir ve değiştirilmez.' : `Revize program Rev. ${revs()[revs().length - 1].n}.`} Değişiklik yapmak için <b>✎ Elle düzenlemeye başla</b>.</p>` : ''; return; }
+  const D = diffCells(baseS, S), smB = C.summary(P, baseS), smN = C.summary(P, S);
+  const dPts = smN.map((x, i) => ({ name: x.name, from: smB[i].total, to: x.total, tgt: x.target })).filter(x => x.from !== x.to);
+  const VB = new Set(C.validate(P, baseS).map(v => v.msg)), Vnew = V.filter(v => !VB.has(v.msg));
+  const bn = mo.draft.base ? `Rev. ${mo.draft.base}` : 'Orijinal', pend = (mo.changes || []).filter(c => !c.rev), unp = unplaced();
+  $('#draftBar').innerHTML = `<div class="draft"><div class="hd"><b>✎ Taslak</b><span class="small">temel: ${bn} · ${D.length} hücre değişti${Vnew.length ? ` · <span style="color:var(--bad);font-weight:600">${Vnew.length} yeni kural ihlali</span>` : ''}</span>
+    <span style="margin-left:auto"></span><button class="btn" id="drUndo" ${mo.draft.undo.length ? '' : 'disabled'}>↶ Geri al</button><button class="btn" id="drRedo" ${mo.draft.redo.length ? '' : 'disabled'}>↷ İleri al</button><button class="btn" id="drDrop">Taslağı iptal et</button><button class="btn primary" id="drSave">✓ Kesinleştir (Rev. ${revs().length + 1})</button></div>
+    <div class="hd" style="margin-top:6px"><span class="small">Revizyon başlangıcı:</span><input type="date" id="drFrom" value="${mo.draft.from || ''}" style="font-size:13px"><span class="small">Bu günden önceki günlere dokunulmaz (soluk görünür).</span></div>
+    ${pend.length ? `<div style="margin-top:6px"><b class="small">Bu revizyondaki ay içi değişiklikler</b><ul class="chgl">${pend.map(c => `<li>${esc(c.text)}</li>`).join('')}</ul></div>` : ''}
+    ${BRK.size || unp.length ? `<div class="msg ${BRK.size ? 'bad' : 'warn'}" style="margin:8px 0 0"><b>${BRK.size ? BRK.size + ' hücre bozuldu' : 'Bozulan hücre yok'}</b>${BRK.size ? ' (koyu kırmızı)' : ''}${unp.length ? ` · odası olmayan müsait hekim (o gün hekim sayısı açık odaları aşıyor ya da yeni katılan): ${esc(unp.slice(0, 8).join(', '))}${unp.length > 8 ? '…' : ''}` : ''}. <button class="btn primary" id="drProp" style="margin-left:8px">En az değişiklikle düzeltme önerileri</button></div>` : ''}
+    ${PROPS ? `<div class="props">${PROPS.map((x, k) => `<div class="prop"><b>Öneri ${k + 1}</b><span class="tag ${x.label === 'En az değişiklik' ? '' : 'nn'}">${x.label}</span><span>${x.n} hücre değişir</span><span>en büyük puan farkı ${nf(x.max)}</span><span style="color:${x.viol ? 'var(--bad)' : 'var(--ok)'}">${x.viol ? x.viol + ' kural ihlali' : '✓ kurallara uygun'}</span><button class="btn primary" data-prop="${k}" style="margin-left:auto">Uygula</button></div>`).join('') || '<div class="small">Öneri üretilemedi.</div>'}<span class="small">Öneri uygulandıktan sonra da hücrelere tıklayarak elle değişiklik yapabilir, "Geri al" ile vazgeçebilirsiniz.</span></div>` : ''}
+    <p class="small" style="margin:6px 0 0">Günlük programda bir hücreye tıklayarak istediğiniz hekimi istediğiniz odaya yazabilirsiniz; program engellemez, kural ihlallerini ve puan değişimlerini burada gösterir. Değişen hücreler mavi çerçevelidir.</p>
+    ${dPts.length || Vnew.length ? `<div class="cols">${dPts.length ? `<div><b class="small">Puan değişimi</b><ul>${dPts.map(x => `<li>${esc(x.name)}: ${nf(x.from)} → <b>${nf(x.to)}</b> (${x.to > x.from ? '+' : ''}${nf(x.to - x.from)}; hedef ${nf(x.tgt)})</li>`).join('')}</ul></div>` : ''}
+    ${Vnew.length ? `<div><b class="small" style="color:var(--bad)">Yeni kural ihlalleri</b><ul>${Vnew.map(v => `<li style="color:var(--bad)"><b>${v.t}</b> — ${esc(v.msg)}</li>`).join('')}</ul></div>` : ''}</div>` : ''}</div>`;
+  $('#drUndo').onclick = () => draftStep(-1); $('#drRedo').onclick = () => draftStep(1);
+  $('#drDrop').onclick = () => { if (!confirm(`Taslaktaki tüm hücre değişiklikleri silinsin mi?${pend.length ? '\n\nNot: girilen ay içi değişiklikler (izin, nöbet değişimi vb.) ay bilgilerinde kalır; gerekirse Ay bilgileri sekmesinden kaldırın.' : ''}`)) return; mo.draft = null; PROPS = null; saveStore(); setVer(revs().length ? 'rev' : 'orig'); };
+  $('#drSave').onclick = () => commitDraft(V, D);
+  $('#drFrom').onchange = e => { mo.draft.from = e.target.value; PROPS = null; saveStore(); renderProgram(); };
+  if ($('#drProp')) $('#drProp').onclick = makeProposals;
+  $('#draftBar').querySelectorAll('[data-prop]').forEach(b => b.onclick = () => applyProposal(+b.dataset.prop));
+}
+let BRK = null, PROPS = null;
+const todayKey = () => { const t = new Date(); return C.key(t.getFullYear(), t.getMonth() + 1, t.getDate()); };
+function draftFrom() { const dr = M().draft; if (!dr || !P) return 0; const k = dr.from || P.days[0]; const i = P.days.findIndex(x => x >= k); return i < 0 ? P.D : i; }
+// bozulan hücreler: revizyon başlangıcından sonra artık geçersiz olan atamalar
+function brokenCells() {
+  const out = new Set(), f = draftFrom();
+  for (let d = f; d < P.D; d++) for (let a = 0; a < P.A; a++) {
+    const i = S.slot[d][a], p = S.coverBy[d][a];
+    if (i >= 0) { if (P.off[i][d] || !P.open[d][a] || P.forb[i].includes(a) || (P.avoid[i].get(d) || new Set()).has(a)) out.add(d * P.A + a); continue; }
+    if (!P.open[d][a]) continue;
+    if (P.areas[a].type !== 'OR' || p < 0 || S.slot[d][p] < 0 || !P.pairOK[p * P.A + a]) out.add(d * P.A + a);
+  }
+  return out;
+}
+const unplaced = () => { const out = []; for (let d = draftFrom(); d < P.D; d++) P.docs.forEach((x, i) => { if (S.where[d][i] === -2 && !P.off[i][d]) out.push(`${P.days[d].slice(8)} ${SN[x.name] || x.name}`); }); return out; };
+function makeProposals() {
+  const f = draftFrom(); if (f >= P.D) { alert('Revizyon başlangıç günü ayın son gününden sonra.'); return; }
+  $('#overlay').style.display = 'flex';
+  setTimeout(() => {
+    // üç tür: en az değişiklik (değişen hücre cezası yüksek) · dengeli · en dengeli (ceza düşük → puan farkı kapanır, daha çok hücre değişir)
+    const KINDS = [['En az değişiklik', 2e4, 400000, [11, 22, 33], 2], ['Dengeli', 3000, 800000, [44, 55], 1], ['En dengeli', 1000, 800000, [66, 77], 1]];
+    const seen = new Set(), out = [];
+    for (const [label, lambda, iters, seeds, take] of KINDS) {
+      const grp = [];
+      for (const seed of seeds) {
+        const r = C.repair(P, S, { from: f, seed, lambda, iters }), key = JSON.stringify(r.S.slot.map(x => Array.from(x)).concat(r.S.coverBy.map(x => Array.from(x))));
+        if (seen.has(key)) continue; seen.add(key);
+        const V = C.validate(P, r.S), sm = C.summary(P, r.S), D = diffCells(S, r.S);
+        grp.push({ label, S: r.S, viol: V.length, n: D.length, max: Math.max(...sm.map(x => Math.abs(x.diff))) });
+      }
+      grp.sort((a, b) => a.viol - b.viol || (label === 'En az değişiklik' ? a.n - b.n || a.max - b.max : a.max - b.max || a.n - b.n));
+      out.push(...grp.slice(0, take));
+    }
+    PROPS = out;
+    $('#overlay').style.display = 'none'; renderProgram();
+  }, 60);
+}
+function applyProposal(k) {
+  const X = PROPS[k]; PROPS = null;
+  applyEdit(() => { for (let d = 0; d < P.D; d++) { S.slot[d].set(X.S.slot[d]); S.coverBy[d].set(X.S.coverBy[d]); } });
+}
+/* ---------- ay içi değişiklik girişi ---------- */
+const CH_TYPES = [['absent', 'Çalışamıyor (rapor / izin / kongre / diğer)'], ['avoid', 'Bazı odalara bakamıyor'], ['duty', 'Nöbet değişimi'], ['room', 'Oda kapandı / açıldı'], ['join', 'Programa katılıyor (yeni ya da kayıtlı hekim)'], ['exit', 'Programdan ayrılıyor']];
+function changeDialog() {
+  if (!M().result) { alert('Önce programı oluşturun.'); return; }
+  const mo = M(), docs = P.docs.map(x => x.name).sort((a, b) => a.localeCompare(b, 'tr')), others = store.fixed.doctors.map(x => x.name).filter(n => !P.docs.some(x => x.name === n));
+  const dIn = (id, v) => `<input type="date" id="${id}" value="${v || ''}">`, t0 = (() => { const t = todayKey(); return t >= P.days[0] && t <= P.days[P.D - 1] ? t : P.days[0]; })();
+  const docSel = id => `<select id="${id}">${docs.map(n => `<option>${esc(n)}</option>`).join('')}</select>`;
+  const F = {
+    absent: () => `<div class="pr"><span>Hekim</span>${docSel('chDoc')}</div><div class="pr"><span>Tür</span><select id="chLv">${LV_TYPES.map(([v, t]) => `<option value="${v}">${t}</option>`).join('')}</select></div><div class="pr"><span>Başlangıç</span>${dIn('chFrom', t0)}</div><div class="pr"><span>Bitiş</span>${dIn('chTo', t0)}</div>`,
+    avoid: () => `<div class="pr"><span>Hekim</span>${docSel('chDoc')}</div><div class="pr"><span>Başlangıç</span>${dIn('chFrom', t0)}</div><div class="pr"><span>Bitiş</span>${dIn('chTo', t0)}</div><div class="small">Bakamayacağı odalar:</div><div class="roomgrid">${P.areas.map(a => `<label><input type="checkbox" class="chRoom" value="${esc(a.name)}"> ${esc(a.name)}</label>`).join('')}</div>`,
+    duty: () => `<div class="pr"><span>Tarih</span>${dIn('chFrom', t0)}</div><div class="pr"><span>Nöbet</span><select id="chCol"><option value="0">Merkez ameliyathane</option><option value="1">Doğum ameliyathane</option><option value="2">YBÜ 1-2</option><option value="3">YBÜ 3</option></select></div><div class="pr"><span>Yeni nöbetçi</span><input type="text" id="chNew" list="docList" placeholder="ad soyad"></div><div class="small" id="chCur"></div>`,
+    room: () => `<div class="pr"><span>Oda</span><select id="chRoomSel">${P.areas.map(a => `<option>${esc(a.name)}</option>`).join('')}</select></div><div class="pr"><span>Durum</span><select id="chOpen"><option value="0">Kapalı</option><option value="1">Açık</option></select></div><div class="pr"><span>Başlangıç</span>${dIn('chFrom', t0)}</div><div class="pr"><span>Bitiş</span>${dIn('chTo', P.days[P.D - 1])}</div>`,
+    join: () => `<div class="pr"><span>Hekim</span><select id="chJoin"><option value="">— yeni hekim (aşağıya yazın) —</option>${others.map(n => `<option>${esc(n)}</option>`).join('')}</select></div><div class="pr"><span>Yeni hekim adı</span><input type="text" id="chName" placeholder="Ad Soyad"></div><div class="pr"><span>Nöbet tutar</span><input type="checkbox" id="chNobet" checked style="flex:0"></div><div class="pr"><span>Başlangıç</span>${dIn('chFrom', t0)}</div><p class="small">Kayıtlı hekim seçilirse muaf olduğu odalar, poliklinik/endoskopi muafiyeti ve nöbet bilgisi kayıtlardan gelir.</p>`,
+    exit: () => `<div class="pr"><span>Hekim</span>${docSel('chDoc')}</div><div class="pr"><span>Ayrılış tarihi</span>${dIn('chFrom', t0)}</div><p class="small">Bu tarihten itibaren programa yazılmaz; puan hedefi çalıştığı gün oranında düşer.</p>`
+  };
+  $('#dlgHd').textContent = 'Ay içi değişiklik';
+  $('#dlgBd').innerHTML = `<div class="prev" style="margin-top:0"><div class="pr"><span>Değişiklik türü</span><select id="chType">${CH_TYPES.map(([v, t]) => `<option value="${v}">${t}</option>`).join('')}</select></div><div id="chForm"></div></div>
+    <p class="small">Kaydedince program bu değişikliği ay bilgilerine işler, bozulan hücreleri koyu kırmızı gösterir ve "en az değişiklik" önerileri sunar. Revizyon başlangıç gününden önceki günlere dokunulmaz.</p>
+    <div class="btns" style="justify-content:flex-end"><button class="btn primary" id="chSave">Kaydet</button></div>`;
+  const draw = () => { $('#chForm').innerHTML = F[$('#chType').value](); if ($('#chCol')) { const cur = () => { const k = $('#chFrom').value, l = (mo.roster[k] || []); $('#chCur').textContent = `Şu anki nöbetçi: ${l[+$('#chCol').value] || '—'}`; }; $('#chCol').onchange = cur; $('#chFrom').onchange = cur; cur(); } };
+  $('#chType').onchange = draw; draw();
+  $('#chSave').onclick = () => { const r = saveChange($('#chType').value); if (r) { $('#dlg').close(); afterChange(r); } };
+  $('#dlg').showModal();
+}
+function daysBetween(a, b) { const out = []; if (!a) return out; for (let k = a; k <= (b && b >= a ? b : a); k = C.addDays(k, 1)) out.push(k); return out; }
+function saveChange(type) {
+  const mo = M(), v = id => ($('#' + id) || {}).value, names = store.fixed.doctors.map(x => x.name), lvT = Object.fromEntries(LV_TYPES);
+  const from = v('chFrom'), to = v('chTo');
+  if (!from) { alert('Tarih seçin.'); return null; }
+  let text = '', who = [];
+  if (type === 'absent') { const n = v('chDoc'); mo.leaves.push({ name: n, type: v('chLv'), from, to: to && to > from ? to : '' }); text = `${n}: ${lvT[v('chLv')]} (${C.fmt(from)}${to && to > from ? '–' + C.fmt(to) : ''})`; who = [n]; }
+  if (type === 'avoid') { const n = v('chDoc'), rooms = [...document.querySelectorAll('.chRoom:checked')].map(c => c.value); if (!rooms.length) { alert('Oda seçin.'); return null; } mo.avoid = mo.avoid || []; mo.avoid.push({ name: n, days: daysBetween(from, to), rooms }); text = `${n}: ${rooms.join(', ')} odasına bakamıyor (${C.fmt(from)}${to && to > from ? '–' + C.fmt(to) : ''})`; who = [n]; }
+  if (type === 'duty') { const c = +v('chCol'), nv = (v('chNew') || '').trim(), nn = C.matchName(nv, names) || nv; if (!nn) { alert('Yeni nöbetçiyi yazın.'); return null; } const l = (mo.roster[from] || []).slice(); while (l.length < RX) l.push(''); const old = l[c] || '—'; l[c] = nn; mo.roster[from] = l; const col = ['Merkez ameliyathane', 'Doğum ameliyathane', 'YBÜ 1-2', 'YBÜ 3'][c]; text = `Nöbet değişimi ${C.fmt(from)} ${col}: ${old} → ${nn}`; who = [old, nn]; mo.dutyChanges = mo.dutyChanges || []; mo.dutyChanges.push({ day: from, col, old, new: nn }); }
+  if (type === 'room') { const r = v('chRoomSel'), open = v('chOpen') === '1', ds = daysBetween(from, to); mo.closed = mo.closed || {}; const st = new Set(mo.closed[r] || []); ds.forEach(k => open ? st.delete(k) : st.add(k)); if (st.size) mo.closed[r] = [...st].sort(); else delete mo.closed[r]; text = `${r} ${open ? 'açıldı' : 'kapalı'} (${C.fmt(from)}–${C.fmt(ds[ds.length - 1])})`; }
+  if (type === 'join') {
+    let n = v('chJoin'); const fresh = !n; if (fresh) { n = (v('chName') || '').replace(/\s+/g, ' ').trim(); if (!n) { alert('Ad soyad yazın ya da kayıtlı hekim seçin.'); return null; } if (names.includes(n)) { alert('Bu ad zaten kayıtlı — listeden seçin.'); return null; } store.fixed.doctors.push({ name: n, nobet: $('#chNobet').checked, forbidden: [] }); }
+    if (!mo.included.includes(n)) mo.included.push(n);
+    if (mo.snap && !mo.snap.doctors.some(x => x.name === n)) { const d0 = store.fixed.doctors.find(x => x.name === n); mo.snap.doctors.push({ name: n, nobet: !!d0.nobet, flex: !!d0.flex }); if ((d0.forbidden || []).length) mo.snap.forbidden[n] = d0.forbidden.slice(); if (d0.exPOL) mo.snap.exemptPOL.push(n); if (d0.exENDO) mo.snap.exemptENDO.push(n); }
+    mo.joins = mo.joins || {}; mo.joins[n] = from; text = `${n} programa katıldı (${C.fmt(from)})${fresh ? ' — yeni hekim' : ''}`; who = [n];
+  }
+  if (type === 'exit') { const n = v('chDoc'); mo.exits = mo.exits || {}; mo.exits[n] = from; text = `${n} programdan ayrıldı (${C.fmt(from)} itibarıyla)`; who = [n]; }
+  mo.changes = mo.changes || []; mo.changes.push({ id: Date.now(), at: new Date().toISOString(), type, text, who, from, to: to || from, rev: null });
+  saveStore();
+  return { from };
+}
+function afterChange(r) {
+  const mo = M();
+  if (!mo.draft) { const base = revs().length ? 'rev' : 'orig', st = verState(base); mo.draft = { base: base === 'rev' ? revs().length : 0, baseState: st, state: st, undo: [], redo: [] }; }
+  if (!mo.draft.from) { const t = todayKey(); mo.draft.from = t; }
+  saveStore(); PROPS = null; progVer = 'draft'; P = null; loadResult(); view = 'gunluk'; renderProgram();
+}
+// revizyon değişiklik raporu (PDF, A4 dikey)
+function printReport(n) {
+  const mo = M(), R = revs().find(x => x.n === n); if (!R) return;
+  const { y, m } = curYM(), pa = $('#printArea');
+  const why = row => { const c = (mo.changes || []).filter(c => c.rev === n && row.day >= c.from && row.day <= (c.to || c.from) && (c.who || []).some(w => row.old.startsWith(w) || row.new.startsWith(w))); return c.length ? c.map(x => x.text).join('; ') : (mo.changes || []).some(c => c.rev === n) ? 'yeniden düzenleme' : (R.note || 'elle düzenleme'); };
+  const rows = R.changes.map(r => `<tr><td>${C.fmt(r.day)}</td><td>${C.GUNLER[C.dow(r.day)]}</td><td>${esc(r.area)}</td><td>${esc(r.old)}</td><td><b>${esc(r.new)}</b></td><td>${esc(why(r))}</td></tr>`).join('')
+    + (mo.dutyChanges || []).filter(dc => (mo.changes || []).some(c => c.rev === n && c.type === 'duty' && c.from === dc.day)).map(dc => `<tr><td>${C.fmt(dc.day)}</td><td>${C.GUNLER[C.dow(dc.day)]}</td><td>Nöbet (${esc(dc.col)})</td><td>${esc(dc.old)}</td><td><b>${esc(dc.new)}</b></td><td>nöbet değişimi</td></tr>`).join('');
+  pa.className = 'rep';
+  pa.innerHTML = `<h1>Çalışma Programı Değişiklik Bildirimi — ${C.AYLAR[m - 1]} ${y}</h1><div class="sub">${esc(official().header)} · Revizyon ${n} · ${new Date(R.at).toLocaleDateString('tr-TR')}${R.note ? ' · ' + esc(R.note) : ''}</div>
+    <table><thead><tr><th>Tarih</th><th>Gün</th><th>Oda / bölüm</th><th>Önceki</th><th>Yeni</th><th>Neden</th></tr></thead><tbody>${rows || '<tr><td colspan="6">Değişiklik yok.</td></tr>'}</tbody></table>`;
+  const st = document.createElement('style'); st.textContent = '@media print{@page{size:A4 portrait;margin:12mm}}'; document.head.appendChild(st);
+  Object.assign(pa.style, { zoom: '' });
+  const done = () => { st.remove(); pa.className = ''; window.removeEventListener('afterprint', done); };
+  window.addEventListener('afterprint', done);
+  window.print();
+}
+function draftStep(dir) {
+  const dr = M().draft, from = dir < 0 ? dr.undo : dr.redo, to = dir < 0 ? dr.redo : dr.undo;
+  if (!from.length) return;
+  to.push(dr.state); dr.state = from.pop(); saveStore(); P = null; loadResult(); renderProgram();
+}
+function applyEdit(fn) {   // taslağa bir düzenleme uygular (geri alınabilir)
+  const dr = M().draft; dr.undo.push(dr.state); if (dr.undo.length > 200) dr.undo.shift(); dr.redo = [];
+  fn(); C.normalize(P, S); dr.state = C.serialize(P, S); saveStore(); if ($('#dlg').open) $('#dlg').close(); renderProgram();
+}
+function commitDraft(V, D) {
+  const mo = M();
+  if (!D.length && !(mo.changes || []).some(c => !c.rev)) { alert('Taslakta değişiklik yok.'); return; }
+  if (V.length && !confirm(`Bu programda ${V.length} kesin kural ihlali var:\n\n${V.slice(0, 12).map(v => '• ' + v.msg).join('\n')}${V.length > 12 ? '\n…' : ''}\n\nBu ihlaller onaylanmış istisna olarak kaydedilip program kesinleştirilsin mi?`)) return;
+  const note = prompt('Değişikliğin nedeni (rapor için, isteğe bağlı):', '') ?? '';
+  mo.revs = revs(); const n = mo.revs.length + 1;
+  mo.revs.push({ n, at: new Date().toISOString(), base: mo.draft.base, from: mo.draft.from || null, state: mo.draft.state, changes: D, exceptions: V.map(v => v.msg), note });
+  (mo.changes || []).forEach(c => { if (!c.rev) c.rev = n; });
+  mo.inputSig = sig(buildCfg(false).cfg);
+  mo.draft = null; saveStore(); setVer('rev');
+}
+
+let view = 'ozet';
+function renderProgram() {
+  if (!P) loadResult();
+  const st = $('#status'), vw = $('#view');
+  renderVerBar();
+  if (!S) { $('#draftBar').innerHTML = '';
+    st.innerHTML = `<span class="pill info">Bu ay için henüz program oluşturulmadı.</span>`;
+    $('#staleMsg').innerHTML = M().result ? `<div class="msg warn">Kayıtlı program, sonradan değişen girdilerle (gün/hekim/oda listesi) uyuşmuyor — yeniden oluşturun.</div>` : '';
+    vw.innerHTML = ''; return;
+  }
+  const V = C.validate(P, S);
+  const sm = C.summary(P, S);
+  const diffs = sm.map(s => s.diff);
+  const spread = Math.max(...sm.map(s => s.total - s.target)) - Math.min(...sm.map(s => s.total - s.target));
+  const RQ = C.requests(P, S), rqOk = RQ.filter(r => r.ok).length, PF = C.prefs(P, S), pfOk = PF.filter(r => r.ok).length, AV = C.avoids(P, S), avOk = AV.filter(r => r.ok).length;
+  const EX = progVer === 'rev' && revs().length ? new Set(revs()[revs().length - 1].exceptions || []) : new Set(), Vx = V.filter(v => EX.has(v.msg)), Vo = V.filter(v => !EX.has(v.msg));
+  st.innerHTML = (Vo.length ? `<span class="pill bad">Kesin kural ihlali: ${Vo.length}</span>` : `<span class="pill ok">✓ Tüm kesin kurallar sağlanıyor${Vx.length ? ' (onaylı istisnalar hariç)' : ''}</span>`) +
+    (Vx.length ? `<span class="pill" style="background:var(--warn-bg);color:var(--warn)" title="${esc(Vx.map(v => v.msg).join('\n'))}">Onaylanmış istisna: ${Vx.length}</span>` : '') +
+    (RQ.length ? `<span class="pill ${rqOk < RQ.length ? 'bad' : 'ok'}">Düşük oda talepleri: ${rqOk}/${RQ.length} karşılandı</span>` : '') +
+    (PF.length ? `<span class="pill ${pfOk < PF.length ? 'bad' : 'ok'}">Poliklinik/endoskopi gün tercihleri: ${pfOk}/${PF.length} karşılandı</span>` : '') +
+    (AV.length ? `<span class="pill ${avOk < AV.length ? 'bad' : 'ok'}">Uygun olmayan oda tercihleri: ${avOk}/${AV.length} gün karşılandı</span>` : '') +
+    (() => { if (!P.hasPrev) return ''; const RO = C.rotation(P, S), pe = RO.filter(r => r.kind !== 'oda'), ok = pe.filter(r => r.ok).length;
+      let tot = 0, fresh = 0; P.docs.forEach((_, i) => P.OR.forEach(u => { const v = S.cnt[i * P.A + u]; tot += v; if (!P.prevRoom[i][u]) fresh += v; }));
+      return (pe.length ? `<span class="pill ${ok < pe.length ? 'bad' : 'ok'}">Poliklinik/endoskopi dönüşümü: ${ok}/${pe.length}</span>` : '') + `<span class="pill info">Geçen ay çalışılmayan odalarda: %${tot ? Math.round(100 * fresh / tot) : 0}</span>`; })() +
+    `<span class="pill info">En büyük puan farkı: ${nf(Math.max(...diffs.map(Math.abs)))}</span>` +
+    `<span class="pill info">${P.N} hekim · ${P.D} mesai günü</span>`;
+  const frozen = M().snap && JSON.stringify(M().snap) !== JSON.stringify(currentFixed());
+  $('#staleMsg').innerHTML = (frozen ? `<div class="msg ok">Bu ay, programın oluşturulduğu tarihteki hekim ve oda bilgileriyle (puanlar dahil) gösteriliyor; sonradan yapılan sabit veri değişiklikleri bu ayı etkilemez. Güncel bilgilerle hesaplamak için "yeniden oluştur"a basın.</div>` : '') + (stale && !revs().length && !M().draft ? `<div class="msg warn">Program oluşturulduktan sonra ay bilgileri değişti (nöbet, izin, hekim seçimi…). Kontrol sonuçları yeni bilgilere göredir; gerekirse yeniden oluşturun.</div>` : '');
+  document.querySelectorAll('#views button').forEach(b => b.classList.toggle('on', b.dataset.v === view));
+  BRK = progVer === 'draft' && M().draft ? brokenCells() : null;
+  renderDraftBar(V);
+  vw.innerHTML = ({ ozet: viewOzet, gunluk: viewGunluk, kisigun: viewKisiGun, kisioda: viewKisiOda, uyari: viewUyari })[view](sm, V);
+  if (view === 'gunluk') vw.querySelectorAll('td[data-d]').forEach(td => td.onclick = () => progVer === 'draft' ? openEdit(+td.dataset.d, +td.dataset.a) : (confirm('Değişiklik taslak üzerinde yapılır. Elle düzenlemeye başlansın mı?') && startDraft()));
+}
+
+const icuNames = () => P.cfg.doctors.map(d => d.name).filter(n => !P.cfg.included.includes(n));
+const dayHead = () => P.days.map(k => `<th class="num">${k.slice(8)}<br><span class="small">${C.GUN_KISA[C.dow(k)]}</span></th>`).join('');
+
+function viewOzet(sm) {
+  const rows = sm.slice().sort((a, b) => b.diff - a.diff).map(s => {
+    return `<tr><td>${esc(s.name)}</td><td>${s.nobet ? '' : '<span class="tag nn">nöbetsiz</span>'}</td><td class="num">${s.work}</td><td class="num">${s.ne || ''}</td><td class="num">${s.izin || ''}</td>
+    <td class="num">${s.pol}</td><td class="num">${s.endo}</td><td class="num">${s.covers || ''}</td><td class="num">${s.rep || ''}</td>
+    <td class="num">${nf(s.target)}</td><td class="num"><b>${nf(s.total)}</b></td><td class="num">${s.diff >= 0 ? '+' : ''}${nf(s.diff)}</td>
+    </tr>`;
+  }).join('');
+  const tot = sm.reduce((a, s) => a + s.total, 0);
+  return `<p class="hint">Ayın toplam oda puanı (${nf(P.totalPts)}) hekimlere eşit dağıtılır; yıllık izinlinin payı izinli gün oranında düşer. Küçük farklar normaldir — oda puanları 50'nin katları olduğu için tam eşitlik çoğu zaman mümkün değildir.</p>
+  <div class="scroll"><table><tr><th>Hekim</th><th></th><th class="num">Aktif çalışma<br>günü</th><th class="num">Nöbet ertesi</th><th class="num">İzin</th><th class="num">Poliklinik</th><th class="num">Endoskopi</th><th class="num">Telafi</th><th class="num">Tekrar oda</th><th class="num wrap">Çalışma günlerine göre<br>oda toplam puanı</th><th class="num wrap">Çalışma programına göre<br>hesaplanan oda puanı</th><th class="num">Fark</th></tr>${rows}
+  <tr><th>Toplam</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th class="num">${nf(P.totalPts)}</th><th class="num">${nf(tot)}</th><th></th></tr></table></div>
+  <p class="small">Telafi: başka bir odaya ek olarak bakılan gün sayısı. Tekrar oda: aynı ameliyathane odasında 2 kez çalışılan oda sayısı.</p>`;
+}
+
+const legend = `<div class="legend"><span><i class="c-pol"></i>Poliklinik</span><span><i class="c-endo"></i>Endoskopi</span><span><i class="c-empty"></i>Ek bakılan oda</span><span><i class="c-cover"></i>Aynı gün iki odada (*)</span><span><i class="c-ne"></i>Nöbet ertesi</span><span><i class="c-yb"></i>YB nöbeti (yanık / dış anestezi)</span><span><i class="c-izin"></i>İzin</span><span><i class="c-closed"></i>Kapalı oda</span></div>`;
+
+
+function viewGunluk() {
+  const cls = a => P.areas[a].type === 'POL' ? 'c-pol' : P.areas[a].type === 'ENDO' ? 'c-endo' : '';
+  const rows = P.areas.map((ar, a) => `<tr><td><b>${esc(ar.name)}</b> <span class="small">${nf(ar.points)}</span></td>${P.days.map((_, d) => {
+    const i = S.slot[d][a];
+    const chg = (baseS && cellWho(baseS, d, a) !== cellWho(S, d, a) ? ' c-chg' : '') + (BRK && BRK.has(d * P.A + a) ? ' c-broken' : '') + (progVer === 'draft' && d < draftFrom() ? ' c-lock' : '');
+    if (!P.open[d][a] && i < 0) return `<td class="c-closed${chg}" data-d="${d}" data-a="${a}">kapalı</td>`;
+    if (i >= 0) {
+      const bad = P.forb[i].includes(a) || P.off[i][d];
+      return `<td class="click ${cls(a)} ${S.coverOf[d][a] >= 0 ? 'c-cover' : ''} ${bad ? 'c-bad' : ''}${chg}" data-d="${d}" data-a="${a}" title="${esc(P.docs[i].name)}${S.coverOf[d][a] >= 0 ? ' — ayrıca ' + esc(P.areas[S.coverOf[d][a]].name) + ' odasına bakıyor' : ''}">${esc(sn(P.docs[i].name))}${S.coverOf[d][a] >= 0 ? '\u00a0*' : ''}</td>`;
+    }
+    const p = S.coverBy[d][a];
+    return `<td class="click ${p >= 0 ? 'c-empty' : 'c-bad'}${chg}" data-d="${d}" data-a="${a}" title="${p >= 0 ? esc(P.docs[S.slot[d][p]].name) + ' — ' + esc(P.areas[p].name) + ' odasıyla birlikte bakıyor' : ''}">${p >= 0 ? esc(sn(P.docs[S.slot[d][p]].name)) + '\u00a0*' : '?'}</td>`;
+  }).join('')}</tr>`).join('');
+  return `<p class="hint noprint">${progVer === 'draft' ? 'Bir hücreye tıklayarak o günün atamasını değiştirin.' : 'Değişiklik için önce "✎ Elle düzenlemeye başla".'}</p>${legend}<div class="scroll"><table class="grid"><tr><th>Oda</th>${dayHead()}</tr>${rows}</table></div>`;
+}
+
+function viewKisiGun(sm) {
+  const rows = P.docs.map((doc, i) => `<tr><td>${esc(doc.name)}</td>${P.days.map((_, d) => {
+    if (P.off[i][d] === 'NE') return `<td class="c-ne">NE</td>`;
+    if (P.off[i][d] === 'İ') return `<td class="c-izin">İzin</td>`;
+    if (P.off[i][d] === 'YB') return `<td class="c-yb">YB nöbeti</td>`;
+    if (P.off[i][d] === 'OD') return `<td class="c-idle">Odasız</td>`;
+    if (P.off[i][d] === 'DIS') return `<td class="c-closed">—</td>`;
+    const a = S.where[d][i];
+    if (a === -2) return `<td class="c-wait" title="Hekim sayısı açık odaları aşıyor — Ay bilgileri → Kontrol tablosunda odasız kalacak hekimi seçin">seçim bekleniyor</td>`;
+    if (a < 0) return `<td></td>`;
+    const t = P.areas[a].type, E = S.coverOf[d][a], rq = P.reqDays[i].includes(d), pf = t === 'POL' ? P.polPref[i] : t === 'ENDO' ? P.endoPref[i] : null, av = P.avoid[i].get(d), avBad = !!av && (av.has(a) || (E >= 0 && av.has(E))), rqBad = (rq && (!P.isLow[a] || E >= 0)) || (pf && !pf.has(d)) || avBad;
+    return `<td class="${t === 'POL' ? 'c-pol' : t === 'ENDO' ? 'c-endo' : E >= 0 ? 'c-cover' : ''} ${rq ? 'c-req' : ''} ${rqBad ? 'c-bad' : ''}" ${rq ? `title="düşük puanlı oda talebi${rqBad ? ' — karşılanamadı' : ''}"` : pf && !pf.has(d) ? 'title="tercih edilen günlerin dışında"' : avBad ? 'title="uygun olmayan oda"' : ''}>${esc(areaShort(P.areas[a].name))}${E >= 0 ? ` / ${esc(areaShort(P.areas[E].name))}` : ''}</td>`;
+  }).join('')}<td class="num"><b>${nf(sm[i].total)}</b></td></tr>`).join('') + icuNames().map(n => `<tr class="icu-row"><td>${esc(n)}</td><td colspan="${P.D + 1}" style="text-align:left">yoğun bakım</td></tr>`).join('');
+  return `${legend}<div class="scroll"><table class="grid"><tr><th>Hekim</th>${dayHead()}<th class="num">Puan</th></tr>${rows}</table></div><p class="small">NE: nöbet ertesi · "Oda-9 / Kons-1": o gün iki odaya bakıyor · altı kırmızı çizgili hücre: düşük puanlı oda talebi · kırmızı çerçeve: karşılanamayan talep/tercih.</p>`;
+}
+
+function viewKisiOda(sm) {
+  const head = P.areas.map(a => `<th class="num" title="${esc(a.name)}">${esc(areaShort(a.name))}<br><span class="small">${nf(a.points)}</span></th>`).join('');
+  const rows = P.docs.map((doc, i) => `<tr><td>${esc(doc.name)}</td>${P.areas.map((ar, a) => {
+    const v = S.cnt[i * P.A + a];
+    const forb = P.forb[i].includes(a);
+    return `<td class="num ${ar.type === 'POL' ? 'c-pol' : ar.type === 'ENDO' ? 'c-endo' : ''}" style="${forb ? 'background:repeating-linear-gradient(45deg,#fff,#fff 4px,#f1d4d2 4px,#f1d4d2 8px)' : ''}${v === 2 && ar.type === 'OR' ? ';font-weight:700' : ''}">${v || ''}</td>`;
+  }).join('')}<td class="num">${sm[i].pol}</td><td class="num">${sm[i].endo}</td><td class="num">${sm[i].covers || ''}</td><td class="num"><b>${nf(sm[i].total)}</b></td></tr>`).join('');
+  return `<p class="hint">Her hücre: hekimin o odada ay içinde kaç gün çalıştığı (telafi dahil). Taralı hücre: hekimin muaf olduğu oda.</p><div class="scroll"><table class="grid"><tr><th>Hekim</th>${head}<th class="num">Pol.</th><th class="num">Endo.</th><th class="num">Telafi</th><th class="num">Puan</th></tr>${rows}${icuNames().map(n => `<tr class="icu-row"><td>${esc(n)}</td><td colspan="${P.A + 4}" style="text-align:left">yoğun bakım</td></tr>`).join('')}</table></div>`;
+}
+
+function viewUyari(sm, V) {
+  const EX = progVer === 'rev' && revs().length ? new Set(revs()[revs().length - 1].exceptions || []) : new Set(), Vo = V.filter(v => !EX.has(v.msg)), Vx = V.filter(v => EX.has(v.msg));
+  let h = Vo.length ? `<div class="msg bad"><b>Kesin kural ihlalleri (${Vo.length})</b><ul class="warns">${Vo.map(v => `<li><b>${v.t}</b> — ${esc(v.msg)}</li>`).join('')}</ul></div>`
+    : `<div class="msg ok">Kesin kural ihlali yok.</div>`;
+  if (Vx.length) h += `<div class="msg warn"><b>Onaylanmış istisnalar (${Vx.length})</b> — revizyon kesinleştirilirken kabul edildi<ul class="warns">${Vx.map(v => `<li><b>${v.t}</b> — ${esc(v.msg)}</li>`).join('')}</ul></div>`;
+  const RQ = C.requests(P, S).filter(r => !r.ok);
+  h += RQ.length ? `<div class="msg bad"><b>Karşılanamayan düşük oda talepleri (${RQ.length})</b><ul class="warns">${RQ.map(r => `<li>${C.fmt(r.day)} — ${esc(r.name)}: ${r.area ? esc(r.area) + (r.cover ? ' (ayrıca telafi)' : '') : 'görevsiz'}</li>`).join('')}</ul></div>` : '';
+  const PFb = C.prefs(P, S).filter(r => !r.ok);
+  h += PFb.length ? `<div class="msg bad"><b>Karşılanamayan poliklinik/endoskopi gün tercihleri (${PFb.length})</b><ul class="warns">${PFb.map(r => `<li>${esc(r.name)} — ${r.kind}: ${r.bad.map(C.fmt).join(', ')} (tercih dışı gün)</li>`).join('')}</ul></div>` : '';
+  const AVb = C.avoids(P, S).filter(r => !r.ok);
+  h += AVb.length ? `<div class="msg bad"><b>Karşılanamayan uygun olmayan oda tercihleri (${AVb.length})</b><ul class="warns">${AVb.map(r => `<li>${C.fmt(r.day)} — ${esc(r.name)}: ${esc(r.room)}</li>`).join('')}</ul></div>` : '';
+  if (P.hasPrev) {
+    const ROb = C.rotation(P, S).filter(r => r.kind !== 'oda' && !r.ok);
+    h += ROb.length ? `<div class="msg warn"><b>Poliklinik/endoskopi dönüşümü karşılanamayanlar (${ROb.length})</b> — kapasite (ayda ${P.D} gün × 2 ünite) herkese yetmeyebilir<ul class="warns">${ROb.map(r => `<li>${esc(r.name)} — ${r.kind}: hedef ${r.want}, verilen ${r.got}</li>`).join('')}</ul></div>` : '';
+  }
+  const um = offUnmapped();
+  if (um.length) h += `<div class="msg warn"><b>Şablonda sütunu olmayan alan:</b> ${um.map(esc).join(', ')} — resmi listeye KONS-2'den sonra yeni sütun olarak eklenir (başlığı Sabit veriler → Odalar → "Resmi listedeki başlık").</div>`;
+  h += P.warnings.length ? `<div class="msg warn"><b>Bilgi ve uyarılar</b><ul class="warns">${P.warnings.map(v => `<li><b>${v.t}</b> — ${esc(v.msg)}</li>`).join('')}</ul></div>` : '';
+  return h;
+}
+
+/* ---------- elle düzenleme (yalnız taslakta; program engellemez, bildirir) ---------- */
+function openEdit(d, a) {
+  if (d < draftFrom()) { alert(`Revizyon başlangıcı ${C.fmt(M().draft.from)} — bu günden önceki günler değiştirilemez. Gerekirse taslak panelindeki "Revizyon başlangıcı" tarihini değiştirin.`); return; }
+  const day = `${C.fmt(P.days[d])} ${C.GUNLER[C.dow(P.days[d])]}`, ar = P.areas[a], i = S.slot[d][a], p = S.coverBy[d][a];
+  const cur = i >= 0 ? P.docs[i].name + (S.coverOf[d][a] >= 0 ? ` (ayrıca ${P.areas[S.coverOf[d][a]].name})` : '') : p >= 0 && S.slot[d][p] >= 0 ? `${P.docs[S.slot[d][p]].name} — ${P.areas[p].name} ile birlikte bakıyor` : 'kimse yok';
+  const OFFL = { 'İ': 'izinli', NE: 'nöbet ertesi', YB: 'YB nöbetçisi', OD: 'odasız seçildi' };
+  const where = j => { const w = S.where[d][j]; return w >= 0 ? P.areas[w].name + (S.coverOf[d][w] >= 0 ? ' / ' + P.areas[S.coverOf[d][w]].name : '') : w === -2 ? 'odası yok' : ''; };
+  const canAttach = j => { const w = S.where[d][j]; return w >= 0 && w !== a && P.areas[w].type === 'OR' && ar.type === 'OR' && S.coverOf[d][w] < 0; };
+  const rows = P.docs.map((x, j) => [x, j]).sort((A, B) => A[0].name.localeCompare(B[0].name, 'tr')).map(([x, j]) => {
+    const tags = [P.off[j][d] ? `<span class="tag w">${OFFL[P.off[j][d]]}</span>` : '', P.forb[j].includes(a) ? '<span class="tag b">muaf olduğu oda</span>' : ''].join(' ');
+    const isCur = j === i, w = S.where[d][j];
+    const acts = isCur ? '<span class="small">şu an burada</span>' : [w >= 0 || w === -2 || i < 0 ? `<button class="btn" data-op="swap" data-j="${j}" title="${i >= 0 ? esc(P.docs[i].name) + ' ile yer değiştirir' : 'buraya geçer'}">${i >= 0 && w >= 0 ? 'Yer değiştir' : 'Buraya geçir'}</button>` : '',
+      w >= 0 && i >= 0 ? `<button class="btn" data-op="place" data-j="${j}" title="Buraya yazılır; eski odası boş kalır, ${esc(P.docs[i].name)} odasız kalır">Buraya yaz</button>` : '',
+      w < 0 && w !== -2 && i < 0 ? '' : '', w < 0 && w !== -2 ? `<button class="btn" data-op="place" data-j="${j}">Buraya yaz</button>` : '',
+      canAttach(j) ? `<button class="btn" data-op="attach" data-j="${j}" title="${esc(P.areas[w].name)} ile birlikte bu odaya da bakar">Ek oda olarak ver</button>` : ''].join('');
+    return `<div class="opt ${isCur ? 'cur' : ''}"><span>${esc(x.name)} ${tags}<br><span class="small">${esc(where(j))}</span></span><span class="acts">${acts}</span></div>`;
+  }).join('');
+  $('#dlgHd').textContent = `${day} · ${ar.name}${P.open[d][a] ? '' : ' (kapalı)'} — şu an: ${cur}`;
+  $('#dlgBd').innerHTML = `<div class="btns" style="margin-top:0">${i >= 0 ? '<button class="btn" data-op="clear">Odayı boşalt</button>' : ''}${p >= 0 ? '<button class="btn" data-op="detach">Ek bakmayı kaldır</button>' : ''}</div>
+    <p class="small">Program kuralları engellemez; ihlaller ve puan değişimi taslak panelinde gösterilir.</p>${rows}`;
+  $('#dlgBd').onclick = e => {
+    const b = e.target.closest('[data-op]'); if (!b) return;
+    const op = b.dataset.op, j = +b.dataset.j;
+    applyEdit(() => {
+      const sl = S.slot[d], cb = S.coverBy[d];
+      if (op === 'clear') { sl[a] = -1; cb[a] = -1; return; }
+      if (op === 'detach') { cb[a] = -1; return; }
+      const w = S.where[d][j];
+      if (op === 'swap' && w >= 0 && i >= 0) { sl[w] = i; sl[a] = j; return; }
+      if (op === 'attach') { sl[a] = -1; cb[a] = w; return; }
+      if (w >= 0) { sl[w] = -1; cb[w] = -1; }   // 'place' / 'swap' (odasız ya da izinli hekim): eski odası boşalır, mevcut hekim odasız kalır
+      sl[a] = j; cb[a] = -1;
+    });
+  };
+  $('#dlg').showModal();
+}
+
+/* ---------- Ek çıktılar (PDF / JPEG): günlük program ve kişi bazlı liste, tek A4 yatay sayfa ---------- */
+// ortak tablo modeli: { kind, title, first, firstMm, firstPx, rows:[{name, cells:[{t, c}]}], legend:[[sınıf, etiket]], notes:[metin], file }
+const typeCls = a => P.areas[a].type === 'POL' ? 'p' : P.areas[a].type === 'ENDO' ? 'e' : '';
+const icuNote = () => icuNames().length ? [['Yoğun bakım: ', icuNames().join(', ')]] : [];
+const ymStr = () => { const { y, m } = curYM(); return `${y}-${String(m).padStart(2, '0')}`; };
+function dailyModel() {
+  const rows = P.areas.map((ar, a) => ({ name: ar.name, cells: P.days.map((_, d) => {
+    const i = S.slot[d][a];
+    if (i >= 0) return { t: sn(P.docs[i].name) + (S.coverOf[d][a] >= 0 ? ' *' : ''), c: typeCls(a) };
+    if (!P.open[d][a]) return { t: 'kapalı', c: '' };
+    const p = S.coverBy[d][a];
+    return { t: p >= 0 ? sn(P.docs[S.slot[d][p]].name) + ' *' : '', c: typeCls(a) };
+  }) }));
+  return { title: printTitle(), first: 'Oda', firstMm: 17, firstPx: 190, rows, legend: [['p', 'Poliklinik'], ['e', 'Endoskopi'], ['', '* bu gün iki odada']], notes: icuNote(), file: `Gunluk-Program-${ymStr()}${verFile()}.jpg` };
+}
+function personModel() {
+  const anyYB = P.docs.some((_, i) => P.off[i].includes('YB'));
+  const rows = P.docs.map((doc, i) => ({ name: doc.name, cells: P.days.map((_, d) => {
+    const o = P.off[i][d];
+    if (o === 'NE') return { t: 'NE', c: 'n' };
+    if (o === 'İ') return { t: 'İzin', c: 'i' };
+    if (o === 'YB') return { t: 'YB', c: 'y' };
+    if (o === 'OD') return { t: 'Odasız', c: '' };
+    if (o === 'DIS') return { t: '—', c: '' };
+    const a = S.where[d][i]; if (a === -2) return { t: 'atanmadı', c: '' }; if (a < 0) return { t: '', c: '' };
+    const E = S.coverOf[d][a];
+    return { t: areaShort(P.areas[a].name) + (E >= 0 ? ' / ' + areaShort(P.areas[E].name) : ''), c: typeCls(a) };
+  }) }));
+  return { title: `Kişi Bazlı Çalışma Listesi — ${C.AYLAR[curYM().m - 1]} ${curYM().y}${verLabel()}`, first: 'Hekim', firstMm: 30, firstPx: 330, rows,
+    legend: [['p', 'Poliklinik'], ['e', 'Endoskopi'], ['n', 'NE: nöbet ertesi'], ['i', 'İzin'], ...(anyYB ? [['y', 'YB: yoğun bakım nöbeti (gündüz yanık / dış anestezi)']] : []), ['', '"Oda-9 / Kons-1": o gün iki odaya bakıyor']],
+    notes: icuNote(), file: `Kisi-Bazli-Liste-${ymStr()}${verFile()}.jpg` };
+}
+const verLabel = () => progVer === 'rev' && revs().length ? ` · Revize (Rev. ${revs()[revs().length - 1].n})` : progVer === 'draft' ? ' · TASLAK' : '';
+const verFile = () => progVer === 'rev' && revs().length ? `-Rev${revs()[revs().length - 1].n}` : progVer === 'draft' ? '-TASLAK' : '';
+const printTitle = () => { const { y, m } = curYM(); return `Gün İçi Çalışma Programı — ${C.AYLAR[m - 1]} ${y}${verLabel()}`; };
+const printSub = () => `Anestezi ve Reanimasyon · ${new Date().toLocaleDateString('tr-TR')}`;
+const FILLV = { p: '--pol', e: '--endo', n: '--ne', i: '--izin', y: '--ybf' };
+
+function printModel(md) {
+  if (!S) { alert('Önce programı oluşturun.'); return; }
+  const pa = $('#printArea');
+  const head = P.days.map(k => `<th>${k.slice(8)}<br>${C.GUN_KISA[C.dow(k)]}</th>`).join('');
+  const body = md.rows.map(r => `<tr><th class="rn">${esc(r.name)}</th>${r.cells.map(x => `<td class="${x.c}">${esc(x.t)}</td>`).join('')}</tr>`).join('');
+  pa.innerHTML = `<div class="ph"><b>${esc(md.title)}</b><span>${esc(printSub())}</span></div>
+    <table class="pt"><colgroup><col style="width:${md.firstMm}mm">${P.days.map(() => '<col>').join('')}</colgroup><thead><tr><th class="rn">${md.first}</th>${head}</tr></thead><tbody>${body}</tbody></table>
+    <div class="pl">${md.legend.map(([c, l]) => `<span>${c ? `<i style="background:var(${FILLV[c]})"></i>` : ''}${esc(l)}</span>`).join('')}</div>
+    ${md.notes.map(([b, t]) => `<div class="pl" style="margin-top:1mm"><span><b>${esc(b)}</b>${esc(t)}</span></div>`).join('')}`;
+  // tek sayfaya sığdır: A4 yatay 297 × 210 mm, kenar boşluğu sayfanın içinde (8 mm)
+  const mm = 96 / 25.4;
+  Object.assign(pa.style, { display: 'block', position: 'absolute', left: '-10000px', top: '0', width: (297 * mm) + 'px', zoom: '' });
+  const h = pa.offsetHeight, maxH = 206 * mm;
+  pa.style.zoom = h > maxH ? String(Math.floor(maxH / h * 1000) / 1000) : '';
+  Object.assign(pa.style, { display: '', position: '', left: '', top: '' });
+  window.print();
+}
+function saveCanvas(cv, file) {
+  cv.toBlob(b => {
+    const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = file;
+    document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  }, 'image/jpeg', 0.92);
+}
+const FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif';
+function wrapText(g, txt, maxW) {
+  const out = []; let line = '';
+  for (const w of String(txt).split(' ')) {
+    const t = line ? line + ' ' + w : w;
+    if (g.measureText(t).width <= maxW || !line) line = t; else { out.push(line); line = w; }
+  }
+  if (line) out.push(line);
+  return out;
+}
+/* JPEG: aynı tablo, tuvale çizilir (A4 yatay oranında, ~200 dpi) */
+function jpgModel(md) {
+  if (!S) { alert('Önce programı oluşturun.'); return; }
+  const W = 2339, H = 1654, M = 64;
+  const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const g = cv.getContext('2d');
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const fill = c => c ? css(FILLV[c]) : '#ffffff';
+  const rows = md.rows, D = P.days.length;
+  const tableW = W - 2 * M, roomW = md.firstPx, dayW = (tableW - roomW) / D;
+  const footH = 70 + 40 * md.notes.length;
+  let fs = 22, lay;
+  for (; fs >= 11; fs--) {   // yazı boyutunu tabloya sığana kadar küçült
+    const lh = fs * 1.18, pad = fs * 0.45;
+    g.font = `${fs}px ${FONT}`;
+    const lines = rows.map(r => r.cells.map(x => wrapText(g, x.t, dayW - 8)));
+    g.font = `700 ${fs}px ${FONT}`;
+    const nl = rows.map(r => wrapText(g, r.name, roomW - 16));
+    const rh = lines.map((r, ri) => Math.max(1, nl[ri].length, ...r.map(l => l.length)) * lh + 2 * pad);
+    const headH = 2 * lh + 2 * pad, total = headH + rh.reduce((a, b) => a + b, 0);
+    lay = { lh, pad, lines, nl, rh, headH };
+    if (total <= H - 2 * M - 52 - footH) break;
+  }
+  g.fillStyle = '#fff'; g.fillRect(0, 0, W, H);
+  g.textBaseline = 'middle'; g.fillStyle = '#000';
+  g.font = `700 40px ${FONT}`; g.textAlign = 'left'; g.fillText(md.title, M, M + 18);
+  g.font = `22px ${FONT}`; g.textAlign = 'right'; g.fillStyle = '#333'; g.fillText(printSub(), W - M, M + 22);
+  let y = M + 52;
+  const { lh, pad, lines, nl, rh, headH } = lay;
+  const cellText = (arr, cx, top, h) => { const y0 = top + h / 2 - (arr.length - 1) * lh / 2; arr.forEach((l, k) => g.fillText(l, cx, y0 + k * lh)); };
+  g.fillStyle = '#e6e6e6'; g.fillRect(M, y, tableW, headH);
+  g.fillStyle = '#000'; g.font = `700 ${fs}px ${FONT}`; g.textAlign = 'left'; g.fillText(md.first, M + 10, y + headH / 2);
+  g.textAlign = 'center';
+  P.days.forEach((k, d) => cellText([k.slice(8), C.GUN_KISA[C.dow(k)]], M + roomW + d * dayW + dayW / 2, y, headH));
+  const gridTop = y; y += headH;
+  rows.forEach((r, ri) => {
+    g.fillStyle = '#f2f2f2'; g.fillRect(M, y, roomW, rh[ri]);
+    g.fillStyle = '#000'; g.font = `700 ${fs}px ${FONT}`; g.textAlign = 'left'; cellText(nl[ri], M + 10, y, rh[ri]);
+    g.textAlign = 'center'; g.font = `${fs}px ${FONT}`;
+    r.cells.forEach((x, d) => {
+      const cx = M + roomW + d * dayW;
+      if (x.c) { g.fillStyle = fill(x.c); g.fillRect(cx, y, dayW, rh[ri]); }
+      g.fillStyle = '#000'; cellText(lines[ri][d], cx + dayW / 2, y, rh[ri]);
+    });
+    y += rh[ri];
+  });
+  g.strokeStyle = '#777'; g.lineWidth = 1.5;
+  g.strokeRect(M, gridTop, tableW, y - gridTop);
+  let yy = gridTop + headH;
+  g.beginPath(); g.moveTo(M, yy); g.lineTo(M + tableW, yy);
+  rh.forEach(h => { yy += h; g.moveTo(M, yy); g.lineTo(M + tableW, yy); });
+  for (let d = 0; d <= D; d++) { const x = M + roomW + d * dayW; g.moveTo(x, gridTop); g.lineTo(x, y); }
+  g.stroke();
+  // açıklama
+  const lf = Math.max(16, fs - 2);
+  y += 34; let x = M; g.textAlign = 'left'; g.font = `${lf}px ${FONT}`;
+  for (const [c, label] of md.legend) {
+    if (c) { g.fillStyle = fill(c); g.fillRect(x, y - 11, 34, 22); g.strokeStyle = '#777'; g.lineWidth = 1; g.strokeRect(x, y - 11, 34, 22); x += 44; }
+    g.fillStyle = '#000'; g.fillText(label, x, y); x += g.measureText(label).width + 40;
+  }
+  for (const [b, t] of md.notes) { y += 40; g.font = `700 ${lf}px ${FONT}`; g.fillText(b, M, y); const w0 = g.measureText(b).width; g.font = `${lf}px ${FONT}`; g.fillText(t, M + w0, y); }
+  saveCanvas(cv, md.file);
+}
+
+/* ---------- Resmi liste (idare formatı): Excel + JPEG ---------- */
+// Sütunlar idarenin şablonuyla birebir: a:alan adı · r:nöbet sütunu (0 merkez, 1 doğum, 2 YBÜ 1-2, 3 YBÜ 3) · ne:nöbet izni · l:izin türü · x:boş bırakılır (elle)
+const OFF_COLS = [['TARİH', 'date', 16.7],
+  ['POLK-1', 'a:Poliklinik-1', 22], ['1-5-7 ODA', 'e:0', 29], ['2 ODA', 'a:Oda-2', 21.5], ['3-4 ODA', 'a:Oda-3-4', 31.7], ['6-8 ODA', 'a:Oda-6-8', 25.8], ['9 ODA', 'a:Oda-9', 25], ['10 ODA', 'a:Oda-10', 24.8],
+  ['11-12.ODA', 'a:Oda-11-12', 25.7], ['13 ODA', 'a:Oda-13', 27.7], ['14 ODA', 'a:Oda-14', 25.7], ['15-18 ODA', 'a:Oda-15-18', 24], ['16-17-23', 'e:1', 31.8], ['19-20 ODA', 'a:Oda-19-20', 26.7],
+  ['21-22 ODA', 'a:Oda-21-22', 27], ['24-25 ODA', 'a:Oda-24-25', 29.7], ['ANJİO', 'a:Anjio', 29.7], ['POLK-4', 'a:Poliklinik-4', 26.8], ['34-35 ODA', 'a:Oda-34-35', 25.8], ['32-33 ODA', 'a:Oda-32-33', 25],
+  ['28-30 ODA', 'a:Oda-28-30', 23.8], ['D-SEPTİK', 'a:Septik', 26.2], ['DOĞUM-1', 'a:Doğum-1', 28.3], ['DOĞUM-2', 'a:Doğum-2', 28], ['ENDO-1', 'a:Endoskopi-1', 28], ['ENDO-2', 'a:Endoskopi-2', 27.5],
+  ['KONS-1', 'a:Kons-1', 23.5], ['KONS-2', 'a:Kons-2', 32.3], ['DIŞ ANESTEZİ', 'r:2', 29], ['YANIK', 'r:3', 30.2], ['POLK-2', 'e:2', 33.7], ['POLK 3', 'e:3', 38.5], ['ANESTEZİ YBÜ 1-2', 'e:4', 23.8], ['ANESTEZİ YBÜ-3', 'e:5', 22.5],
+  [' NÖBET\n(16-08) MERKEZ AMELİYATHANE', 'r:0', 34], [' NÖBET\n(16-08) DOĞUM AMELİYATHANE', 'r:1', 26.7], ['NÖBET (16-08) ANESTEZİ YBÜ 1-2', 'r:2', 24.7], ['NÖBET (16-08) ANESTEZİ YBÜ 3 ', 'r:3', 26.8],
+  ['NÖBET İZNİ', 'ne', 67.8], ['KONSÜLTASYON', 'x', 16.7], ['SAĞLIK KURULU', 'x', 16.7], ['ASKERİ HEYET', 'x', 9], ['EVDE SAĞLIK \nHİZMETLERİ', 'x', 16.7],
+  ['YILLIK İZİN', 'l:yillik', 114.5], ['KONGRE İZNİ', 'l:kongre', 114.5], ['', 'x', 16.7], ['RAPOR', 'l:rapor', 16.7], ['SERVİS', 'x', 16.7], ['MESAİ DIŞI POLİKLİNİK ', 'x', 16.7], ['DİĞER', 'l:diger', 16.7]];
+const OFFICIAL_DEF = { header: 'KAYSERİ ŞEHİR EĞİTİM VE ARAŞTIRMA HASTANESİ ANESTEZİYOLOJİ VE REANİMASYON KLİNİĞİ', signName: 'Prof. Dr. A. YILMAZ', signTitle: 'Başhekim', note: 'GÖREVLENDİRMELER SADECE BU SATIRDA BELİRTİLECEKTİR. ' };
+const official = () => ({ ...OFFICIAL_DEF, ...(store.fixed.official || {}) });
+const UP = s => String(s || '').toLocaleUpperCase('tr-TR');
+// sütunlar: şablondaki oda başlıkları odaların "resmi listedeki başlık" alanıyla eşleşir; eşleşmeyen (yeni) odalar KONS-2'den sonra eklenir
+const offKey = h => String(h || '').trim().toLocaleUpperCase('tr-TR');
+function officialCols() {
+  const used = new Set();
+  const cols = OFF_COLS.map(c => {
+    if (!c[1].startsWith('a:')) return c;
+    let a = P.areas.findIndex(x => x.offName && offKey(x.offName) === offKey(c[0]));
+    if (a < 0) a = P.areas.findIndex(x => !x.offName && x.name === c[1].slice(2));
+    if (a >= 0) used.add(a);
+    return [c[0], a >= 0 ? 'A:' + a : 'x', c[2]];
+  });
+  const extra = P.areas.map((_, a) => a).filter(a => !used.has(a)).map(a => [P.areas[a].offName || UP(P.areas[a].name), 'A:' + a, 26]);
+  cols.splice(cols.findIndex(c => c[0] === 'KONS-2') + 1, 0, ...extra);
+  return cols;
+}
+const offUnmapped = () => { const c = officialCols(); return P.areas.filter((_, a) => !OFF_COLS.some(x => x[0] === c.find(y => y[1] === 'A:' + a)?.[0])).map(a => a.name); };
+// her takvim günü için 51 hücre (metin); hafta sonu / tatilde yalnız nöbet ve izin sütunları dolar
+function officialGrid() {
+  const mo = M(), { y, m } = curYM(), names = store.fixed.doctors.map(d => d.name), mt = v => (v && C.matchName(v, names)) || (v || '').trim();
+  const flex = new Set(P.cfg.flexDoctors || []);
+  const dayIdx = Object.fromEntries(P.days.map((k, d) => [k, d]));
+  const neOn = {};   // nöbet izni: dört nöbet sütunundaki herkes (yoğun bakımdakiler dahil); esnek nöbet izni olanlar seçtikleri günlerde
+  for (const { k } of rosterRange()) (mo.roster[k] || []).slice(0, RX).forEach(v => { const n = mt(v); if (!n || flex.has(n)) return; const e = C.ertesiOf(k); (neOn[e] = neOn[e] || []).includes(n) || neOn[e].push(n); });
+  for (const [n, list] of Object.entries(P.cfg.flexNE || {})) if (flex.has(n)) list.forEach(e => { (neOn[e] = neOn[e] || []).includes(n) || neOn[e].push(n); });
+  const lv = {};     // izinler türüne göre, her takvim günü (yoğun bakımdakiler dahil)
+  for (const l of mo.leaves || []) {
+    const n = mt(l.name); if (!n || !l.from) continue;
+    const to = l.to && l.to >= l.from ? l.to : l.from;
+    for (let k = l.from; k <= to; k = C.addDays(k, 1)) { const key = (l.type || 'yillik') + k; (lv[key] = lv[key] || []).includes(n) || lv[key].push(n); }
+  }
+  const OC = officialCols();
+  const rows = [];
+  for (let dd = 1; dd <= 31; dd++) {
+    const k = C.key(y, m, dd); if (C.toDate(k).getUTCMonth() !== m - 1) break;
+    const d = dayIdx[k], list = mo.roster[k] || [];
+    rows.push({ k, cells: OC.map(([, sp]) => {
+      if (sp === 'date') return k;
+      const [t, v] = sp.split(':');
+      if (t === 'A') { if (d === undefined) return ''; const a = +v; if (!P.open[d][a]) return 'KAPALI'; const i = S.slot[d][a]; if (i >= 0) return UP(P.docs[i].name); const p = S.coverBy[d][a]; return p >= 0 ? UP(P.docs[S.slot[d][p]].name) : ''; }
+      if (t === 'r') { const n = mt(list[+v]); return n ? UP(n) : ''; }
+      if (t === 'e') return ((mo.edu || {})[k] || [])[+v] || '';   // eğitim kliniği: girildiği gibi
+      if (t === 'ne') return d === undefined ? '' : (neOn[k] || []).map(UP).join(', ');
+      if (t === 'l') return (lv[v + k] || []).map(UP).join(', ');
+      return '';
+    }) });
+  }
+  // dış anestezi / yanık yalnızca mesai günlerinde (gündüz görevi)
+  const ybCols = OC.map((c, j) => [c[0], j]).filter(([h]) => h === 'DIŞ ANESTEZİ' || h === 'YANIK').map(([, j]) => j);
+  rows.forEach(r => { if (dayIdx[r.k] === undefined) ybCols.forEach(j => { r.cells[j] = ''; }); });
+  return { title: `${official().header} ${y} YILI ${UP(C.AYLAR[m - 1])} AYI DOKTOR ÇALIŞMA LİSTESİ`, rows, cols: OC };
+}
+function exportOfficialXlsx() {
+  if (!S) { alert('Önce programı oluşturun.'); return; }
+  const G = officialGrid(), O = official(), OC = G.cols, n = OC.length, last = colName(n - 1);
+  const serial = k => Math.round((C.toDate(k) - Date.UTC(1899, 11, 30)) / 864e5);
+  const cell = (ref, v, st) => v === '' || v == null ? `<c r="${ref}" s="${st}"/>` : typeof v === 'number' ? `<c r="${ref}" s="${st}"><v>${v}</v></c>` : `<c r="${ref}" s="${st}" t="inlineStr"><is><t xml:space="preserve">${xesc(v)}</t></is></c>`;
+  const R = [];
+  R.push(`<row r="2" ht="39.75" customHeight="1">${cell('A2', G.title, 1)}${OC.slice(1).map((_, j) => cell(colName(j + 1) + 2, '', 1)).join('')}</row>`);
+  R.push(`<row r="3" ht="49.5" customHeight="1">${OC.map((c, j) => cell(colName(j) + 3, c[0], 2)).join('')}</row>`);
+  G.rows.forEach((r, i) => { const rr = 4 + i; R.push(`<row r="${rr}" ht="24.75" customHeight="1">${r.cells.map((v, j) => j === 0 ? cell('A' + rr, serial(v), 3) : cell(colName(j) + rr, v, /^(ne|l:)/.test(OC[j][1]) ? 5 : 4)).join('')}</row>`); });
+  const fr = 4 + G.rows.length + 1, sr = fr + 4, sc = colName(OC.findIndex(c => c[0] === 'SERVİS'));
+  R.push(`<row r="${fr}">${cell('A' + fr, O.note, 6)}</row>`);
+  R.push(`<row r="${sr}">${cell(sc + sr, O.signName, 7)}</row>`, `<row r="${sr + 1}">${cell(sc + (sr + 1), O.signTitle, 7)}</row>`);
+  const cols = `<cols>${OC.map((c, j) => `<col min="${j + 1}" max="${j + 1}" width="${c[2]}" customWidth="1"/>`).join('')}</cols>`;
+  const sheet = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetPr><pageSetUpPr fitToPage="1"/></sheetPr><sheetViews><sheetView workbookViewId="0" zoomScale="70" zoomScaleNormal="70"><pane xSplit="1" ySplit="3" topLeftCell="B4" activePane="bottomRight" state="frozen"/></sheetView></sheetViews>${cols}<sheetData>${R.join('')}</sheetData><mergeCells count="2"><mergeCell ref="A2:${last}2"/><mergeCell ref="A${fr}:${colName(OC.findIndex(c => c[1] === 'r:0'))}${fr}"/></mergeCells><pageMargins left="0.12" right="0.12" top="0.2" bottom="0.2" header="0" footer="0"/><pageSetup paperSize="9" orientation="landscape" fitToWidth="1" fitToHeight="1"/></worksheet>`;
+  const styles = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><numFmts count="1"><numFmt numFmtId="164" formatCode="dd/mm/yyyy"/></numFmts>
+<fonts count="6"><font><sz val="10"/><name val="Arial"/></font><font><b/><sz val="14"/><name val="Arial"/></font><font><b/><sz val="8"/><name val="Arial"/></font><font><b/><sz val="9"/><name val="Arial"/></font><font><sz val="9"/><name val="Arial"/></font><font><b/><sz val="10"/><name val="Arial"/></font></fonts>
+<fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills>
+<borders count="3"><border><left/><right/><top/><bottom/><diagonal/></border><border><left style="thin"><color auto="1"/></left><right style="thin"><color auto="1"/></right><top style="thin"><color auto="1"/></top><bottom style="thin"><color auto="1"/></bottom><diagonal/></border><border><left style="medium"><color auto="1"/></left><right style="medium"><color auto="1"/></right><top style="medium"><color auto="1"/></top><bottom style="medium"><color auto="1"/></bottom><diagonal/></border></borders>
+<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
+<cellXfs count="8"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>
+<xf numFmtId="0" fontId="1" fillId="0" borderId="2" xfId="0" applyFont="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="2" fillId="0" borderId="1" xfId="0" applyFont="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>
+<xf numFmtId="164" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="3" fillId="0" borderId="1" xfId="0" applyFont="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="49" fontId="4" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyFont="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>
+<xf numFmtId="0" fontId="4" fillId="0" borderId="0" xfId="0" applyFont="1"/>
+<xf numFmtId="0" fontId="5" fillId="0" borderId="0" xfId="0" applyFont="1" applyAlignment="1"><alignment horizontal="center"/></xf></cellXfs></styleSheet>`;
+  const ns = 'http://schemas.openxmlformats.org/';
+  const blob = zip([
+    { name: '[Content_Types].xml', data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="${ns}package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>` },
+    { name: '_rels/.rels', data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="${ns}package/2006/relationships"><Relationship Id="rId1" Type="${ns}officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>` },
+    { name: 'xl/workbook.xml', data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="${ns}spreadsheetml/2006/main" xmlns:r="${ns}officeDocument/2006/relationships"><sheets><sheet name="CERRAHİ TIP BİLİMLERİ" sheetId="1" r:id="rId1"/></sheets><definedNames><definedName name="_xlnm.Print_Area" localSheetId="0">'CERRAHİ TIP BİLİMLERİ'!$A$2:$${last}$${sr + 1}</definedName></definedNames></workbook>` },
+    { name: 'xl/_rels/workbook.xml.rels', data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="${ns}package/2006/relationships"><Relationship Id="rId1" Type="${ns}officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="${ns}officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>` },
+    { name: 'xl/styles.xml', data: styles },
+    { name: 'xl/worksheets/sheet1.xml', data: sheet }]);
+  const { y, m } = curYM(), a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = `${UP(C.AYLAR[m - 1])} ${y} CALISMA LISTESI ANESTEZI${verFile().replace('-', ' ')}.xlsx`;
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+
+/* ================= SABİT VERİLER ================= */
+function renderSabit() {
+  const f = store.fixed;
+  $('#tblDocs').innerHTML = `<tr><th>#</th><th>Ad Soyad</th><th>Nöbet tutar</th><th>Muaf olduğu odalar</th><th>Pol. muaf</th><th>Endo. muaf</th><th>Esnek nöbet izni</th><th></th></tr>` +
+    f.doctors.map((d, i) => `<tr><td class="num">${i + 1}</td><td><input type="text" data-k="name" data-i="${i}" value="${esc(d.name)}" style="width:200px"></td>
+    <td style="text-align:center"><input type="checkbox" data-k="nobet" data-i="${i}" ${d.nobet ? 'checked' : ''}></td>
+    <td><input type="text" data-k="forbidden" data-i="${i}" value="${esc((d.forbidden || []).join(', '))}" style="width:300px"></td>
+    <td style="text-align:center"><input type="checkbox" data-k="exPOL" data-i="${i}" ${d.exPOL ? 'checked' : ''}></td>
+    <td style="text-align:center"><input type="checkbox" data-k="exENDO" data-i="${i}" ${d.exENDO ? 'checked' : ''}></td>
+    <td style="text-align:center"><input type="checkbox" data-k="flex" data-i="${i}" ${d.flex ? 'checked' : ''}></td>
+    <td><button class="btn" data-del="${i}">Sil</button></td></tr>`).join('');
+  $('#tblAreas').innerHTML = `<tr><th>#</th><th>Oda adı</th><th>Puan</th><th>Tür</th><th>Paylaşılabilir oda</th><th>Düşük puanlı</th><th>Resmi listedeki başlık</th><th>Yalnız şu odalarla paylaşılabilir <span class="small">(kesin kural)</span></th><th></th></tr>` +
+    f.areas.map((a, i) => `<tr><td class="num">${i + 1}</td><td><input type="text" data-k="name" data-i="${i}" value="${esc(a.name)}" style="width:160px"></td>
+    <td><input type="number" data-k="points" data-i="${i}" value="${a.points}" style="width:90px" step="50"></td>
+    <td><select data-k="type" data-i="${i}">${[['OR', 'Ameliyathane'], ['POL', 'Poliklinik'], ['ENDO', 'Endoskopi']].map(([v, t]) => `<option value="${v}" ${a.type === v ? 'selected' : ''}>${t}</option>`).join('')}</select></td>
+    <td style="text-align:center"><input type="checkbox" data-k="canEmpty" data-i="${i}" ${a.canEmpty ? 'checked' : ''}></td>
+    <td style="text-align:center"><input type="checkbox" data-k="low" data-i="${i}" ${a.low ? 'checked' : ''}></td>
+    <td><input type="text" data-k="offName" data-i="${i}" value="${esc(a.offName || '')}" style="width:120px" placeholder="${esc(UP(a.name))}"></td>
+    <td style="white-space:normal;max-width:300px">${(a.pairOnly || []).map(n => `<span class="chip room">${esc(n)}</span>`).join('') || '<span class="small">kısıt yok</span>'} <button class="btn" data-pair="${i}" style="padding:2px 8px;font-size:12px">Seç</button></td>
+    <td><button class="btn" data-del="${i}">Sil</button></td></tr>`).join('');
+  const O = official();
+  $('#offForm').innerHTML = [['header', 'Başlık (hastane / klinik)'], ['note', 'Alt not satırı'], ['signName', 'İmza — ad'], ['signTitle', 'İmza — unvan']]
+    .map(([k, t]) => `<div class="pr"><span>${t}</span><input type="text" data-off="${k}" value="${esc(O[k])}"></div>`).join('');
+  checkFixed();
+}
+function pairDialog(i) {
+  const f = store.fixed, ar = f.areas[i], sel = new Set(ar.pairOnly || []);
+  $('#dlgHd').textContent = `${ar.name} · yalnız şu odalarla paylaşılabilir`;
+  $('#dlgBd').innerHTML = `<p class="small">Hiçbiri seçili değilse kısıt yoktur. Seçilirse ${esc(ar.name)} başka bir odayla aynı kişiye <b>yalnızca</b> bu odalardan biriyle verilir (iki yönlü kesin kural).</p><div class="roomgrid">${f.areas.filter(a => a !== ar && a.type === 'OR').map(a => `<label><input type="checkbox" value="${esc(a.name)}" ${sel.has(a.name) ? 'checked' : ''}> ${esc(a.name)}</label>`).join('')}</div>
+    <div class="btns" style="justify-content:flex-end"><button class="btn" id="pcClr">Kısıtı kaldır</button><button class="btn primary" id="pcSave">Kaydet</button></div>`;
+  $('#pcClr').onclick = () => $('#dlgBd').querySelectorAll('input[type=checkbox]').forEach(c => { c.checked = false; });
+  $('#pcSave').onclick = () => { ar.pairOnly = [...$('#dlgBd').querySelectorAll('input:checked')].map(c => c.value); saveStore(); $('#dlg').close(); renderSabit(); P = null; };
+  $('#dlg').showModal();
+}
+function checkFixed() {
+  const f = store.fixed, names = f.areas.map(a => a.name), bad = [];
+  f.doctors.forEach(d => (d.forbidden || []).forEach(n => { if (!names.includes(n)) bad.push(`${d.name}: "${n}" adlı oda yok`); }));
+  const dup = f.doctors.map(d => d.name).filter((n, i, a) => a.indexOf(n) !== i);
+  if (dup.length) bad.push('Aynı isimde birden fazla hekim: ' + dup.join(', '));
+  f.areas.filter(a => a.canEmpty && a.type !== 'OR').forEach(a => bad.push(`${a.name}: poliklinik/endoskopi paylaşılamaz (K13)`));
+  f.areas.forEach(a => (a.pairOnly || []).forEach(n => { if (!names.includes(n)) bad.push(`${a.name}: eşleştirme listesindeki "${n}" adlı oda yok`); }));
+  $('#fixedMsg').innerHTML = bad.length ? `<div class="msg bad">${bad.map(esc).join('<br>')}</div>` : `<div class="msg ok">Sabit veriler tutarlı · ${f.doctors.length} hekim · ${f.areas.length} alan (${f.areas.filter(a => a.type === 'OR').length} ameliyathane, ${f.areas.filter(a => a.type === 'POL').length} poliklinik, ${f.areas.filter(a => a.type === 'ENDO').length} endoskopi).</div>`;
+}
+function onFixedInput(e, list) {
+  const t = e.target, i = +t.dataset.i, k = t.dataset.k; if (k === undefined || isNaN(i)) return;
+  const obj = store.fixed[list][i];
+  const old = obj.name;
+  if (t.type === 'checkbox') obj[k] = t.checked;
+  else if (k === 'points') obj[k] = +t.value || 0;
+  else if (k === 'forbidden') obj[k] = t.value.split(',').map(s => s.trim()).filter(Boolean);
+  else obj[k] = t.value.trim();
+  if (k === 'name' && list === 'doctors' && old !== obj.name) Object.values(store.months).forEach(m => {
+    const j = m.included.indexOf(old); if (j >= 0) m.included[j] = obj.name;
+    for (const f of ['lowReq', 'polPref', 'endoPref', 'flexNE', 'reqDays']) if (m[f] && m[f][old]) { m[f][obj.name] = m[f][old]; delete m[f][old]; }   // ada bağlı talepler de yeni ada taşınır
+    (m.avoid || []).forEach(r => { if (r.name === old) r.name = obj.name; });
+  });
+  if (k === 'name' && list === 'areas' && old !== obj.name) Object.values(store.months).forEach(m => {
+    (m.avoid || []).forEach(r => { r.rooms = (r.rooms || []).map(n => n === old ? obj.name : n); });
+    if (m.closed && m.closed[old]) { m.closed[obj.name] = m.closed[old]; delete m.closed[old]; }
+  });
+  if (k === 'name' && list === 'areas' && old !== obj.name) store.fixed.areas.forEach(a => { a.pairOnly = (a.pairOnly || []).map(n => n === old ? obj.name : n); });
+  if (k === 'name' && list === 'areas' && old !== obj.name) store.fixed.doctors.forEach(d => { d.forbidden = (d.forbidden || []).map(n => n === old ? obj.name : n); });
+  saveStore(); checkFixed(); P = null;
+}
+
+/* ================= DOSYA OKUMA (Excel / Word / metin) ================= */
+async function inflateRaw(u8) {
+  if (typeof DecompressionStream === 'undefined') throw new Error('Bu tarayıcı dosyayı açamıyor — güncel Chrome, Edge veya Safari kullanın ya da tabloyu kopyalayıp yapıştırın.');
+  const st = new Blob([u8]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+  return new Uint8Array(await new Response(st).arrayBuffer());
+}
+function readZip(buf) {
+  const dv = new DataView(buf), u8 = new Uint8Array(buf), dec = new TextDecoder();
+  let e = -1;
+  for (let i = u8.length - 22; i >= Math.max(0, u8.length - 70000); i--) if (dv.getUint32(i, true) === 0x06054b50) { e = i; break; }
+  if (e < 0) throw new Error('Dosya okunamadı (bozuk ya da farklı biçimde).');
+  const n = dv.getUint16(e + 10, true); let p = dv.getUint32(e + 16, true); const files = {};
+  for (let k = 0; k < n && dv.getUint32(p, true) === 0x02014b50; k++) {
+    const nl = dv.getUint16(p + 28, true), xl = dv.getUint16(p + 30, true), cl = dv.getUint16(p + 32, true);
+    files[dec.decode(u8.subarray(p + 46, p + 46 + nl))] = { method: dv.getUint16(p + 10, true), csize: dv.getUint32(p + 20, true), lo: dv.getUint32(p + 42, true) };
+    p += 46 + nl + xl + cl;
+  }
+  return {
+    names: Object.keys(files),
+    async text(name) {
+      const f = files[name]; if (!f) return null;
+      const st = f.lo + 30 + dv.getUint16(f.lo + 26, true) + dv.getUint16(f.lo + 28, true);
+      const data = u8.subarray(st, st + f.csize);
+      return dec.decode(f.method === 0 ? data : await inflateRaw(data));
+    }
+  };
+}
+const xmlDoc = t => new DOMParser().parseFromString(t, 'application/xml');
+const colIdx = ref => { const m = (ref || '').match(/^[A-Z]+/); let n = 0; if (m) for (const ch of m[0]) n = n * 26 + ch.charCodeAt(0) - 64; return Math.max(0, n - 1); };
+async function xlsxRows(z) {
+  const ss = [], sst = await z.text('xl/sharedStrings.xml');
+  if (sst) for (const si of xmlDoc(sst).getElementsByTagName('si')) ss.push([...si.getElementsByTagName('t')].filter(t => t.parentNode.nodeName !== 'rPh').map(t => t.textContent).join(''));
+  const sheets = z.names.filter(n => /^xl\/worksheets\/sheet\d+\.xml$/.test(n)).sort((a, b) => parseInt(a.match(/\d+/)) - parseInt(b.match(/\d+/)));
+  const rows = [];
+  for (const sn of sheets) {
+    for (const r of xmlDoc(await z.text(sn)).getElementsByTagName('row')) {
+      const arr = [];
+      for (const c of r.getElementsByTagName('c')) {
+        const t = c.getAttribute('t'), v = c.getElementsByTagName('v')[0];
+        arr[colIdx(c.getAttribute('r'))] = t === 's' ? (ss[+(v && v.textContent)] ?? '') : t === 'inlineStr' ? [...c.getElementsByTagName('t')].map(x => x.textContent).join('') : (v ? v.textContent : '');
+      }
+      // tarih hücreleri Excel'de sayı olarak durur (ör. 46327) → 01.11.2026
+      rows.push(Array.from(arr, x => { x = x ?? ''; return /^\d{5}(\.0+)?$/.test(x) && +x > 36500 && +x < 73050 ? C.fmt(C.parseDate(x)) : x; }));
+    }
+  }
+  return rows;
+}
+async function docxRows(z) {
+  const doc = xmlDoc(await z.text('word/document.xml')), rows = [];
+  const ptext = p => { let s = ''; for (const n of p.getElementsByTagName('*')) { if (n.nodeName === 'w:t') s += n.textContent; else if (n.nodeName === 'w:tab') s += '\t'; else if (n.nodeName === 'w:br' || n.nodeName === 'w:cr') s += '\n'; } return s; };
+  const walk = el => {
+    for (const ch of el.children) {
+      if (ch.nodeName === 'w:tbl') {
+        for (const tr of ch.children) if (tr.nodeName === 'w:tr')
+          rows.push([...tr.children].filter(c => c.nodeName === 'w:tc').map(tc => [...tc.children].filter(x => x.nodeName === 'w:p').map(ptext).join('\n').trim()));
+      } else if (ch.nodeName === 'w:p') { const t = ptext(ch); if (t.trim()) rows.push(t.split('\t')); }
+      else walk(ch);
+    }
+  };
+  walk(doc.getElementsByTagName('w:body')[0]);
+  return rows;
+}
+const rowsToText = rows => rows.filter(r => r.some(c => String(c).trim())).map(r => r.map(c => {
+  c = String(c).trim(); return /[\t\n"]/.test(c) ? '"' + c.replace(/"/g, '""') + '"' : c; }).join('\t')).join('\n');
+async function fileToText(file) {
+  const ext = (file.name.split('.').pop() || '').toLowerCase();
+  if (ext === 'xls' || ext === 'doc') throw new Error(`"${file.name}" eski biçimde (.${ext}). Excel/Word'de açıp "Farklı Kaydet" ile .${ext}x olarak kaydedin ve tekrar yükleyin.`);
+  if (ext === 'pdf') throw new Error('PDF okunamıyor. Lütfen Excel ya da Word dosyasını yükleyin (veya tabloyu kopyalayıp yapıştırın).');
+  const buf = await file.arrayBuffer();
+  if (ext === 'xlsx' || ext === 'docx') {
+    const z = readZip(buf);
+    if (z.names.includes('xl/workbook.xml')) return rowsToText(await xlsxRows(z));
+    if (z.names.includes('word/document.xml')) return rowsToText(await docxRows(z));
+    throw new Error('Dosyanın içeriği tanınmadı.');
+  }
+  let t = new TextDecoder('utf-8').decode(buf);
+  if (t.includes('\uFFFD')) t = new TextDecoder('windows-1254').decode(buf);
+  return t;
+}
+
+/* ================= EXCEL (.xlsx) ================= */
+const CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+const crc32 = b => { let c = 0xFFFFFFFF; for (let i = 0; i < b.length; i++) c = CRC[(c ^ b[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
+function zip(files) {
+  const enc = new TextEncoder(), parts = [], central = []; let off = 0;
+  for (const f of files) {
+    const name = enc.encode(f.name), data = typeof f.data === 'string' ? enc.encode(f.data) : f.data, crc = crc32(data);
+    const h = new DataView(new ArrayBuffer(30));
+    h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint16(8, 0, true);
+    h.setUint32(14, crc, true); h.setUint32(18, data.length, true); h.setUint32(22, data.length, true); h.setUint16(26, name.length, true);
+    parts.push(new Uint8Array(h.buffer), name, data);
+    const c = new DataView(new ArrayBuffer(46));
+    c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true);
+    c.setUint32(16, crc, true); c.setUint32(20, data.length, true); c.setUint32(24, data.length, true); c.setUint16(28, name.length, true); c.setUint32(42, off, true);
+    central.push(new Uint8Array(c.buffer), name);
+    off += 30 + name.length + data.length;
+  }
+  const cs = central.reduce((s, x) => s + x.length, 0);
+  const e = new DataView(new ArrayBuffer(22));
+  e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true); e.setUint32(12, cs, true); e.setUint32(16, off, true);
+  return new Blob([...parts, ...central, new Uint8Array(e.buffer)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+}
+const colName = n => { let s = ''; n++; while (n) { const m = (n - 1) % 26; s = String.fromCharCode(65 + m) + s; n = Math.floor((n - 1) / 26); } return s; };
+const xesc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])).replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, '');
+function sheetXml(rows, widths, freeze) {
+  const body = rows.map((r, ri) => `<row r="${ri + 1}">${r.map((v, ci) => {
+    if (v === null || v === undefined || v === '') return '';
+    const ref = colName(ci) + (ri + 1), st = (ri === 0 || ci === 0) ? ' s="1"' : (typeof v === 'object' && v.s ? ` s="${v.s}"` : '');
+    const val = typeof v === 'object' ? v.v : v;
+    return typeof val === 'number' ? `<c r="${ref}"${st}><v>${val}</v></c>` : `<c r="${ref}" t="inlineStr"${st}><is><t xml:space="preserve">${xesc(val)}</t></is></c>`;
+  }).join('')}</row>`).join('');
+  const cols = widths ? `<cols>${widths.map((w, i) => `<col min="${i + 1}" max="${i + 1}" width="${w}" customWidth="1"/>`).join('')}</cols>` : '';
+  const pane = freeze ? `<sheetViews><sheetView workbookViewId="0"><pane xSplit="1" ySplit="1" topLeftCell="B2" activePane="bottomRight" state="frozen"/></sheetView></sheetViews>` : '';
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">${pane}${cols}<sheetData>${body}</sheetData></worksheet>`;
+}
+function xlsx(sheets) {
+  const ns = 'http://schemas.openxmlformats.org/';
+  const files = [
+    { name: '[Content_Types].xml', data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="${ns}package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>${sheets.map((_, i) => `<Override PartName="/xl/worksheets/sheet${i + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join('')}</Types>` },
+    { name: '_rels/.rels', data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="${ns}package/2006/relationships"><Relationship Id="rId1" Type="${ns}officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>` },
+    { name: 'xl/workbook.xml', data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="${ns}spreadsheetml/2006/main" xmlns:r="${ns}officeDocument/2006/relationships"><sheets>${sheets.map((s, i) => `<sheet name="${xesc(s.name)}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`).join('')}</sheets></workbook>` },
+    { name: 'xl/_rels/workbook.xml.rels', data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="${ns}package/2006/relationships">${sheets.map((_, i) => `<Relationship Id="rId${i + 1}" Type="${ns}officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i + 1}.xml"/>`).join('')}<Relationship Id="rId${sheets.length + 1}" Type="${ns}officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>` },
+    { name: 'xl/styles.xml', data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="${ns}spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="8"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FFCFE2FF"/><bgColor indexed="64"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FFE3D5FF"/><bgColor indexed="64"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FFFFD2CC"/><bgColor indexed="64"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FFDCDFE5"/><bgColor indexed="64"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FFC8EFD9"/><bgColor indexed="64"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FFFFE0B3"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="8"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/><xf numFmtId="0" fontId="0" fillId="2" borderId="0" xfId="0" applyFill="1"/><xf numFmtId="0" fontId="0" fillId="3" borderId="0" xfId="0" applyFill="1"/><xf numFmtId="0" fontId="0" fillId="4" borderId="0" xfId="0" applyFill="1"/><xf numFmtId="0" fontId="0" fillId="5" borderId="0" xfId="0" applyFill="1"/><xf numFmtId="0" fontId="0" fillId="6" borderId="0" xfId="0" applyFill="1"/><xf numFmtId="0" fontId="0" fillId="7" borderId="0" xfId="0" applyFill="1"/></cellXfs></styleSheet>` },
+    ...sheets.map((s, i) => ({ name: `xl/worksheets/sheet${i + 1}.xml`, data: sheetXml(s.rows, s.widths, s.freeze) }))
+  ];
+  return zip(files);
+}
+function exportXlsx() {
+  if (!S) { alert('Önce programı oluşturun.'); return; }
+  const sm = C.summary(P, S);
+  const dh = P.days.map(k => `${k.slice(8)}.${k.slice(5, 7)} ${C.GUN_KISA[C.dow(k)]}`);
+  const tyS = a => P.areas[a].type === 'POL' ? 2 : P.areas[a].type === 'ENDO' ? 3 : 0;
+  const g = [['Oda (puan)', ...dh]].concat(P.areas.map((ar, a) => [`${ar.name} (${ar.points})`, ...P.days.map((_, d) => {
+    const i = S.slot[d][a];
+    if (i >= 0) return { v: P.docs[i].name + (S.coverOf[d][a] >= 0 ? ' *' : ''), s: tyS(a) };
+    if (!P.open[d][a]) return 'kapalı';
+    const p = S.coverBy[d][a]; return { v: p >= 0 ? P.docs[S.slot[d][p]].name + ' *' : '', s: tyS(a) };
+  })]));
+  const kg = [['Hekim', ...dh, 'Puan']].concat(P.docs.map((doc, i) => [doc.name, ...P.days.map((_, d) => {
+    if (P.off[i][d] === 'NE') return { v: 'NE', s: 5 };
+    if (P.off[i][d] === 'İ') return { v: 'İzin', s: 6 };
+    if (P.off[i][d] === 'YB') return { v: 'YB nöbeti', s: 3 };
+    if (P.off[i][d] === 'OD') return 'Odasız';
+    if (P.off[i][d] === 'DIS') return '—';
+    const a = S.where[d][i]; if (a === -2) return 'atanmadı'; if (a < 0) return '';
+    const E = S.coverOf[d][a];
+    return { v: P.areas[a].name + (E >= 0 ? ` / ${P.areas[E].name}` : ''), s: tyS(a) };
+  }), sm[i].total]));
+  const ko = [['Hekim', ...P.areas.map(a => `${a.name} (${a.points})`), 'Poliklinik', 'Endoskopi', 'Telafi', 'Puan']].concat(P.docs.map((doc, i) =>
+    [doc.name, ...P.areas.map((_, a) => S.cnt[i * P.A + a] || ''), sm[i].pol, sm[i].endo, sm[i].covers, sm[i].total]));
+  for (const n of icuNames()) { kg.push([n, 'Yoğun bakım']); ko.push([n, 'Yoğun bakım']); }
+  g.push([], ['*', 'bu gün iki odada']);
+  if (icuNames().length) g.push(['Yoğun bakım', icuNames().join(', ')]);
+  const oz = [['Hekim', 'Nöbet', 'Aktif çalışma günü', 'Nöbet ertesi', 'İzin', 'Poliklinik', 'Endoskopi', 'Telafi', 'Tekrar oda', 'Çalışma günlerine göre oda toplam puanı', 'Çalışma programına göre hesaplanan oda puanı', 'Fark']].concat(sm.map(s =>
+    [s.name, s.nobet ? 'tutar' : 'tutmaz', s.work, s.ne, s.izin, s.pol, s.endo, s.covers, s.rep, Math.round(s.target), s.total, Math.round(s.diff)]));
+  const { y, m } = curYM();
+  const blob = xlsx([
+    { name: 'Puan özeti', rows: oz, widths: [24, 9, 18, 12, 7, 11, 11, 8, 11, 40, 40, 9], freeze: true },
+    { name: 'Günlük program', rows: g, widths: [20, ...dh.map(() => 18)], freeze: true },
+    { name: 'Kişi - gün', rows: kg, widths: [24, ...dh.map(() => 13), 10], freeze: true },
+    { name: 'Kişi - oda', rows: ko, widths: [24, ...P.areas.map(() => 11), 11, 11, 8, 10], freeze: true },
+  ]);
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = `Calisma-Programi-${y}-${String(m).padStart(2, '0')}.xlsx`;
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+
+/* ================= BAĞLANTILAR ================= */
+function setTab(t) {
+  document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.tab === t));
+  document.querySelectorAll('.tab').forEach(s => s.classList.toggle('on', s.id === 'tab-' + t));
+  if (t === 'ay') renderAy();
+  if (t === 'program') { loadResult(); renderProgram(); }
+  if (t === 'sabit') renderSabit();
+  window.scrollTo(0, 0);
+}
+function setMonth() {
+  store.current = `${$('#selYear').value}-${String($('#selMonth').value).padStart(2, '0')}`;
+  ensureMonth(store.current); saveStore(); P = null; S = null;
+  const on = document.querySelector('nav button.on').dataset.tab; setTab(on);
+}
+function buildMonthSelects() {
+  const { y, m } = curYM(), now = new Date();
+  $('#selMonth').innerHTML = C.AYLAR.map((a, i) => `<option value="${i + 1}" ${i + 1 === m ? 'selected' : ''}>${a}</option>`).join('');
+  const ys = []; for (let k = 2026; k <= Math.max(y, now.getFullYear()) + 2; k++) ys.push(k);
+  $('#selYear').innerHTML = ys.map(k => `<option ${k === y ? 'selected' : ''}>${k}</option>`).join('');
+}
+function init() {
+  try { localStorage.removeItem(STORE_KEY); } catch (e) { } // eski sürümlerin düz kopyasını temizle
+  store = freshStore();
+  const now = new Date();
+  if (!store.current) { const n = new Date(now.getFullYear(), now.getMonth() + 1, 1); store.current = `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, '0')}`; }
+  ensureMonth(store.current);
+  buildMonthSelects();
+  $('#selMonth').onchange = setMonth; $('#selYear').onchange = setMonth;
+  document.querySelectorAll('nav button').forEach(b => b.onclick = () => setTab(b.dataset.tab));
+  document.querySelectorAll('#views button').forEach(b => b.onclick = () => { view = b.dataset.v; renderProgram(); });
+  let tmr;
+  const bindText = (id, field) => $(id).addEventListener('input', e => { M()[field] = e.target.value; saveStore(); clearTimeout(tmr); tmr = setTimeout(refreshAyInfo, 300); });
+  bindText('#txtHolidays', 'holidaysText');
+  for (const id of ['#chipsIn', '#chipsIcu']) $(id).addEventListener('change', e => {
+    const n = store.fixed.doctors[+e.target.dataset.i].name, inc = M().included;
+    if (e.target.checked) { if (!inc.includes(n)) inc.push(n); } else M().included = inc.filter(x => x !== n);
+    saveStore(); renderInc(); refreshAyInfo();
+  });
+  const loadFile = async (file, kind) => {
+    try { const t = await fileToText(file); kind === 'roster' ? applyRosterText(t, file.name) : applyLeavesText(t, file.name, true); }
+    catch (err) { alert(err.message || 'Dosya okunamadı.'); }
+  };
+  $('#fileRoster').onchange = e => { const f = e.target.files[0]; if (f) loadFile(f, 'roster'); e.target.value = ''; };
+  $('#fileLeaves').onchange = e => { const f = e.target.files[0]; if (f) loadFile(f, 'leaves'); e.target.value = ''; };
+  for (const [id, kind] of [['#rosterWrap', 'roster'], ['#leavesWrap', 'leaves']]) {
+    const el = $(id);
+    el.addEventListener('dragover', e => { e.preventDefault(); el.classList.add('over'); });
+    el.addEventListener('dragleave', () => el.classList.remove('over'));
+    el.addEventListener('drop', e => { e.preventDefault(); el.classList.remove('over'); const f = e.dataTransfer.files[0]; if (f) loadFile(f, kind); });
+  }
+  $('#tblRoster').addEventListener('change', onRosterInput);
+  $('#tblRoster').addEventListener('keydown', e => {
+    if (e.key !== 'Enter' || !e.target.dataset.k) return;
+    e.preventDefault(); e.target.dispatchEvent(new Event('change', { bubbles: true }));
+    const all = [...document.querySelectorAll(`#tblRoster input[data-s="${e.target.dataset.s}"]`)], ix = all.findIndex(x => x.dataset.k === e.target.dataset.k);
+    if (all[ix + 1]) all[ix + 1].focus();
+  });
+  $('#tblLeaves').addEventListener('change', onLeaveInput);
+  $('#tblLeaves').addEventListener('click', e => { const i = e.target.dataset.del; if (i === undefined) return; M().leaves.splice(+i, 1); saveStore(); renderLeavesTable(); refreshAyInfo(); });
+  $('#btnAddLeave').onclick = () => { M().leaves.push({ name: '', type: 'yillik', from: '', to: '' }); saveStore(); renderLeavesTable(); const ins = document.querySelectorAll('#tblLeaves input[data-f="name"]'); ins[ins.length - 1].focus(); };
+  $('#btnPasteRoster').onclick = () => pasteDialog('Nöbet listesi — metin yapıştır', 'Excel ya da Word\'deki tabloyu kopyalayıp buraya yapıştırın (tarih + nöbetçiler). Okunan günler tabloya yazılır.', t => applyRosterText(t));
+  $('#btnPasteLeaves').onclick = () => pasteDialog('İzinler — metin yapıştır', 'Tablo ya da serbest metin yapıştırın — ör. "Selin: 5-8 Kasım ve 25-27 Kasım", "Kaya: 20 kasım". Okunan izinler listeye eklenir.', t => applyLeavesText(t, null, false));
+  $('#btnClrRoster').onclick = () => { if (confirm('Bu ayın nöbet listesi (önceki ayın son günleri dahil) silinsin mi?')) { M().roster = {}; M().rosterText = ''; M().prevNobet = {}; $('#rosterFile').textContent = ''; saveStore(); renderRosterTable(); refreshAyInfo(); } };
+  $('#btnClrLeaves').onclick = () => { if (confirm('Bu ayın izin listesi silinsin mi?')) { M().leaves = []; M().leavesText = ''; $('#leavesFile').textContent = ''; saveStore(); renderLeavesTable(); refreshAyInfo(); } };
+  $('#btnAddAvoid').onclick = () => { M().avoid = M().avoid || []; M().avoid.push({ name: '', days: [], rooms: [] }); saveStore(); renderAvoid(); const ins = document.querySelectorAll('#tblAvoid input[data-av]'); ins[ins.length - 1].focus(); };
+  $('#tblAvoid').addEventListener('click', e => {
+    const t = e.target.closest('button'); if (!t) return;
+    if (t.dataset.avcal !== undefined) avoidCal(+t.dataset.avcal);
+    else if (t.dataset.avroom !== undefined) avoidRooms(+t.dataset.avroom);
+    else if (t.dataset.avdel !== undefined) { M().avoid.splice(+t.dataset.avdel, 1); saveStore(); renderAvoid(); refreshAyInfo(); }
+  });
+  $('#tblAvoid').addEventListener('change', e => {
+    const i = e.target.dataset.av; if (i === undefined) return;
+    const names = store.fixed.doctors.map(d => d.name), v = e.target.value.trim(), r = M().avoid[+i];
+    r.name = v ? (C.matchName(v, names) || v) : ''; e.target.value = r.name; e.target.classList.toggle('bad', !!r.name && !C.matchName(r.name, names));
+    saveStore(); refreshAyInfo();
+  });
+  $('#tblSpecial').addEventListener('click', e => { const b = e.target.closest('[data-cal]'); if (b) openSpecialCal(b.dataset.cal, b.dataset.n); });
+  $('#tblSpecial').addEventListener('change', e => {
+    const n = e.target.dataset.flex; if (!n) return;
+    const d = store.fixed.doctors.find(x => x.name === n); if (!d) return;
+    d.flex = e.target.checked; saveStore(); refreshAyInfo();
+  });
+  $('#btnAll').onclick = () => { M().included = store.fixed.doctors.map(d => d.name); saveStore(); renderAy(); };
+  $('#btnFromRoster').onclick = () => {
+    const names = store.fixed.doctors.map(d => d.name);
+    const inR = new Set(Object.entries(M().roster || {}).filter(([k]) => k.slice(0, 7) === store.current).flatMap(([, l]) => rosterOR(l)).map(v => C.matchName(v, names)).filter(Boolean));
+    if (!inR.size) { alert('Önce nöbet listesini yapıştırın.'); return; }
+    M().included = store.fixed.doctors.filter(d => !d.nobet || inR.has(d.name)).map(d => d.name); saveStore(); renderAy();
+  };
+  $('#btnDemo').onclick = () => {
+    if ((Object.keys(M().roster || {}).length || (M().leaves || []).length) && !confirm('Bu ayın nöbet ve izin alanları örnek veriyle değiştirilsin mi?')) return;
+    if (store.current !== '2026-11') { $('#selYear').value = 2026; $('#selMonth').value = 11; setMonth(); }
+    Object.assign(M(), { rosterText: DEMO.rosterText, leavesText: DEMO.leavesText, included: DEMO.included.slice(), roster: undefined, leaves: undefined, prevNobet: {} });
+    saveStore(); setTab('ay');
+  };
+  $('#btnGoGen').onclick = goGenerate;
+  $('#tblCap').addEventListener('click', e => { const b = e.target.closest('[data-idle]'); if (b) idleDialog(b.dataset.idle); });
+  $('#openRooms').addEventListener('click', e => { const b = e.target.closest('[data-open]'); if (b) openDaysDialog(+b.dataset.open); });
+  $('#tblEdu').addEventListener('change', onEduInput);
+  $('#tblEdu').addEventListener('keydown', e => {
+    if (e.key !== 'Enter' || !e.target.dataset.ek) return;
+    e.preventDefault(); e.target.dispatchEvent(new Event('change', { bubbles: true }));
+    const all = [...document.querySelectorAll(`#tblEdu input[data-ej="${e.target.dataset.ej}"]`)], ix = all.findIndex(x => x.dataset.ek === e.target.dataset.ek);
+    if (all[ix + 1]) all[ix + 1].focus();
+  });
+  $('#fileEdu').onchange = async e => { const f = e.target.files[0]; e.target.value = ''; if (!f) return; try { applyEduText(await fileToText(f), f.name); } catch (err) { alert(err.message || 'Dosya okunamadı.'); } };
+  { const el = $('#eduWrap'); el.addEventListener('dragover', e => { e.preventDefault(); el.classList.add('over'); }); el.addEventListener('dragleave', () => el.classList.remove('over'));
+    el.addEventListener('drop', async e => { e.preventDefault(); el.classList.remove('over'); const f = e.dataTransfer.files[0]; if (!f) return; try { applyEduText(await fileToText(f), f.name); } catch (err) { alert(err.message || 'Dosya okunamadı.'); } }); }
+  $('#btnPasteEdu').onclick = () => pasteDialog('Eğitim kliniği listesi — metin yapıştır', 'Excel\'deki tabloyu başlık satırıyla birlikte kopyalayıp buraya yapıştırın (tarih + odalar).', t => applyEduText(t));
+  $('#btnFillEdu').onclick = eduFillDialog;
+  $('#btnClrEdu').onclick = () => { if (confirm('Bu ayın eğitim kliniği listesi silinsin mi?')) { M().edu = {}; $('#eduFile').textContent = ''; saveStore(); renderEdu(); renderSteps(); } };
+  $('#stepBar').addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (!b) return; if (b.dataset.go === 'stepGen' && stepState('gen')[0] !== 'ok') { document.getElementById('stepGen').scrollIntoView({ behavior: 'smooth' }); return; } document.getElementById(b.dataset.go).scrollIntoView({ behavior: 'smooth' }); });
+  $('#tab-ay').addEventListener('click', e => { const b = e.target.closest('[data-mark]'); if (!b) return; const mo = M(); mo.steps = mo.steps || {}; if (b.dataset.v) mo.steps[b.dataset.mark] = b.dataset.v; else delete mo.steps[b.dataset.mark]; saveStore(); renderSteps(); });
+  $('#btnStepProg').onclick = () => setTab('program');
+  $('#btnStepOff').onclick = () => { loadResult(); if (!S) { alert('Önce programı oluşturun.'); return; } if (stale && !confirm('Program oluşturulduktan sonra ay bilgileri değişti. Resmi liste mevcut programla indirilsin mi?')) return; if (stepState('5')[0] !== 'ok' && !confirm('Eğitim kliniği adımı tamamlanmadı — bu sütunlar boş kalacak. Devam edilsin mi?')) return; exportOfficialXlsx(); };
+  $('#btnGen').onclick = () => { if (S && !revs().length && !M().draft && !confirm('Mevcut program silinip yeniden oluşturulsun mu?')) return; generate(); };
+  $('#verBar').addEventListener('click', e => { const b = e.target.closest('[data-ver]'), rp = e.target.closest('[data-rep]'); if (b) setVer(b.dataset.ver); else if (rp) printReport(+rp.dataset.rep); else if (e.target.id === 'btnDraft') startDraft(); else if (e.target.id === 'btnChange') changeDialog(); });
+  $('#btnXlsx').onclick = exportXlsx;
+  $('#btnPrint').onclick = () => S ? printModel(dailyModel()) : alert('Önce programı oluşturun.');
+  $('#btnJpg').onclick = () => S ? jpgModel(dailyModel()) : alert('Önce programı oluşturun.');
+  $('#btnKPrint').onclick = () => S ? printModel(personModel()) : alert('Önce programı oluşturun.');
+  $('#btnKJpg').onclick = () => S ? jpgModel(personModel()) : alert('Önce programı oluşturun.');
+  $('#btnOffXlsx').onclick = exportOfficialXlsx;
+  $('#dlgClose').onclick = () => $('#dlg').close();
+  $('#offForm').addEventListener('change', e => { const k = e.target.dataset.off; if (!k) return; store.fixed.official = { ...(store.fixed.official || {}), [k]: e.target.value }; saveStore(); });
+  $('#tblDocs').addEventListener('change', e => onFixedInput(e, 'doctors'));
+  $('#tblAreas').addEventListener('change', e => onFixedInput(e, 'areas'));
+  $('#tblDocs').addEventListener('click', e => { const i = e.target.dataset.del; if (i !== undefined && confirm(`${store.fixed.doctors[i].name} silinsin mi?`)) { store.fixed.doctors.splice(+i, 1); saveStore(); renderSabit(); } });
+  $('#tblAreas').addEventListener('click', e => { const i = e.target.dataset.del; if (i !== undefined && confirm(`${store.fixed.areas[i].name} silinsin mi?`)) { store.fixed.areas.splice(+i, 1); saveStore(); renderSabit(); } });
+  $('#btnAddDoc').onclick = () => { store.fixed.doctors.push({ name: 'Yeni Hekim', nobet: true, forbidden: [] }); saveStore(); renderSabit(); };
+  $('#btnAddArea').onclick = () => { store.fixed.areas.push({ name: 'Yeni Oda', points: 0, type: 'OR', canEmpty: false, low: false, offName: '', pairOnly: [] }); saveStore(); renderSabit(); };
+  $('#tblAreas').addEventListener('click', e => { const b = e.target.closest('[data-pair]'); if (b) pairDialog(+b.dataset.pair); });
+  $('#btnBackup').onclick = backupCopy;
+  $('#btnPw').onclick = changePassword;
+  $('#btnReset').onclick = () => { if (confirm('Hekim ve oda listeleri varsayılana dönsün mü? (Aylık veriler korunur.)')) { store.fixed = structuredClone(DEFAULT_FIXED); saveStore(); renderSabit(); } };
+  window.addEventListener('beforeunload', e => { if (fileHandle && (pendingSave || saving)) { e.preventDefault(); e.returnValue = ''; } });
+  renderFileBar();
+  renderLock();
+  if (FS_OK) IDB.get().then(h => { lastHandle = h; if (lockStage === 'start') renderLock(); });
+}
+init();
+</script>
+</body>
+</html>
