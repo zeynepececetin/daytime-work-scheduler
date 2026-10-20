@@ -77,7 +77,7 @@ def caption(fr, text, t, sub=None):
 SCENES = [
     (5.0, card([('Daytime Work Schedule', 92, True, (255, 255, 255)), ('Fair, rule-based monthly room assignments', 44, False, (201, 211, 230)), ('for an anesthesiology department', 44, False, (201, 211, 230))]), None, None),
     (6.5, kb('resmiimg', (0.0, 0.0, 0.55), (0.42, 0.08, 0.55)), 'Every month: ~27 doctors × 25 rooms × 21 working days', 'scheduled by hand — with many rules and equal workloads expected'),
-    (6.5, kb('ay', (0.0, 0.0, 1.0), (0.02, 0.10, 0.70)), 'Built around the department’s real monthly workflow', 'roster → intensive care → leave → requests → generate → official list'),
+    (6.5, kb('ay', (0.0, 0.0, 1.0), (0.02, 0.10, 0.70)), 'Built around the department’s real monthly workflow', 'night shift → intensive care → leave → requests → generate → official list'),
     (7.0, phone('p-cal', 0.0, 0.15, ['Leave requests', 'Doctors pick the leave type', 'and tap the days on their phone.', 'Nothing is sent until they confirm.']), None, None),
     (6.0, kb('talepler', (0.0, 0.08, 0.80), (0.04, 0.14, 0.62)), 'The scheduler approves each day with one click', 'a heat map shows how many doctors asked for each day'),
     (8.0, kb('gunluk', (0.0, 0.0, 1.0), (0.0, 0.32, 0.62)), 'The whole month is built in seconds', 'an optimisation algorithm keeps all 15 hard rules — every time'),
