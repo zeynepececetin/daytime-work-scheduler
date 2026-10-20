@@ -1,13 +1,21 @@
 # Daytime Work Schedule
 
-**A rule-based scheduling system that builds fair monthly operating-room assignments for the anesthesiology department of Kayseri City Hospital, Türkiye.**
-
-Every month, one specialist used to assign about 27 anesthesiologists to 25 work areas (operating rooms, outpatient clinics and endoscopy units) for every working day, by hand. This project turns that manual task into a defined process with explicit rules, measurable fairness and an optimisation algorithm. A full month is generated in seconds, and no hard rule is broken.
+A program that prepares the monthly daytime work schedule of the anesthesiology department at Kayseri City Hospital, Türkiye. It decides which anesthesiologist works in which operating room, outpatient clinic or endoscopy unit on each working day of the month.
 
 **▶ Try the live demo (web version, fictional data):** https://zeynepececetin.github.io/daytime-work-scheduler/web-demo/
 November 2026 is already entered, scheduled and published. Sign in as the department admin (`yonetici@demo`) or as a doctor (`kemal.arslan@demo`); the password for both is `demo123`.
 
-> **Privacy:** every person named in this repository, its sample data and its screenshots is fictional. The real department data is kept out of this repository to comply with Türkiye's personal data protection law (KVKK).
+## About this project
+
+I built this program to solve a real scheduling problem in the anesthesiology department of Kayseri City Hospital. Every month, about 27 anesthesiologists have to be assigned to 25 operating rooms, clinics and endoscopy units. The schedule used to be prepared by hand, and the workload was often shared unevenly. My mother, one of the department's specialists, objected to this and took the job over herself, and seeing how difficult it was to do by hand gave me the idea for this program.
+
+Hospital scheduling was completely new to me, so I started by learning how the system works. I gathered every rule and variable from my mother, decided with her guidance which rules take priority, and listed the situations most likely to break a schedule. I built the program together with Anthropic's Claude, an AI assistant: I worked out what it had to do, Claude turned it into code, and I tested each version. The drafts were reviewed by the department's doctors, and I revised the program after each round of feedback.
+
+The project showed me how a real problem can be broken down into its parts and turned into a system that does in seconds what used to take hours.
+
+*Zeynep Ece Cetin*
+
+> **Privacy:** all doctors named in the sample data, the demo and the screenshots are fictional. The real department data is kept out of this repository to comply with Türkiye's personal data protection law (KVKK).
 
 | | |
 |---|---|
@@ -21,31 +29,39 @@ November 2026 is already entered, scheduled and published. Sign in as the depart
 
 ---
 
-## The problem, seen as an industrial engineering problem
+## The problem
 
-This is a classic **workforce scheduling and assignment problem**:
+On every working day, about 27 anesthesiologists have to be distributed across 25 work areas. The areas are not equal. Some operating rooms have long and demanding cases, others much lighter ones, so each area carries a workload score and the doctors expect their monthly totals to come out even. The schedule also has to take into account night shifts, leave, intensive-care rotations and a number of department rules. Preparing it by hand, it is hard to follow every rule and still be fair to everyone, and a single change, such as a colleague falling ill, can undo much of the work.
 
-- **Resources:** anesthesiologists with different availability (night-shift recovery days, leave, intensive-care rotations, rooms they are exempt from).
-- **Demand:** 25 work areas a day, each with a different workload score (200 to 5,000 points).
-- **Hard constraints (K1–K15):** for example, no daytime work the day after a night shift, with different rules for Friday and weekend shifts. Other examples: 1–2 clinic and endoscopy days per person in different units, at most two days in the same room, and only specific room pairings when doctors are short.
-- **Objective hierarchy:** hard rules first, then individual requests, then preferences, then **fairness**. Each doctor's monthly total is pulled as close as possible to their fair target, which is reduced pro rata for leave. Finally, **rotation**: doctors move through rooms they did not work in last month.
-- **Disruption management:** when someone falls ill or a room closes mid-month, the system re-optimises only the remaining days. It offers alternatives from *fewest changes* to *most balanced* and shows the trade-off for each.
+## How the problem was analysed
 
-The full rule set, which is the system's requirements specification, is in [`KURALLAR.md`](KURALLAR.md) (Turkish).
+The first step was to understand how the schedule is actually made. In conversations with the specialist preparing it, each element was gone through one by one: who can work on which day, how a night shift affects the following days and why a Friday shift is treated differently, how leave is counted, which rooms a doctor cannot be assigned to, and which rooms can be covered together when there are not enough doctors. She also described the things that typically go wrong during a month. The result is the full set of inputs and rules the program works with, written down in [`KURALLAR.md`](KURALLAR.md) (Turkish).
 
-## Zeynep's role
+The rules are not all equally important, so the next question was what should take precedence when two of them conflict. Rules that can never be broken come first, followed by the doctors' personal requests, then preferences, then a fair balance of workload, and finally a rotation so that no one keeps getting the same rooms.
 
-**Zeynep Ece Cetin** identified the need, proposed the project and led it as its owner. She worked on it from the first day to the last, approaching it as an **industrial / systems engineer**:
+The situations most likely to break a schedule were then listed: a doctor reporting sick in the middle of the month, a room closing for renovation, more doctors available than open rooms on a given day, a schedule that has to be changed after it has already been announced. For each case, the expected response of the program was defined and later checked.
 
-- **Problem definition:** framed a manual, error-prone monthly task as a scheduling problem with resources, demand, constraints and objectives.
-- **Requirements engineering:** helped turn the department's unwritten practice into precise, numbered rules (hard rules, goals, preferences) and a clear priority order between them.
-- **Process design:** worked on fitting the program to the department's real monthly workflow (calendar and roster → intensive-care staff → leave → requests → generate → review → official list).
-- **Design and development:** took part in the design-and-test sessions throughout the project.
-- **Testing and iteration:** tested the program and gathered feedback from the doctors who use it. Their feedback was turned into new rules and features, such as the room-pairing rule, closed rooms, manual edits and mid-month revisions.
+## Testing and revision
 
-The department's scheduling rules were provided by a specialist anesthesiologist, who also tested the program in real use.
+The first version was tested on the previous month's data, and the drafts were then shown to other anesthesiologists in the department. Their comments raised requirements and problems that nobody had anticipated. A septic operating room, for example, can only be covered together with certain rooms because of where it is located. Rooms are sometimes closed for part of a month. The doctor preparing the schedule needs to be able to edit it by hand, and changes keep coming in after the month has started. Each of these was resolved and the program revised. Every draft was reviewed by practising anesthesiologists before the next one.
 
-**How it was built:** the project was carried out by Zeynep together with Anthropic's **Claude**, which wrote the code through many design-and-test sessions driven by the department's real needs.
+## Working with AI
+
+I built the program together with Anthropic's Claude, an AI assistant. My part was to work out what the program had to do: the rules, the structure of the data and the type of each variable, the order of priorities, and how each problem should be resolved. I described all of this to Claude in detail, and Claude turned it into code. I then reviewed and tested each version, and asked for changes whenever the result did not match how the department actually works.
+
+Some real-life situations were not something Claude could anticipate, such as congress leave, extra shifts, sick leave in the middle of a month and how workload points should be calculated in each case. I had to explain these in detail before they worked correctly.
+
+## Result
+
+A schedule that used to take hours of work each month is now generated in seconds, without breaking any rule, and every doctor's total stays within about 0.2 % of a fair target. The desktop version is used by the department. A web version, in which doctors enter their own leave requests, is the next step.
+
+## The scheduling rules in brief
+
+- **Doctors:** each with different availability (the day after a night shift, leave, intensive-care rotations, rooms they are exempt from).
+- **Work areas:** 25 a day, each with a workload score between 200 and 5,000 points.
+- **Rules that are never broken (K1–K15):** for example, no daytime work the day after a night shift, with different rules for Friday and weekend shifts; one or two clinic and endoscopy days per person, in different units; at most two days in the same room; only specific room pairings when doctors are short.
+- **Priorities:** rules first, then personal requests, then preferences, then fairness. Each doctor's monthly total is brought as close as possible to their fair target, which is reduced in proportion to leave. Finally, doctors rotate through rooms they did not work in the previous month.
+- **Changes during the month:** when someone falls ill or a room closes, only the remaining days are recalculated. The program offers alternatives from *fewest changes* to *most balanced* and shows what each one costs in fairness.
 
 ## How it works
 
