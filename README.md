@@ -7,13 +7,13 @@ November 2026 is already entered, scheduled and published. Sign in as the depart
 
 ## About this project
 
-I built this program to solve a real scheduling problem in the anesthesiology department of Kayseri City Hospital. Every month, about 27 anesthesiologists have to be assigned to 25 operating rooms, clinics and endoscopy units. The schedule used to be prepared by hand, and the workload was often shared unevenly. My mother, one of the department's specialists, objected to this and took the job over herself, and seeing how difficult it was to do a evenly distributed program by hand gave me the idea for this program.
+I built this program to solve a real scheduling problem in the anesthesiology department of Kayseri City Hospital. Every month, about 27 anesthesiologists have to be assigned to 25 operating rooms, clinics and endoscopy units. The schedule used to be prepared by hand, and the workload was often shared unevenly. My mother, one of the department's specialists, objected to this and took the job over herself, and seeing how difficult it was to build an evenly distributed schedule by hand gave me the idea for this program.
 
 Hospital scheduling was completely new to me, so I started by learning how the system works. I gathered every rule and variable from my mother, decided with her guidance which rules take priority, and listed the situations most likely to break a schedule. I built the program together with Anthropic's Claude, an AI assistant: I worked out what it had to do, Claude turned it into code, and I tested each version. The drafts were reviewed by the department's doctors, and I revised the program after each round of feedback.
 
 The project showed me how a real problem can be broken down into its parts and turned into a system that does in seconds what used to take hours.
 
-*Zeynep Ece Cetin*
+*Zeynep Ece Çetin*
 
 > **Privacy:** all doctors named in the sample data, the demo and the screenshots are fictional. The real department data is kept out of this repository to comply with Türkiye's personal data protection law (KVKK).
 
@@ -35,19 +35,19 @@ On every working day, about 27 anesthesiologists have to be distributed across 2
 
 ## How the problem was analysed
 
-The first step was to understand how the schedule is actually made. In conversations with the specialist preparing it, each element was gone through one by one: who can work on which day, how a night shift affects the following days and why a Friday shift is treated differently, how leave is counted, which rooms a doctor cannot be assigned to, and which rooms can be covered together when there are not enough doctors. She also described the things that typically go wrong during a month. The result is the full set of inputs and rules the program works with, written down in [`KURALLAR.md`](KURALLAR.md) (Turkish).
+My first step was to understand how the schedule is actually made. In conversations with the specialist preparing it, I went through each element one by one: who can work on which day, how a night shift affects the following days and why a Friday shift is treated differently, how leave is counted, which rooms a doctor cannot be assigned to, and which rooms can be covered together when there are not enough doctors. I also described the things that typically go wrong during a month. The result is the full set of inputs and rules the program works with, written down in [`KURALLAR.md`](KURALLAR.md) (Turkish).
 
-The rules are not all equally important, so the next question was what should take precedence when two of them conflict. Rules that can never be broken come first, followed by the doctors' personal requests, then preferences, then a fair balance of workload, and finally a rotation so that no one keeps getting the same rooms.
+The rules are not all equally important, so next I had to decide what should take precedence when two of them conflict. Rules that can never be broken come first, followed by the doctors' personal requests, then preferences, then a fair balance of workload, and finally a rotation so that no one keeps getting the same rooms.
 
-The situations most likely to break a schedule were then listed: a doctor reporting sick in the middle of the month, a room closing for renovation, more doctors available than open rooms on a given day, a schedule that has to be changed after it has already been announced. For each case, the expected response of the program was defined and later checked.
+I then listed the situations most likely to break a schedule: a doctor reporting sick in the middle of the month, a room closing for renovation, more doctors available than open rooms on a given day, a schedule that has to be changed after it has already been announced. For each case, the expected response of the program was defined and later checked.
 
 ## Testing and revision
 
-The first version was tested on the previous month's data, and the drafts were then shown to other anesthesiologists in the department. Their comments raised requirements and problems that nobody had anticipated. A septic operating room, for example, can only be covered together with certain rooms because of where it is located. Rooms are sometimes closed for part of a month. The doctor preparing the schedule needs to be able to edit it by hand, and changes keep coming in after the month has started. Each of these was resolved and the program revised. Every draft was reviewed by practising anesthesiologists before the next one.
+I tested the first version on the previous month's data and then showed the drafts to other anesthesiologists in the department. Their comments raised requirements and problems that nobody had anticipated. A septic operating room, for example, can only be covered together with certain rooms because of where it is located. Rooms are sometimes closed for part of a month. The doctor preparing the schedule needs to be able to edit it by hand, and changes keep coming in after the month has started. For each case, I defined how the program should respond and later tested that it did. Every draft was reviewed by practising anesthesiologists before the next one.
 
 ## Working with AI
 
-I built the program together with Anthropic's Claude, an AI assistant. My part was to work out what the program had to do: the rules, the structure of the data and the type of each variable, the order of priorities, and how each problem should be resolved. I described all of this to Claude in detail, and Claude turned it into code. I then reviewed and tested each version, and asked for changes whenever the result did not match how the department actually works.
+I wrote the code with the help of an AI assistant, tested each version myself. My part was to work out what the program had to do: the rules, the structure of the data and the type of each variable, the order of priorities, and how each problem should be resolved. I described all of this to Claude in detail, and Claude turned it into code. I then reviewed and tested each version, and asked for changes whenever the result did not match how the department actually works.
 
 Some real-life situations were not something Claude could anticipate, such as congress leave, extra shifts, sick leave in the middle of a month and how workload points should be calculated in each case. I had to explain these in detail before they worked correctly.
 
