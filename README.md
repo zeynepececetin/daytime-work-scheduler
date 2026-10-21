@@ -7,7 +7,7 @@ November 2026 is already entered, scheduled and published. Sign in as the depart
 
 ## About this project
 
-I built this program to solve a real scheduling problem in the anesthesiology department of Kayseri City Hospital. Every month, about 27 anesthesiologists have to be assigned to 25 operating rooms, clinics and endoscopy units. The schedule used to be prepared by hand, and the workload was often shared unevenly. My mother, one of the department's specialists, objected to this and took the job over herself, and seeing how difficult it was to do by hand gave me the idea for this program.
+I built this program to solve a real scheduling problem in the anesthesiology department of Kayseri City Hospital. Every month, about 27 anesthesiologists have to be assigned to 25 operating rooms, clinics and endoscopy units. The schedule used to be prepared by hand, and the workload was often shared unevenly. My mother, one of the department's specialists, objected to this and took the job over herself, and seeing how difficult it was to do a evenly distributed program by hand gave me the idea for this program.
 
 Hospital scheduling was completely new to me, so I started by learning how the system works. I gathered every rule and variable from my mother, decided with her guidance which rules take priority, and listed the situations most likely to break a schedule. I built the program together with Anthropic's Claude, an AI assistant: I worked out what it had to do, Claude turned it into code, and I tested each version. The drafts were reviewed by the department's doctors, and I revised the program after each round of feedback.
 
